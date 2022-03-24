@@ -1,0 +1,16 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/dollarify/__init__.py
+src/dollarify/__main__.py
+src/dollarify/dollarify.py
+src/dollarify/core/__init__.py
+src/dollarify/db/__init__.py
+src/dollarify/db/sqlite3/__init__.py
+src/dollarify/static/__init__.py
+src/dollarify_FredPerr.egg-info/PKG-INFO
+src/dollarify_FredPerr.egg-info/SOURCES.txt
+src/dollarify_FredPerr.egg-info/dependency_links.txt
+src/dollarify_FredPerr.egg-info/entry_points.txt
+src/dollarify_FredPerr.egg-info/top_level.txt

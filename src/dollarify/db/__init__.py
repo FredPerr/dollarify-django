@@ -1,9 +1,5 @@
 import importlib
 import logging
-import sqlite3
-from datetime import time as datetime_time
-
-from dollarify.utils.time import time_adapter
 from dollarify.static import staticfiles
 from dollarify.static.db.sqlite3 import queries
 
@@ -42,10 +38,8 @@ def execute_from_script(connection, cursor, script_query_filename: str, **kwargs
 TRADE_TABLE_NAME = 'trades'
 
 
-def init(connection, cursor, **kwargs):
-    
-    sqlite3.register_adapter(datetime_time, time_adapter)
-
+def init(db_module, connection, cursor, **kwargs):
+    db_module.init()
     init_tables(connection, cursor, **kwargs)
 
 
@@ -55,7 +49,5 @@ def init_tables(connection, cursor, **kwargs):
         execute_from_script(connection, cursor, script, trade_table_name=TRADE_TABLE_NAME, **kwargs)
 
 
-def add_row(connection, cursor, table_name, **kwargs):
-    columns = str(tuple(kwargs.keys())).replace("\'", "")
-    values = "".join(tuple(kwargs.values()))
-    execute_query(connection, cursor, f'INSERT INTO {table_name} {columns} VALUES({values})')
+def add_row(db_module, connection, table_name, items: dict):
+    db_module.add_row(connection, table_name, items)

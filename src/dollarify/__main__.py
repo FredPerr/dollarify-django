@@ -1,6 +1,4 @@
 import logging
-from datetime import datetime, timezone
-import sqlite3
 
 from dollarify import db
 from dollarify.utils import time
@@ -8,23 +6,27 @@ from dollarify.utils import uuid
 
 
 def main():
-
+    DEBUG = True
     connection = None
     try:
         db_module, connection, cursor = db.connect('sqlite3')
-        db.init(connection, cursor)
+        db.init(db_module, connection, cursor)
         attribs = {
             'user_id': uuid.generate(),
             'account': uuid.generate(),
             'ticker': 'MSFT',
             'buy_date': time.now(),
-            ''
-             # TODO continue to add the row to the db.
-
-
+            'shares': 30,
+            'buy_value': 15.30,
+            'fees': 0.00,
+            'sell_value': None,
+            'sell_date': None
         }
 
-        # db.add_row(connection, cursor, 'trades')
+        if DEBUG:
+            connection.set_trace_callback(print)
+
+        db.add_row(db_module, connection, db.TRADE_TABLE_NAME, attribs)
 
 
     except Exception as e:

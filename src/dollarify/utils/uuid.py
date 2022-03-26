@@ -3,8 +3,8 @@ from uuid import uuid4
 
 def generate(dashes = False):
     uuid_str = str(uuid4())
-    if not dashes:
-        uuid_str.replace('-', '')
+    if dashes is False:
+        uuid_str = uuid_str.replace('-', '')
     return uuid_str
 
 

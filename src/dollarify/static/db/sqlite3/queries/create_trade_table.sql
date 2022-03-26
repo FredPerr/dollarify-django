@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS {trade_table_name} (
-    user_id VARCHAR(16), 
-    account VARCHAR(16) NOT NULL, 
+    user_id VARCHAR(32), 
+    account VARCHAR(32) NOT NULL, 
     ticker VARCHAR(5) NOT NULL, 
     buy_date TEXT NOT NULL, 
     shares INTEGER NOT NULL, 

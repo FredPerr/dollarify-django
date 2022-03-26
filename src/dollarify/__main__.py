@@ -3,14 +3,14 @@ import logging
 from dollarify import db
 from dollarify.utils import time
 from dollarify.utils import uuid
+from dollarify import dollarify
 
 
 def main():
     DEBUG = True
-    connection = None
     try:
-        db_module, connection, cursor = db.connect('sqlite3')
-        db.init(db_module, connection, cursor)
+        dollarify.DB_MODULE, dollarify.DB_CONNECTION, dollarify.DB_CURSOR = db.connect('sqlite3')
+        db.init()
         attribs = {
             'user_id': uuid.generate(),
             'account': uuid.generate(),
@@ -24,16 +24,16 @@ def main():
         }
 
         if DEBUG:
-            connection.set_trace_callback(print)
+            dollarify.DB_CONNECTION.set_trace_callback(print)
 
-        db.add_row(db_module, connection, db.TRADE_TABLE_NAME, attribs)
+        db.add_row(db.TRADE_TABLE_NAME, attribs)
 
 
     except Exception as e:
         logging.error(e)
     finally:
-        if connection:
-            connection.close()
+        if dollarify.DB_CONNECTION:
+            dollarify.DB_CONNECTION.close()
 
 
 main()

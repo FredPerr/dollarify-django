@@ -40,6 +40,7 @@ TRADES_TABLE_NAME = 'trades'
 ACCOUNTS_TABLE_NAME = 'accounts'
 ACCOUNTS_TYPES_TABLE_NAME = 'accounts_types'
 USERS_TABLE_NAME = 'users'
+ACCOUNTS_ATTRIBUTES_TABLE_NAME = 'accounts_attributes'
 
 def init(**kwargs):
     dollarify.DB_MODULE.init()
@@ -47,13 +48,14 @@ def init(**kwargs):
 
 
 def init_tables(**kwargs):
-    scripts = ('create_tables.sql', )
+    scripts = ('create_tables.sql', 'insert_account_types.sql')
     for script in scripts:
         execute_from_script(script, 
             trade_table_name=TRADES_TABLE_NAME, 
             account_table_name=ACCOUNTS_TABLE_NAME, 
             accounts_types_table_name=ACCOUNTS_TYPES_TABLE_NAME,
             users_table_name=USERS_TABLE_NAME,
+            accounts_attributes_table_name=ACCOUNTS_ATTRIBUTES_TABLE_NAME,
             **kwargs)
 
 

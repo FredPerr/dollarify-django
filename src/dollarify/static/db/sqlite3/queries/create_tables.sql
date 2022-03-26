@@ -15,6 +15,11 @@ CREATE TABLE IF NOT EXISTS {accounts_types_table_name} (
     information VARCHAR(255)
 );
 
+CREATE TABLE IF NOT EXISTS {accounts_attributes_table_name} (
+    name VARCHAR(16) NOT NULL PRIMARY KEY,
+    information VARCHAR(255)
+);
+
 CREATE TABLE IF NOT EXISTS {users_table_name} (
     uuid VARCHAR(32) NOT NULL PRIMARY KEY,
     username VARCHAR(64) NOT NULL,

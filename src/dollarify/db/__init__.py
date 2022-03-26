@@ -48,7 +48,7 @@ def init(**kwargs):
 
 
 def init_tables(**kwargs):
-    scripts = ('create_tables.sql', 'insert_account_types.sql')
+    scripts = ('create_tables.sql', 'insert_account_types.sql', 'insert_account_attributes.sql')
     for script in scripts:
         execute_from_script(script, 
             trade_table_name=TRADES_TABLE_NAME, 

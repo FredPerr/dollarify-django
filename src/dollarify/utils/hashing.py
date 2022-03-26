@@ -1,7 +1,7 @@
 import hashlib
 import os
 
-def generate_salt(length):
+def generate_salt(length=32):
     return os.urandom(length)
 
 

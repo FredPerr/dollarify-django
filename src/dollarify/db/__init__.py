@@ -28,13 +28,18 @@ def execute_query(sql: str):
 
 def execute_from_script(script_query_filename: str, **kwargs):
     sql = staticfiles.load_static(script_query_filename, pkg=queries)
-    dollarify.DB_CURSOR.executescript(sql.format(**kwargs))
+    sql = sql.format(**kwargs)
+    if dollarify.DEBUG:
+        print(sql)
+    dollarify.DB_CURSOR.executescript(sql)
     dollarify.DB_CONNECTION.commit()
 
 
 # Specific Dollarify Content Management #
-TRADE_TABLE_NAME = 'trades'
-
+TRADES_TABLE_NAME = 'trades'
+ACCOUNTS_TABLE_NAME = 'accounts'
+ACCOUNTS_TYPES_TABLE_NAME = 'accounts_types'
+USERS_TABLE_NAME = 'users'
 
 def init(**kwargs):
     dollarify.DB_MODULE.init()
@@ -42,9 +47,14 @@ def init(**kwargs):
 
 
 def init_tables(**kwargs):
-    scripts = ('create_trade_table.sql', )
+    scripts = ('create_tables.sql', )
     for script in scripts:
-        execute_from_script(script, trade_table_name=TRADE_TABLE_NAME, **kwargs)
+        execute_from_script(script, 
+            trade_table_name=TRADES_TABLE_NAME, 
+            account_table_name=ACCOUNTS_TABLE_NAME, 
+            accounts_types_table_name=ACCOUNTS_TYPES_TABLE_NAME,
+            users_table_name=USERS_TABLE_NAME,
+            **kwargs)
 
 
 def add_row(table_name, items: dict):

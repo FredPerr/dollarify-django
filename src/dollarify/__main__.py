@@ -1,9 +1,7 @@
 import logging
 
 from dollarify import db
-from dollarify.utils import time
-from dollarify.utils import uuid, hashing
-from dollarify import dollarify
+from dollarify import settings
 
 def test():
     pass
@@ -12,16 +10,16 @@ def test():
 def main():
     DEBUG = True
     try:
-        dollarify.DB_MODULE, dollarify.DB_CONNECTION, dollarify.DB_CURSOR = db.connect('sqlite3')
+        settings.DB_MODULE, settings.DB_CONNECTION, settings.DB_CURSOR = db.connect('sqlite3')
         db.init()
         if DEBUG:
             test()
-            dollarify.DB_CONNECTION.set_trace_callback(print)
+            settings.DB_CONNECTION.set_trace_callback(print)
     except Exception as e:
         logging.error(e)
     finally:
-        if dollarify.DB_CONNECTION:
-            dollarify.DB_CONNECTION.close()
+        if settings.DB_CONNECTION:
+            settings.DB_CONNECTION.close()
 
 
 main()

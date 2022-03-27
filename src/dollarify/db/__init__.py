@@ -1,13 +1,12 @@
 import importlib
 import logging
-import dollarify
 from dollarify.static import staticfiles
 from dollarify.static.db.sqlite3 import queries
-from dollarify import dollarify
+from dollarify import settings
 
 
 def connect(db_type: str):
-    db_type_import = dollarify.DB_SYSTEMS.get(db_type)
+    db_type_import = settings.DB_SYSTEMS.get(db_type)
 
     if db_type_import is None:
         logging.fatal(f'Could not load the database system {db_type}')
@@ -17,47 +16,46 @@ def connect(db_type: str):
 
 
 def execute_queries(sql: str):
-    dollarify.DB_CURSOR.executescript(sql)
-    dollarify.DB_CONNECTION.commit()
+    settings.DB_CURSOR.executescript(sql)
+    settings.DB_CONNECTION.commit()
 
 
 def execute_query(sql: str):
-    dollarify.DB_CURSOR.execute(sql)
-    dollarify.DB_CONNECTION.commit()
+    settings.DB_CURSOR.execute(sql)
+    settings.DB_CONNECTION.commit()
 
 
 def execute_from_script(script_query_filename: str, **kwargs):
     sql = staticfiles.load_static(script_query_filename, pkg=queries)
-    sql = sql.format(**kwargs)
-    if dollarify.DEBUG:
-        print(sql)
-    dollarify.DB_CURSOR.executescript(sql)
-    dollarify.DB_CONNECTION.commit()
+    settings.DB_CURSOR.executescript(sql.format(**kwargs))
+    settings.DB_CONNECTION.commit()
 
 
-# Specific Dollarify Content Management #
-TRADES_TABLE_NAME = 'trades'
-ACCOUNTS_TABLE_NAME = 'accounts'
-ACCOUNTS_TYPES_TABLE_NAME = 'accounts_types'
-USERS_TABLE_NAME = 'users'
-ACCOUNTS_ATTRIBUTES_TABLE_NAME = 'accounts_attributes'
+def add_row(table_name, items: dict):
+    settings.DB_MODULE.add_row(table_name, items)
+
+
+# Specific Dollarify DB Management #
+TRADES_TABLE = 'trades'
+ACCOUNTS_TABLE = 'accounts'
+ACCOUNT_TYPES_TABLE = 'account_types'
+ACCOUNT_ATTRIBUTES_TABLE = 'account_attributes'
+USERS_TABLE = 'users'
+
 
 def init(**kwargs):
-    dollarify.DB_MODULE.init()
+    settings.DB_MODULE.init()
     init_tables(**kwargs)
 
 
 def init_tables(**kwargs):
-    scripts = ('create_tables.sql', 'insert_account_types.sql', 'insert_account_attributes.sql')
-    for script in scripts:
-        execute_from_script(script, 
-            trade_table_name=TRADES_TABLE_NAME, 
-            account_table_name=ACCOUNTS_TABLE_NAME, 
-            accounts_types_table_name=ACCOUNTS_TYPES_TABLE_NAME,
-            users_table_name=USERS_TABLE_NAME,
-            accounts_attributes_table_name=ACCOUNTS_ATTRIBUTES_TABLE_NAME,
-            **kwargs)
-
-
-def add_row(table_name, items: dict):
-    dollarify.DB_MODULE.add_row(table_name, items)
+    table_names = {
+        'TRADES_TABLE': TRADES_TABLE, 
+        'ACCOUNTS_TABLE': ACCOUNTS_TABLE, 
+        'ACCOUNT_TYPES_TABLE': ACCOUNT_TYPES_TABLE, 
+        'ACCOUNT_ATTRIBUTES_TABLE': ACCOUNT_ATTRIBUTES_TABLE, 
+        'USERS_TABLE': USERS_TABLE
+    }
+    execute_from_script('create_tables.sql', **table_names)
+    execute_from_script('insert_account_types.sql', ACCOUNT_TYPES_TABLE=ACCOUNT_TYPES_TABLE)
+    execute_from_script('insert_account_attributes.sql', ACCOUNT_ATTRIBUTES_TABLE=ACCOUNT_ATTRIBUTES_TABLE)

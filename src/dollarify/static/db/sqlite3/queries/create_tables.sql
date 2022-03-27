@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS {trade_table_name} (
+CREATE TABLE IF NOT EXISTS {TRADES_TABLE} (
     user_id VARCHAR(32) NOT NULL, 
     account VARCHAR(32) NOT NULL, 
     ticker VARCHAR(5) NOT NULL, 
@@ -10,18 +10,18 @@ CREATE TABLE IF NOT EXISTS {trade_table_name} (
     sell_date TEXT
 );
 
-CREATE TABLE IF NOT EXISTS {accounts_types_table_name} (
+CREATE TABLE IF NOT EXISTS {ACCOUNT_TYPES_TABLE} (
     name VARCHAR(16) NOT NULL PRIMARY KEY,
     information VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS {accounts_attributes_table_name} (
+CREATE TABLE IF NOT EXISTS {ACCOUNT_ATTRIBUTES_TABLE} (
     name VARCHAR(16) NOT NULL PRIMARY KEY,
     information VARCHAR(255),
     region VARCHAR(3)
 );
 
-CREATE TABLE IF NOT EXISTS {users_table_name} (
+CREATE TABLE IF NOT EXISTS {USERS_TABLE} (
     uuid VARCHAR(32) NOT NULL PRIMARY KEY,
     username VARCHAR(64) NOT NULL,
     password BLOB NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS {users_table_name} (
     latest_balance REAL
 );
 
-CREATE TABLE IF NOT EXISTS {account_table_name} (
+CREATE TABLE IF NOT EXISTS {ACCOUNTS_TABLE} (
     uuid VARCHAR(32) NOT NULL PRIMARY KEY,
     provider_id VARCHAR(32),
     owners VARCHAR(256) NOT NULL, /* Allow 8 different owners */

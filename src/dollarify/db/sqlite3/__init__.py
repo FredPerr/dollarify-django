@@ -16,6 +16,7 @@ def is_connected() -> bool:
         except Exception:
             return False
 
+
 def connect(db_path: str):
     connection = sqlite3.connect(db_path)
     return connection, connection.cursor()

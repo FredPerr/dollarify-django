@@ -2,6 +2,7 @@ import logging
 
 from dollarify import db
 
+
 def test():
     pass
 

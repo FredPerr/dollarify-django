@@ -5,6 +5,9 @@ from dollarify.static.db.sqlite3 import queries
 from dollarify import settings
 
 
+DB_MODULE, DB_CONNECTION, DB_CURSOR = None, None, None
+
+
 def connect(db_type: str):
     db_type_import = settings.DB_SYSTEMS.get(db_type)
 
@@ -16,23 +19,23 @@ def connect(db_type: str):
 
 
 def execute_queries(sql: str):
-    settings.DB_CURSOR.executescript(sql)
-    settings.DB_CONNECTION.commit()
+    DB_CURSOR.executescript(sql)
+    DB_CONNECTION.commit()
 
 
 def execute_query(sql: str):
-    settings.DB_CURSOR.execute(sql)
-    settings.DB_CONNECTION.commit()
+    DB_CURSOR.execute(sql)
+    DB_CONNECTION.commit()
 
 
 def execute_from_script(script_query_filename: str, **kwargs):
     sql = staticfiles.load_static(script_query_filename, pkg=queries)
-    settings.DB_CURSOR.executescript(sql.format(**kwargs))
-    settings.DB_CONNECTION.commit()
+    DB_CURSOR.executescript(sql.format(**kwargs))
+    DB_CONNECTION.commit()
 
 
 def add_row(table_name, items: dict):
-    settings.DB_MODULE.add_row(table_name, items)
+    DB_MODULE.add_row(table_name, items)
 
 
 # Specific Dollarify DB Management #
@@ -44,7 +47,7 @@ USERS_TABLE = 'users'
 
 
 def init(**kwargs):
-    settings.DB_MODULE.init()
+    DB_MODULE.init()
     init_tables(**kwargs)
 
 

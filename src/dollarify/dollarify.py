@@ -1,1 +1,3 @@
-# Classes here
+class User:
+    pass
+

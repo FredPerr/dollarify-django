@@ -1,11 +1,16 @@
 import importlib
 import logging
+import sqlite3
 from dollarify.static import staticfiles
 from dollarify.static.db.sqlite3 import queries
 from dollarify import settings
+from dollarify.utils import uuid, hashing
 
 
-class TableModel():
+DB_MODULE, DB_CONNECTION, DB_CURSOR = None, None, None
+
+
+class Table:
 
     def __init__(self, name: str, column_sql: str):
         """
@@ -20,18 +25,61 @@ class TableModel():
         self.name = name
         self.column_sql = column_sql
 
-    def create():
+    def insert(self, *args, **kwargs):
+        """
+        Insert a row in the table.
+        """
         pass
 
-    def drop():
+    def delete(self, *args, **kwargs):
+        """
+        Delete a row in the table.
+        """
         pass
 
-    @property
-    def columns(self):
-        trimmed = self.column_sql[1:-1]
-        column_strings = trimmed.split(', ')
-        return {k.strip().split(' '):v for k, v in column_strings}
+    def select(self, *args, **kwargs):
+        """
+        Select row(s) in the table.
+        """
+        pass
+
+    def create(self, ignore_if_exists = True):
+        execute_query(f"""CREATE TABLE {'IF NOT EXISTS' if ignore_if_exists else ''} {self.name} {self.column_sql};""")
+
+    def drop(self):
+        execute_query(f"""DROP TABLE IF NOT EXISTS {self.name};""")
     
+    def columns(self, names = True, types = True, flags = True):
+        cols = Table._parse_columns_sql(self.column_sql)
+        feedback = []
+        for col in cols:
+            current = []
+            if names:
+                current.append(col[0])
+            if types:
+                current.append(col[1])
+            if flags:
+                current.append(col[2])
+            feedback.append(current)
+        return feedback
+
+    def query(self, sql, task=None, **kwargs):
+        """
+        Execute the sql provided with variable replacement. 
+        This includes the given keyword argument and the name of the table (table_name).
+        """
+        return execute_query(sql.format(table_name=self.name, **kwargs), task)
+
+    def query_from_script(self, script, **kwargs):
+        """
+        Query SQL via a script (**multiple queries allowed**).
+        script: name of the script in the 'queries' folder/package with its extension.
+        """
+        sql = staticfiles.load_static(script, pkg=queries)
+        sql = sql.format(table_name=self.name, **kwargs)
+        print(sql)
+        execute_queries(sql)
+
     @classmethod
     def _parse_column_sql(cls, sql):
         """
@@ -64,31 +112,21 @@ class TableModel():
         return tuple([cls._parse_column_sql(col) for col in columns_split])
 
 
-    def columns(self, names = True, types = True, flags = True):
-        cols = TableModel._parse_columns_sql(self.column_sql)
-        feedback = []
-        for col in cols:
-            current = []
-            if names:
-                current.append(col[0])
-            if types:
-                current.append(col[1])
-            if flags:
-                current.append(col[2])
-            feedback.append(current)
-        return feedback
+class Users(Table):
+
+    def __init__(self, name: str, column_sql: str):
+        super().__init__(name, column_sql)
+
+    def insert(self, uuid: str, username: str, password: bytes, salt: bytes, latest_balance: float):
+        sql = staticfiles.load_static('insert_users.sql', pkg=queries)
+        self.query(sql, (uuid, username, password, salt, latest_balance))
+
+    def get_user_by_uuid(self, uuid: str):
+        result_set = self.query(f"SELECT * FROM {self.name} WHERE uuid=?", (uuid,))
+        return result_set.fetchone()
 
 
-
-if __name__ == '__main__':
-    t = TableModel('test', '(col1_name REAL NOT DEFAULT 10, col2_name VARCHAR(5) NOT NULL)')
-    print(t.columns(False, False, False))
-    
-
-
-DB_MODULE, DB_CONNECTION, DB_CURSOR = None, None, None
-
-
+# Database generic functions #
 def connect(db_type: str):
     db_type_import = settings.DB_SYSTEMS.get(db_type)
 
@@ -104,9 +142,15 @@ def execute_queries(sql: str):
     DB_CONNECTION.commit()
 
 
-def execute_query(sql: str):
-    DB_CURSOR.execute(sql)
+def execute_query(sql: str, task=None):
+    result_set = None
+    if task is not None:
+        result_set = DB_CURSOR.execute(sql, task)
+    else:
+        result_set = DB_CURSOR.execute(sql)
+
     DB_CONNECTION.commit()
+    return result_set
 
 
 def execute_from_script(script_query_filename: str, **kwargs):
@@ -120,27 +164,25 @@ def add_row(table_name, items: dict):
 
 
 # Specific Dollarify DB Management #
+trades_table = Table('trades', staticfiles.load_static('columns_trades.sql', pkg=queries))
+accounts_table = Table('accounts', staticfiles.load_static('columns_accounts.sql', pkg=queries))
+account_types_table = Table('account_types', staticfiles.load_static('columns_account_types.sql', pkg=queries))
+account_attributes_table = Table('account_attributes', staticfiles.load_static('columns_account_attributes.sql', pkg=queries))
+users_table = Users('users', staticfiles.load_static('columns_users.sql', pkg=queries))
 
-TRADES_TABLE = 'trades'
-ACCOUNTS_TABLE = 'accounts'
-ACCOUNT_TYPES_TABLE = 'account_types'
-ACCOUNT_ATTRIBUTES_TABLE = 'account_attributes'
-USERS_TABLE = 'users'
 
+def init():
 
-def init(**kwargs):
     DB_MODULE.init()
-    init_tables(**kwargs)
+    trades_table.create()
+    accounts_table.create()
+    account_types_table.create()
+    account_attributes_table.create()
+    users_table.create()
 
+    account_attributes_table.query_from_script('insert_account_attributes.sql')
+    account_types_table.query_from_script('insert_account_types.sql')
 
-def init_tables(**kwargs):
-    table_names = {
-        'TRADES_TABLE': TRADES_TABLE, 
-        'ACCOUNTS_TABLE': ACCOUNTS_TABLE, 
-        'ACCOUNT_TYPES_TABLE': ACCOUNT_TYPES_TABLE, 
-        'ACCOUNT_ATTRIBUTES_TABLE': ACCOUNT_ATTRIBUTES_TABLE, 
-        'USERS_TABLE': USERS_TABLE
-    }
-    execute_from_script('create_tables.sql', **table_names)
-    execute_from_script('insert_account_types.sql', ACCOUNT_TYPES_TABLE=ACCOUNT_TYPES_TABLE)
-    execute_from_script('insert_account_attributes.sql', ACCOUNT_ATTRIBUTES_TABLE=ACCOUNT_ATTRIBUTES_TABLE)
+    print(users_table.get_user_by_uuid('1'))
+    
+

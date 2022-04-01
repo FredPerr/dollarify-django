@@ -7,8 +7,6 @@ from dollarify import settings
 
 class TableModel():
 
-    # __slots__ = ('_name', 'column_sql')
-
     def __init__(self, name: str, column_sql: str):
         """
         name: name of the table
@@ -19,12 +17,8 @@ class TableModel():
 
         if len(column_sql) < 2 or not column_sql[0] == '(' or not column_sql[-1] == ')':
             raise ValueError("The column_sql should respect the following format: (col_name1 VARCHAR(5), col_name2 DECIMAL(5,2), ...)")
-        self._name = name
+        self.name = name
         self.column_sql = column_sql
-
-    @property
-    def name(self):
-        return self._name
 
     def create():
         pass
@@ -40,28 +34,55 @@ class TableModel():
     
     @classmethod
     def _parse_column_sql(cls, sql):
+        """
+        Parse (column_name REAL NOT DEFAULT 10) into 'column_name', 'REAL', 'NOT NULL DEFAULT 10'
+        """
         if sql[0] == '(' and sql[-1] == ')':
             sql = sql[1:-1]
         
         try:
-            name, sql_attribs = sql.split(' ', 1)
-            sql_type, sql_flags = sql_attribs.strip().split(' ', 1)
-            return name, sql_type, sql_flags
+            name, sql_attribs = sql.strip().split(' ', 1)
+            sql_flags = ''
+            if ' ' in sql_attribs.strip():
+                sql_type, sql_flags = sql_attribs.strip().split(' ', 1)
+            else:
+                sql_type = sql_attribs
+            return name.strip(), sql_type.strip(), sql_flags.strip()
         except ValueError:
             logging.error(f'The sql provided "{sql}" does not contain sql attributes.')
     
     @classmethod
     def _parse_columns_sql(cls, sql):
-        pass
+        """
+        Parse (col1_name REAL NOT NULL DEFAULT 10, col2_name VARCHAR(5) NOT NULL) into 
+              (('col1_name', 'REAL', 'NOT NULL'), ...)
+        """
+        if sql[0] == '(' and sql[-1] == ')':
+            sql = sql[1:-1]
+        
+        columns_split = sql.strip().split(',')
+        return tuple([cls._parse_column_sql(col) for col in columns_split])
 
-    @property
-    def columns(self, names: bool, types: bool, flags: bool):
-        pass
+
+    def columns(self, names = True, types = True, flags = True):
+        cols = TableModel._parse_columns_sql(self.column_sql)
+        feedback = []
+        for col in cols:
+            current = []
+            if names:
+                current.append(col[0])
+            if types:
+                current.append(col[1])
+            if flags:
+                current.append(col[2])
+            feedback.append(current)
+        return feedback
+
+
 
 if __name__ == '__main__':
-    # t = TableModel('test', '(name VARCHAR(5), amount DECIMAL(5,2))')
-    test = TableModel._parse_column_sql('(col_name1 VARCHAR(5))')
-    print(test)
+    t = TableModel('test', '(col1_name REAL NOT DEFAULT 10, col2_name VARCHAR(5) NOT NULL)')
+    print(t.columns(False, False, False))
     
 
 
@@ -99,6 +120,7 @@ def add_row(table_name, items: dict):
 
 
 # Specific Dollarify DB Management #
+
 TRADES_TABLE = 'trades'
 ACCOUNTS_TABLE = 'accounts'
 ACCOUNT_TYPES_TABLE = 'account_types'

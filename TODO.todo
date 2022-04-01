@@ -1,3 +1,6 @@
+TODO: Refactor the DB querying part of the API for more control.
+
+
 TODO: Implement the salary and loans tables
 TODO: Implement the API to manage tables. (think if OOP style should be used)
 TODO: Implement a manager for table creation and columns storage for easier manipulation in object classes related to database.

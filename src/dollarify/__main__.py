@@ -1,25 +1,45 @@
+from ast import alias, arg
 import logging
+import sys
+import argparse
 
-from dollarify import db
+from dollarify.db import Database, SQLiteDB
+from dollarify import settings
 
 
 def test():
     pass
 
-
 def main():
-    DEBUG = True
+    args = sys.argv[1:]
+    parser = argparse.ArgumentParser(prog='Dollarify', description='Manage Dollarify CLI')
+    parser.add_argument('--test', '-t', action=argparse.BooleanOptionalAction, help='Activate the test mode')
+    namespace = parser.parse_args(args)
+    
+
+    
+
+    log_level = logging.DEBUG if settings.DEBUG else logging.INFO
+    logging.basicConfig(level=log_level)
+
     try:
-        db.DB_MODULE, db.DB_CONNECTION, db.DB_CURSOR = db.connect('sqlite3')
-        db.init()
-        if DEBUG:
+        Database.connect(SQLiteDB, 'database.sqlite3')
+        if namespace.test is True:
+            logging.debug('*** Running the test function ***')
             test()
-            db.DB_CONNECTION.set_trace_callback(print)
+            logging.debug('*** Done with the test function ***')
     except Exception as e:
         logging.error(e)
     finally:
-        if db.DB_CONNECTION:
-            db.DB_CONNECTION.close()
+        Database.close()
+# main:
+#
+#   Setup the logger.
+#   Allow for debugging mode and testing function.
+#   Initialize the Database
+#   Close the connection
+
+
 
 
 main()

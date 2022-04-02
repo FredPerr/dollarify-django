@@ -1,13 +1,103 @@
+from dataclasses import replace
 import importlib
 import logging
+from typing import Tuple
+from sqlite3 import Cursor, Connection
 import sqlite3
+from dollarify.db import sqlite3
 from dollarify.static import staticfiles
 from dollarify.static.db.sqlite3 import queries
 from dollarify import settings
-from dollarify.utils import uuid, hashing
+from importlib.resources import Package
+from dollarify.settings import BASE_DIR
+import os
+from pathlib import Path    
+
+# The database system used
+DATABASE = None
 
 
-DB_MODULE, DB_CONNECTION, DB_CURSOR = None, None, None
+class Database:
+
+    CURSOR = None
+    CONNECTION = None
+
+    def __init__(self) -> None:
+        raise NotImplementedError("No instance of this class should be created.")
+
+    def query(*args, **kwargs):
+        """
+        Perform a SQL Query with arguments (task) and allowing for {keyword} replacement.
+        task: tuple of the data to replace the question mark (?) in the query (optional).
+        replace: keyword to be replace with their values.
+        """
+        raise NotImplementedError()
+
+    def query_script_file(*args, **kwargs):
+        """
+        Perform a SQL Query stored inside a file. 
+        Tasks are not allowed but replacements are.
+        """
+        raise NotImplementedError()
+
+    def connect(cls, *args, **kwargs):
+        """
+        Connect to the database.
+        :return: A tuple: (database_connection, database_cursor)
+        """
+        cls._connect(*args, **kwargs)
+        Database.close = cls.close
+        Database.query = cls.query
+        Database.query_script_file = cls.query_script_file
+        Database.commit = cls.commit
+        
+
+    def commit():
+        raise NotImplementedError()
+
+
+    def close():
+        """
+        Terminate the connection to the database.
+        """
+        raise NotImplementedError()
+
+
+class SQLiteDB(Database):
+
+    def _connect(db_path) -> Tuple[Connection, Cursor]:
+        path = os.path.join(Path(BASE_DIR).parent, db_path)
+        exists = os.path.isfile(path)
+        
+        if not exists:
+            logging.warning(f'The database "{path}" did not exist on the file system, it will be created.')
+
+        Database.CONNECTION = sqlite3.connect(db_path)
+        Database.CURSOR = Database.CONNECTION.cursor()
+        logging.debug('Connected to the database successfully!')
+
+    def close():
+        Database.CONNECTION.close()
+        Database.CONNECTION, Database.CURSOR = None, None
+        logging.debug('Closed the connection to the database!')
+    
+    def query(sql, task=(), commit=False, replacements={}):
+        sql = sql.format(**replacements)
+        Database.CURSOR.execute(sql, task)
+        if commit:
+            Database.CONNECTION.commit()
+    
+    def query_script_file(script_filename: str, package: Package, commit=False, replacements={}):
+        Database.CURSOR.executescript(staticfiles.load_static(script_filename, pkg=package).format(**replacements))
+        if commit:
+            Database.CONNECTION.commit()
+
+    def commit():
+        Database.CONNECTION.commit()
+            
+
+if __name__ == '__main__':
+    Database.connect(SQLiteDB, 'database.sqlite3')
 
 
 class Table:
@@ -77,7 +167,6 @@ class Table:
         """
         sql = staticfiles.load_static(script, pkg=queries)
         sql = sql.format(table_name=self.name, **kwargs)
-        print(sql)
         execute_queries(sql)
 
     @classmethod
@@ -126,43 +215,6 @@ class Users(Table):
         return result_set.fetchone()
 
 
-# Database generic functions #
-def connect(db_type: str):
-    db_type_import = settings.DB_SYSTEMS.get(db_type)
-
-    if db_type_import is None:
-        logging.fatal(f'Could not load the database system {db_type}')
-    
-    db_module = importlib.import_module(db_type_import)
-    return db_module, *db_module.connect(f'database.{db_type}')
-
-
-def execute_queries(sql: str):
-    DB_CURSOR.executescript(sql)
-    DB_CONNECTION.commit()
-
-
-def execute_query(sql: str, task=None):
-    result_set = None
-    if task is not None:
-        result_set = DB_CURSOR.execute(sql, task)
-    else:
-        result_set = DB_CURSOR.execute(sql)
-
-    DB_CONNECTION.commit()
-    return result_set
-
-
-def execute_from_script(script_query_filename: str, **kwargs):
-    sql = staticfiles.load_static(script_query_filename, pkg=queries)
-    DB_CURSOR.executescript(sql.format(**kwargs))
-    DB_CONNECTION.commit()
-
-
-def add_row(table_name, items: dict):
-    DB_MODULE.add_row(table_name, items)
-
-
 # Specific Dollarify DB Management #
 trades_table = Table('trades', staticfiles.load_static('columns_trades.sql', pkg=queries))
 accounts_table = Table('accounts', staticfiles.load_static('columns_accounts.sql', pkg=queries))
@@ -172,8 +224,6 @@ users_table = Users('users', staticfiles.load_static('columns_users.sql', pkg=qu
 
 
 def init():
-
-    DB_MODULE.init()
     trades_table.create()
     accounts_table.create()
     account_types_table.create()
@@ -182,7 +232,5 @@ def init():
 
     account_attributes_table.query_from_script('insert_account_attributes.sql')
     account_types_table.query_from_script('insert_account_types.sql')
-
-    print(users_table.get_user_by_uuid('1'))
     
 

@@ -1,1 +1,0 @@
-INSERT INTO {table_name} (uuid, username, password, salt, latest_balance) VALUES(?,?,?,?,?);

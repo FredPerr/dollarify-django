@@ -90,8 +90,8 @@ class SQLiteDB(Database):
             
 
 # Specific Dollarify DB Management #
-
 def init():
+    
     # Inititialize tables
     from dollarify.static.db.sqlite3 import queries
 

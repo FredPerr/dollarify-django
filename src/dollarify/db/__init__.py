@@ -98,4 +98,3 @@ def init():
     Database.query_script_file('create_tables.sql', queries)
     Database.query_script_file('init_tables.sql', queries, commit=True)
 
-

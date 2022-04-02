@@ -17,8 +17,6 @@ def main():
     namespace = parser.parse_args(args)
     
 
-    
-
     log_level = logging.DEBUG if settings.DEBUG else logging.INFO
     logging.basicConfig(level=log_level)
 
@@ -32,14 +30,6 @@ def main():
         logging.error(e)
     finally:
         Database.close()
-# main:
-#
-#   Setup the logger.
-#   Allow for debugging mode and testing function.
-#   Initialize the Database
-#   Close the connection
-
-
 
 
 main()

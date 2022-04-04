@@ -4,10 +4,14 @@ import argparse
 
 from dollarify.db import Database, SQLiteDB, init
 from dollarify import settings
+from dollarify.db import users
 
+
+from dollarify.dollarify import User
 
 def test():
-    pass
+    # TODO: Can't getch the user after creation
+    user = User.create_and_fetch('test', 'Fred09Fred09', 599)
 
 def main():
     args = sys.argv[1:]
@@ -28,7 +32,8 @@ def main():
     except Exception as e:
         logging.error(e)
     finally:
-        Database.close()
+        if Database is not None:
+            Database.close()
 
 
 main()

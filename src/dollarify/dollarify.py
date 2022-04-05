@@ -1,5 +1,4 @@
-
-from asyncio.log import logger
+import logging
 from dollarify.db import Database
 from dollarify.utils import hashing, uuid
 
@@ -7,13 +6,14 @@ from dollarify.utils import hashing, uuid
 class Model:
 
     table = None
-    loaded = None
+    # loaded = None
 
     def __init__(self):
         raise NotImplementedError()
 
     def load_db(table: str, uuid: str, columns: str = '*'):
-        response = Database.query(f'SELECT {columns} FROM {table} WHERE uuid=?;', task=(uuid,))
+        Database.query(f'SELECT {columns} FROM {table} WHERE uuid=?;', task=(uuid,))
+        response = Database.CURSOR.fetchone()
         if response is None or len(response) == 0:
             raise ValueError(f"The model with the uuid {uuid} was not found in the table {table}")
         return response
@@ -29,14 +29,9 @@ class Model:
 class User(Model):
 
     table = 'users'
-    # loaded = [] TODO: Implement the temporary loaded objects system.
-    __slots__ = (
-        '_uuid', '_username', 
-        '_password', '_salt', 
-        '_latest_balance'
-    )
+    # loaded = []
 
-    _public_vars = ('_uuid', '_username', '_latest_balance') # TODO: implement the dict for repr and str
+    _public_vars = ('_uuid', '_username', '_latest_balance')
 
     def create(username: str, password_raw: str, latest_balance: int = 0) -> str:
         user_uuid = uuid.generate()
@@ -49,6 +44,14 @@ class User(Model):
 
 
     def __init__(self, uuid):
+        self.reload(uuid)
+
+    def reload(self, uuid=None):
+
+        # The user has already been loaded.
+        if uuid is None:
+            uuid = self.uuid
+
         response = Model.load_db(User.table, uuid)
         self._uuid = response[0]
         self._username = response[1]
@@ -67,7 +70,7 @@ class User(Model):
         if len(value) > 64:
             raise ValueError("The usename length should be a maximum of 64 characters.")
         self._username = value
-        logger.debug("The username have been changed successfully!")
+        logging.debug("The username have been changed successfully!")
 
     @property
     def uuid(self):
@@ -86,7 +89,7 @@ class User(Model):
         password, salt = hashing.hash_password(raw_password)
         self._password = password
         self._salt = salt
-        logger.debug("The password have been changed successfully!")
+        logging.debug("The password have been changed successfully!")
 
     @property
     def salt(self):
@@ -109,9 +112,9 @@ class User(Model):
         header = f"[ {self.uuid} ]".center(msg_len, '=') + '\n'
         body = ""
         
-        for k,v in self._:
-            body = body + f"{k}:".ljust(20) + v + '\n'
+        for var_name in self._public_vars:
+            body = body + f"{var_name}:".ljust(20) + str(self.__dict__[var_name]) + '\n'
         return header + body
 
     def __repr__(self) -> str:
-        return str(__dict__)
+        return str(self.__dict__)

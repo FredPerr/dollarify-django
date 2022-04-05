@@ -10,8 +10,8 @@ from dollarify.db import users
 from dollarify.dollarify import User
 
 def test():
-    # TODO: Can't getch the user after creation
-    user = User.create_and_fetch('test', 'Fred09Fred09', 599)
+    user = User('1325434640164da2bc35f55e86fd3c29')
+    print(str(user))
 
 def main():
     args = sys.argv[1:]
@@ -22,18 +22,18 @@ def main():
     
     logging.basicConfig(level=logging.DEBUG if namespace.debug else logging.INFO)
 
-    try:
-        Database.connect(SQLiteDB, 'database.sqlite3')
-        init()
-        if namespace.test:
-            logging.debug('*** Running the test function ***')
-            test()
-            logging.debug('*** Done with the test function ***')
-    except Exception as e:
-        logging.error(e)
-    finally:
-        if Database is not None:
-            Database.close()
+    # try:
+    Database.connect(SQLiteDB, 'database.sqlite3')
+    init()
+    if namespace.test:
+        logging.debug('*** Running the test function ***')
+        test()
+        logging.debug('*** Done with the test function ***')
+# except Exception as e:
+#     logging.error(e)
+# finally:
+    if Database is not None:
+        Database.close()
 
 
 main()

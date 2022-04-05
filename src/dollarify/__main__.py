@@ -13,6 +13,16 @@ def test():
     user = User('1325434640164da2bc35f55e86fd3c29')
     print(str(user))
 
+
+def connect(test_enabled: bool):
+    Database.connect(SQLiteDB, 'database.sqlite3')
+    init()
+    if test_enabled:
+        logging.debug('*** Running the test function ***')
+        test()
+        logging.debug('*** Done with the test function ***')
+
+
 def main():
     args = sys.argv[1:]
     parser = argparse.ArgumentParser(prog='Dollarify', description='Manage Dollarify CLI')
@@ -22,16 +32,10 @@ def main():
     
     logging.basicConfig(level=logging.DEBUG if namespace.debug else logging.INFO)
 
-    # try:
-    Database.connect(SQLiteDB, 'database.sqlite3')
-    init()
-    if namespace.test:
-        logging.debug('*** Running the test function ***')
-        test()
-        logging.debug('*** Done with the test function ***')
-# except Exception as e:
-#     logging.error(e)
-# finally:
+    connect(namespace.test)
+
+    # Do some other stuff here.
+
     if Database is not None:
         Database.close()
 

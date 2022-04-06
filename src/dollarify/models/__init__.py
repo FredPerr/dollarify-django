@@ -29,8 +29,9 @@ class Model:
     If the value is None, no variable is excluded from the str() and repr().
     """
 
-    def get(cls, pk) -> type:
-        assert cls.__class__ is not Model.__class__, 'This model must be implemented first (This is the superclass of all models).'
+
+    def __new__(cls: type) -> type:
+        pass # TODO: Implement to return the instance already created to try to fix the reference error for the attributes.
 
 
     def __init__(self, pk, column_names: tuple, pk_col_index = 0):
@@ -40,8 +41,8 @@ class Model:
         column_names: The name of each columns of the model registered in the database (including the primary key column).
         """
 
-        # if self.__class__ is Model.__class__:
-        #     raise NotImplementedError("")
+        if self.__class__ is Model.__class__:
+            raise NotImplementedError("This model must be implemented first (This is the superclass of all models).")
 
         if not issubclass(__class__, Model):
             raise TypeError("The type of the manager_class does not implement the Model class.")

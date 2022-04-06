@@ -1,8 +1,5 @@
 #- Add other table, such as income (salary), loans.
 1- Implement models for the tables. (User done)
 2- Implement an API to handle data in the table (with handles to detect changes in the API object to update them).
-3- Implement the "loaded" attributes in model manager to manage memory.
 
-
-
-# Reformat the model class.
+# TODO test multiple inheritance Model < User < TEST

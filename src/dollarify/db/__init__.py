@@ -137,10 +137,11 @@ class SQLiteDB(Database):
     
 
 
-    
-            
 
+####################################
 # Specific Dollarify DB Management #
+####################################
+
 def init():
     
     # Inititialize tables

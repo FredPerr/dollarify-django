@@ -39,6 +39,8 @@ class Model:
     If the value is None, no variable is excluded from the str() and repr().
     """
 
+    custom_getters = () 
+
     def __init__(self):
         raise NotImplementedError("The constructor is not usable.")
 

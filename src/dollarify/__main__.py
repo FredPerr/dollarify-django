@@ -8,20 +8,8 @@ from dollarify.models import User
     # TODO test multiple inheritance Model < User < TEST
 
 def test():
-    # user = User.get(User, '1325434640164da2bc35f55e86fd3c29')
-    # user2 = User('1325434640164da2bc35f55e86fd3c29')
-    # print(id(user))
-    # print(id(user2))
-    # print(str(user))
-    # print(user2.username)
-    user = User.get(User, '1325434640164da2bc35f55e86fd3c29')
-    print(id(user))
-    user2 = User.get(User, '9325434640164da2bc35f55e86fd3c29')
-    print(user2)
-    user3 = User.create(User, 'Bob', 'thisisatest', 300)
-    print(user3)
     
-    
+
 
 
 def connect(test_enabled: bool):

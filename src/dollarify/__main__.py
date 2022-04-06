@@ -13,6 +13,10 @@ def test():
     # user.push()
 
     user2 = User('1325434640164da2bc35f55e86fd3c29')
+
+    print(id(user))
+    print(id(user2))
+
     print(user2._username)
 
     

@@ -29,9 +29,13 @@ class Model:
     If the value is None, no variable is excluded from the str() and repr().
     """
 
-
-    def __new__(cls: type) -> type:
-        pass # TODO: Implement to return the instance already created to try to fix the reference error for the attributes.
+    def __new__(cls: type, pk, *args, **kwargs):
+        model = super().__new__(cls)
+        for m in cls.loaded:
+                if m.pk == pk:
+                    model = m
+                    break
+        return model
 
 
     def __init__(self, pk, column_names: tuple, pk_col_index = 0):
@@ -72,7 +76,8 @@ class Model:
                 self.fetch(pk=pk)
             else:
                 self = popped
-                self._username = popped._username
+                dir(self)
+                
 
             self.__class__.loaded.appendleft(self)
         else:

@@ -15,6 +15,16 @@ class Model:
     The name of the database table where the data is stored.
     """
 
+    column_names = None
+    """
+    The name of all the columns in the table (including the primary key column name)
+    """
+
+    pk_col_index = 0
+    """
+    The index of the primary key (col 1 is index 0). By default it is the first one (0).
+    """
+
     loaded = None
     """
     The loaded variable is instantiated as a "collections.deque()" when the model should be stored in memory 
@@ -29,77 +39,80 @@ class Model:
     If the value is None, no variable is excluded from the str() and repr().
     """
 
-    def __new__(cls: type, pk, *args, **kwargs):
-        model = super().__new__(cls)
+    def __new__(cls: type, pk, **attribs):
+        model = None
         for m in cls.loaded:
-                if m.pk == pk:
-                    model = m
-                    break
+            if m.pk == pk:
+                model = m
+                cls.loaded.remove(m)
+                break
+        if model is None:
+            model = super(type(cls), cls).__new__(cls)
+            model.pk = pk
+            for k, v in attribs.items():
+                setattr(model, f'_{k}', v)
+
+        cls.loaded.appendleft(model)
         return model
 
+    def fetch(cls, pk):
+        try:
+            response = Database.select_one(cls.table, pk)
+            response = [value for i, value in enumerate(response) if i != cls.pk_col_index]
+            column_names = cls.get_column_names(cls)
+            return dict(zip(column_names, response))
+        except ValueError:
+            return None
 
-    def __init__(self, pk, column_names: tuple, pk_col_index = 0):
+    def get(cls, pk) -> type:
+        assert cls is not Model.__class__, "Model class must be implemented first (This is the superclass of all models)."
+        assert issubclass(cls, Model), "This model must be implemented first (This is the superclass of all models)."
+        assert cls.table is not None, "The name of the table where the data if stored have to be provided."
+        assert cls.column_names is not None, "The columns of the table have to be provided."
+        assert cls.pk_col_index >= 0 and cls.pk_col_index < len(cls.column_names), "The primary key column index of the table have to be provided."
+        assert pk is not None, "The primary key (pk) should be specified, otherwise, it is impossible to find a specific instance."
+        
+        attribs = cls.fetch(cls, pk)
+        if attribs is None:
+            return None
+        return cls.__new__(cls, pk, **attribs) # TODO : here
+
+    def create(cls, pk, commit=True, **attribs) -> type:
+
+        if cls._pk_exists(pk):
+            logging.warn(f"The model with the primary key {pk} already exists. Getting it instead.")
+            return cls.get(pk)
+
+        Database.insert_one(cls.table, tuple(attribs.keys()), tuple(attribs.values()), commit=commit)
+        model = cls(pk, attribs)
+        if cls.loaded is not None:
+            cls.loaded.appendleft(model)
+        return model
+        
+    def _pk_exists(cls, pk):
+        pk_col = cls.column_names[cls.pk_col_index]
+        Database.query(f"SELECT {pk_col} FROM {cls.table} WHERE {pk_col}=?", task=(pk, ))
+        return Database.CURSOR.fetchone() is not None
+
+    def __init__(self, pk, **attribs):
         """
-        manager_class: The manager class is the class that extended this Model class.
-        pk: the primary key of the object to load.
-        column_names: The name of each columns of the model registered in the database (including the primary key column).
+        pk: the primary key of the object to load or create.
         """
+        print(self.__dict__)
+        assert attribs is not None and len(attribs) > 0, "The attributes must be specified."
 
-        if self.__class__ is Model.__class__:
-            raise NotImplementedError("This model must be implemented first (This is the superclass of all models).")
-
-        if not issubclass(__class__, Model):
-            raise TypeError("The type of the manager_class does not implement the Model class.")
-        
-        if self.__class__.table is None:
-            raise NotImplementedError("The name of the table where the data if stored have to be provided.")
-
-        if pk is None:
-            raise TypeError("The primary key (pk) should be specified, otherwise, it is impossible to find a specific instance.")
-        
-        if pk_col_index < 0 or pk_col_index >= len(column_names):
-            raise ValueError("The pk column index should range from 0 to the amount of columns - 1 (0-indexed).")
-        
         self.pk = pk
-        self._column_names = column_names
-        self._pk_col_index = pk_col_index
-
-        if self.__class__.loaded is not None:
-            popped = None
-            for model in self.__class__.loaded:
-                if model.pk == pk:
-                    popped = model
-                    self.__class__.loaded.remove(model)
-                    break
-
-            if popped is None:
-                self.fetch(pk=pk)
-            else:
-                self = popped
-                dir(self)
-                
-
-            self.__class__.loaded.appendleft(self)
-        else:
-            self.fetch(pk=pk)
-
-
-    def get_column_names(self, pk_included: bool = False) -> tuple:
-        if pk_included:
-            return self._column_names
-
-        return [name for i, name in enumerate(self._column_names) if i!=self._pk_col_index]
-        
-
-    def fetch(self, pk=None):
-        if self.pk is None and pk is None:
-            raise ValueError("The instance pk or the pk parameter should be provided.")
-        response = Model.load_db(self.__class__.table, pk if self.pk is None else self.pk)
-        response = [value for i, value in enumerate(response) if i!=self._pk_col_index]
-        column_names = self.get_column_names()
-        for i in range(len(response)):
-            setattr(self, f'_{column_names[i]}', response[i])
+        for k,v in attribs.items():
+            setattr(self, f'_{k}', v)
             
+
+
+    def get_column_names(cls, pk_included: bool = False) -> tuple:
+        if pk_included:
+            return cls.column_names
+        return [name for i, name in enumerate(cls.column_names) if i!= cls.pk_col_index]
+
+
 
     def push(self, commit=True):
         """
@@ -107,55 +120,42 @@ class Model:
         commit: Commit the changes (this may be false)
         """
         values = [getattr(self, f"_{value}") for value in self.get_column_names()]
-        Model.update_db(self.__class__.table, self.get_column_names(), (*values, self.pk), self._column_names[self._pk_col_index], commit)
+        Model.update_db(self.__class__.table, self.get_column_names(), (*values, self.pk), self.__class__.column_names[self.__class__.pk_col_index], commit)
 
 
-    def load_db(table: str, pk: str, columns: str = '*'):
-        Database.query(f'SELECT {columns} FROM {table} WHERE uuid=?;', task=(pk,))
-        response = Database.CURSOR.fetchone()
-        if response is None or len(response) == 0:
-            raise ValueError(f"The model with the uuid {pk} was not found in the table {table}")
-        return response
+    def __str__(self) -> str:
+        header = f"[ {self.pk} ]".center(52, '=') + '\n'
+        body = ""
+        for col_name in self.__class__.column_names:
+            if col_name != self.column_names[self.pk_col_index] and (self.__class__.excluded_vars is None or col_name not in self.__class__.excluded_vars):
+                body = body + f"{col_name}:".ljust(20) + str(self.__dict__[f'_{col_name}']) + '\n'
+        return header + body
 
 
-    def insert_db(table: str, columns: tuple, task: tuple, commit=True):
-        values = (len(task) * '?,').strip(',')
-        Database.query(f"INSERT INTO {table} ({','.join(columns)}) VALUES ({values});", task, commit=commit)
-    
+    def __repr__(self) -> str:
+        return str(self.__dict__)
 
-    def update_db(table: str, columns: tuple, task: tuple, pk_col: str, commit=True):
-        """
-        Update a row in the database.
-        task:   The values to replace the columns old values. 
-                The value of the primary key should be added at the end of the task.
-        pk_col: The name of the primary key column.
-        """
-        # create a column placeholder for the values: col1=?,col2=?,col3=?
-        columns_str = ''
-        for col in columns:
-            columns_str += f"{col}=?,"
-        columns_str = columns_str.strip(',')
 
-        Database.query(f"UPDATE {table} SET {columns_str} WHERE {pk_col}=?", task, commit=commit)
 
 class User(Model):
 
     table = 'users'
     loaded = deque(maxlen=32) # When new objects are added beyong 32, it pops those on the right (oldest).
-
-    excluded_vars = ('uuid', 'username', 'latest_balance')
+    excluded_vars = ('password', 'salt')
+    pk_col_index = 0
+    column_names = ('uuid', 'username', 'password', 'salt', 'latest_balance')
 
     def create(username: str, password_raw: str, latest_balance: int = 0) -> str:
         user_uuid = uuid.generate()
-        Model.insert_db(User.table, ('uuid', 'username', 'password', 'salt', 'latest_balance'), (user_uuid, username, *hashing.hash_password(password_raw), latest_balance))
+        Database.insert_one(User.table, ('uuid', 'username', 'password', 'salt', 'latest_balance'), (user_uuid, username, *hashing.hash_password(password_raw), latest_balance))
         return user_uuid
 
     def create_and_fetch(username: str, password_raw: str, latest_balance: int = 0):
         uuid = User.create(username, password_raw, latest_balance)
         return User(uuid)
 
-    def __init__(self, uuid):
-        super().__init__(uuid, ('uuid', 'username', 'password', 'salt', 'latest_balance'))
+    def __init__(self, uuid, **attribs):
+        super().__init__(uuid, **attribs)
 
     @property
     def username(self):
@@ -191,7 +191,7 @@ class User(Model):
 
     @property
     def salt(self):
-        raise NotImplementedError("The salt of a password is not accessible.")
+        return self._salt
     
     @salt.setter
     def salt(self, value):
@@ -204,15 +204,3 @@ class User(Model):
     @latest_balance.setter
     def latest_balance(self, value):
         self._latest_balance = value
-
-    def __str__(self) -> str:
-        msg_len = 50
-        header = f"[ {self.uuid} ]".center(msg_len, '=') + '\n'
-        body = ""
-        
-        for var_name in self._public_vars:
-            body = body + f"{var_name}:".ljust(20) + str(self.__dict__[var_name]) + '\n'
-        return header + body
-
-    def __repr__(self) -> str:
-        return str(self.__dict__)

@@ -1,24 +1,24 @@
 import logging
 import sys
 import argparse
-import random
 
 from dollarify.db import Database, SQLiteDB, init
 from dollarify.models import User
 
+    # TODO test multiple inheritance Model < User < TEST
 
 def test():
-    user = User('1325434640164da2bc35f55e86fd3c29')
-    # user.username = 'Jeremy'
-    # user.push()
-
-    user2 = User('1325434640164da2bc35f55e86fd3c29')
-
+    # user = User.get(User, '1325434640164da2bc35f55e86fd3c29')
+    # user2 = User('1325434640164da2bc35f55e86fd3c29')
+    # print(id(user))
+    # print(id(user2))
+    # print(str(user))
+    # print(user2.username)
+    user = User.get(User, '1325434640164da2bc35f55e86fd3c29')
     print(id(user))
+    user2 = User.get(User, '9325434640164da2bc35f55e86fd3c29')
     print(id(user2))
-
-    print(user2._username)
-
+    
     
 
 

@@ -39,6 +39,10 @@ class Model:
     If the value is None, no variable is excluded from the str() and repr().
     """
 
+    def __init__(self):
+        raise NotImplementedError("The constructor is not usable.")
+
+
     def __new__(cls: type, pk, **attribs):
         model = None
         for m in cls.loaded:
@@ -75,43 +79,28 @@ class Model:
         attribs = cls.fetch(cls, pk)
         if attribs is None:
             return None
-        return cls.__new__(cls, pk, **attribs) # TODO : here
+        return cls.__new__(cls, pk, **attribs)
 
     def create(cls, pk, commit=True, **attribs) -> type:
 
-        if cls._pk_exists(pk):
-            logging.warn(f"The model with the primary key {pk} already exists. Getting it instead.")
-            return cls.get(pk)
+        if cls._pk_exists(cls, pk):
+            logging.warn(f"The model with the primary key {pk} already exists.")
+            return None
 
         Database.insert_one(cls.table, tuple(attribs.keys()), tuple(attribs.values()), commit=commit)
-        model = cls(pk, attribs)
-        if cls.loaded is not None:
-            cls.loaded.appendleft(model)
-        return model
+        return cls.get(cls, pk)
+        
         
     def _pk_exists(cls, pk):
         pk_col = cls.column_names[cls.pk_col_index]
         Database.query(f"SELECT {pk_col} FROM {cls.table} WHERE {pk_col}=?", task=(pk, ))
         return Database.CURSOR.fetchone() is not None
 
-    def __init__(self, pk, **attribs):
-        """
-        pk: the primary key of the object to load or create.
-        """
-        print(self.__dict__)
-        assert attribs is not None and len(attribs) > 0, "The attributes must be specified."
-
-        self.pk = pk
-        for k,v in attribs.items():
-            setattr(self, f'_{k}', v)
-            
-
 
     def get_column_names(cls, pk_included: bool = False) -> tuple:
         if pk_included:
             return cls.column_names
         return [name for i, name in enumerate(cls.column_names) if i!= cls.pk_col_index]
-
 
 
     def push(self, commit=True):
@@ -145,17 +134,10 @@ class User(Model):
     pk_col_index = 0
     column_names = ('uuid', 'username', 'password', 'salt', 'latest_balance')
 
-    def create(username: str, password_raw: str, latest_balance: int = 0) -> str:
+    def create(cls, username: str, password_raw: str, latest_balance: float = 0.0, commit=True) -> str:
         user_uuid = uuid.generate()
-        Database.insert_one(User.table, ('uuid', 'username', 'password', 'salt', 'latest_balance'), (user_uuid, username, *hashing.hash_password(password_raw), latest_balance))
-        return user_uuid
-
-    def create_and_fetch(username: str, password_raw: str, latest_balance: int = 0):
-        uuid = User.create(username, password_raw, latest_balance)
-        return User(uuid)
-
-    def __init__(self, uuid, **attribs):
-        super().__init__(uuid, **attribs)
+        attribs = dict(zip(('uuid', 'username', 'password', 'salt', 'latest_balance'), (user_uuid, username, *hashing.hash_password(password_raw), latest_balance)))
+        return Model.create(User, user_uuid, commit=commit, **attribs)
 
     @property
     def username(self):

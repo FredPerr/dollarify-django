@@ -17,7 +17,9 @@ def test():
     user = User.get(User, '1325434640164da2bc35f55e86fd3c29')
     print(id(user))
     user2 = User.get(User, '9325434640164da2bc35f55e86fd3c29')
-    print(id(user2))
+    print(user2)
+    user3 = User.create(User, 'Bob', 'thisisatest', 300)
+    print(user3)
     
     
 

@@ -5,11 +5,9 @@ import argparse
 from dollarify.db import Database, SQLiteDB, init
 from dollarify.models import User
 
-    # TODO test multiple inheritance Model < User < TEST
 
 def test():
-    
-
+    pass
 
 
 def connect(test_enabled: bool):

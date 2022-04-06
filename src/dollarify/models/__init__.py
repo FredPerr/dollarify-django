@@ -39,7 +39,6 @@ class Model:
     If the value is None, no variable is excluded from the str() and repr().
     """
 
-    custom_getters = () 
 
     def __init__(self):
         raise NotImplementedError("The constructor is not usable.")
@@ -61,6 +60,7 @@ class Model:
         cls.loaded.appendleft(model)
         return model
 
+
     def fetch(cls, pk):
         try:
             response = Database.select_one(cls.table, pk)
@@ -69,6 +69,7 @@ class Model:
             return dict(zip(column_names, response))
         except ValueError:
             return None
+
 
     def get(cls, pk) -> type:
         assert cls is not Model.__class__, "Model class must be implemented first (This is the superclass of all models)."
@@ -83,9 +84,10 @@ class Model:
             return None
         return cls.__new__(cls, pk, **attribs)
 
+
     def create(cls, pk, commit=True, **attribs) -> type:
 
-        if cls._pk_exists(cls, pk):
+        if cls.exists(cls, pk):
             logging.warn(f"The model with the primary key {pk} already exists.")
             return None
 
@@ -93,7 +95,7 @@ class Model:
         return cls.get(cls, pk)
         
         
-    def _pk_exists(cls, pk):
+    def exists(cls, pk):
         pk_col = cls.column_names[cls.pk_col_index]
         Database.query(f"SELECT {pk_col} FROM {cls.table} WHERE {pk_col}=?", task=(pk, ))
         return Database.CURSOR.fetchone() is not None
@@ -127,7 +129,6 @@ class Model:
         return str(self.__dict__)
 
 
-
 class User(Model):
 
     table = 'users'
@@ -142,8 +143,24 @@ class User(Model):
         return Model.create(User, user_uuid, commit=commit, **attribs)
 
     @property
+    def uuid(self):
+        return self.pk
+
+    @property
     def username(self):
         return self._username
+
+    @property
+    def password(self):
+        return self._password
+
+    @property
+    def salt(self):
+        return self._salt
+
+    @property
+    def latest_balance(self):
+        return self._latest_balance
     
     @username.setter
     def username(self, value):
@@ -154,17 +171,9 @@ class User(Model):
         self._username = value
         logging.debug("The username have been changed successfully!")
 
-    @property
-    def uuid(self):
-        return self._uuid
-
     @uuid.setter
     def uuid(self):
         raise NotImplementedError("The uuid can not be changed.")
-    
-    @property
-    def password(self):
-        return self._password
     
     @password.setter
     def password(self, raw_password: str):
@@ -172,19 +181,13 @@ class User(Model):
         self._password = password
         self._salt = salt
         logging.debug("The password have been changed successfully!")
-
-    @property
-    def salt(self):
-        return self._salt
     
     @salt.setter
     def salt(self, value):
         raise NotImplementedError("The salt can only be changed by setting a new password.")
-    
-    @property
-    def latest_balance(self):
-        return self._latest_balance
 
     @latest_balance.setter
     def latest_balance(self, value):
         self._latest_balance = value
+
+

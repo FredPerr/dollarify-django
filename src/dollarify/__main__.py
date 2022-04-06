@@ -1,17 +1,21 @@
 import logging
 import sys
 import argparse
+import random
 
 from dollarify.db import Database, SQLiteDB, init
-from dollarify import settings
-from dollarify.db import users
+from dollarify.models import User
 
-
-from dollarify.dollarify import User
 
 def test():
     user = User('1325434640164da2bc35f55e86fd3c29')
-    print(str(user))
+    # user.username = 'Jeremy'
+    # user.push()
+
+    user2 = User('1325434640164da2bc35f55e86fd3c29')
+    print(user2._username)
+
+    
 
 
 def connect(test_enabled: bool):

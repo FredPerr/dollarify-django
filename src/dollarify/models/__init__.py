@@ -5,6 +5,9 @@ from dollarify.db import Database
 from dollarify.utils import hashing, uuid
 
 
+LENGTH_EXCEEDED_CHARACTERS = "The length of %s must not exceed %i characters."
+
+
 class Model:
     """
     The model class is the superclass of all the models in the database.
@@ -113,7 +116,7 @@ class Model:
         commit: Commit the changes (this may be false)
         """
         values = [getattr(self, f"_{value}") for value in self.get_column_names()]
-        Model.update_db(self.__class__.table, self.get_column_names(), (*values, self.pk), self.__class__.column_names[self.__class__.pk_col_index], commit)
+        Database.update_one(self.__class__.table, self.get_column_names(), (*values, self.pk), self.__class__.column_names[self.__class__.pk_col_index], commit)
 
 
     def __str__(self) -> str:
@@ -138,6 +141,10 @@ class User(Model):
     column_names = ('uuid', 'username', 'password', 'salt', 'latest_balance')
 
     def create(cls, username: str, password_raw: str, latest_balance: float = 0.0, commit=True) -> str:
+
+        if len(username) > 64:
+            raise ValueError(LENGTH_EXCEEDED_CHARACTERS.format('username', 64))
+
         user_uuid = uuid.generate()
         attribs = dict(zip(('uuid', 'username', 'password', 'salt', 'latest_balance'), (user_uuid, username, *hashing.hash_password(password_raw), latest_balance)))
         return Model.create(User, user_uuid, commit=commit, **attribs)
@@ -167,7 +174,7 @@ class User(Model):
         if type(value) is not str:
             raise TypeError("The username must be of str type.")
         if len(value) > 64:
-            raise ValueError("The username length should be a maximum of 64 characters.")
+            raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('username', 64))
         self._username = value
         logging.debug("The username have been changed successfully!")
 
@@ -189,5 +196,36 @@ class User(Model):
     @latest_balance.setter
     def latest_balance(self, value):
         self._latest_balance = value
+
+
+class AccountType(Model):
+
+    table = 'account_types'
+    loaded = deque(maxlen=10)
+    excluded_vars = ()
+    pk_col_index = 0
+    column_names = ('name', 'information')
+
+
+    def create(cls, name: str, information: str, commit=True) -> str:
+
+        if len(name) > 16:
+            raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('name', 16))
+
+        if len(information) > 255:
+            raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('information', 255))
+
+        attribs = dict(zip(('name', 'information'), (name, information)))
+        return Model.create(User, name, commit=commit, **attribs)
+    
+    @property
+    def name(self):
+        return self._name
+
+    def name(self, value):
+        if value > 16:
+            raise ValueError()
+        self._name = value
+    
 
 

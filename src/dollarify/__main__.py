@@ -3,12 +3,11 @@ import sys
 import argparse
 
 from dollarify.db import Database, SQLiteDB, init
-from dollarify.models import User
+from dollarify.models import User, LENGTH_EXCEEDED_CHARACTERS
 
 
 def test():
     pass
-
 
 def connect(test_enabled: bool):
     Database.connect(SQLiteDB, 'database.sqlite3')

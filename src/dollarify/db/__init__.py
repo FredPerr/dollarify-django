@@ -77,6 +77,10 @@ class Database:
         """
         raise NotImplementedError()
 
+    def delete_one():
+        "Delete a row from the table."
+        raise NotImplementedError()
+
 
 class SQLiteDB(Database):
 
@@ -114,11 +118,11 @@ class SQLiteDB(Database):
         values = (len(task) * '?,').strip(',')
         Database.query(f"INSERT INTO {table} ({','.join(columns)}) VALUES ({values});", task, commit=commit)
     
-    def select_one(table: str, pk: str, columns: str = '*'):
-        Database.query(f'SELECT {columns} FROM {table} WHERE uuid=?;', task=(pk,))
+    def select_one(table: str, pk: str, pk_col_name: str, columns: str = '*'):
+        Database.query(f'SELECT {columns} FROM {table} WHERE {pk_col_name}=?;', task=(pk,))
         response = Database.CURSOR.fetchone()
         if response is None or len(response) == 0:
-            raise ValueError(f"The model with the uuid {pk} was not found in the table {table}")
+            raise ValueError(f"The model with the {pk_col_name} {pk} was not found in the table {table}")
         return response
 
     def update_one(table: str, columns: tuple, task: tuple, pk_col: str, commit=True):
@@ -135,7 +139,13 @@ class SQLiteDB(Database):
         columns_str = columns_str.strip(',')
         Database.query(f"UPDATE {table} SET {columns_str} WHERE {pk_col}=?", task, commit=commit)
     
-
+    def delete_one(table: str, pk_col_name: str, pk, commit=True):
+        """
+        Delete a row from the table.
+        pk_col_name: Name of the pk column.
+        pk: the primary key to search for.
+        """
+        Database.query(f"DELETE FROM {table} WHERE {pk_col_name}=?", task=(pk,), commit=commit)
 
 
 ####################################

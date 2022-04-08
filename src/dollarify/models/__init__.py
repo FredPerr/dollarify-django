@@ -66,7 +66,7 @@ class Model:
 
     def fetch(cls, pk):
         try:
-            response = Database.select_one(cls.table, pk)
+            response = Database.select_one(cls.table, pk, cls.column_names[cls.pk_col_index])
             response = [value for i, value in enumerate(response) if i != cls.pk_col_index]
             column_names = cls.get_column_names(cls)
             return dict(zip(column_names, response))
@@ -81,7 +81,6 @@ class Model:
         assert cls.column_names is not None, "The columns of the table have to be provided."
         assert cls.pk_col_index >= 0 and cls.pk_col_index < len(cls.column_names), "The primary key column index of the table have to be provided."
         assert pk is not None, "The primary key (pk) should be specified, otherwise, it is impossible to find a specific instance."
-        
         attribs = cls.fetch(cls, pk)
         if attribs is None:
             return None
@@ -140,7 +139,7 @@ class User(Model):
     pk_col_index = 0
     column_names = ('uuid', 'username', 'password', 'salt', 'latest_balance')
 
-    def create(cls, username: str, password_raw: str, latest_balance: float = 0.0, commit=True) -> str:
+    def create(cls, username: str, password_raw: str, latest_balance: float = 0.0, commit=True):
 
         if len(username) > 64:
             raise ValueError(LENGTH_EXCEEDED_CHARACTERS.format('username', 64))
@@ -207,24 +206,25 @@ class AccountType(Model):
     column_names = ('name', 'information')
 
 
-    def create(cls, name: str, information: str, commit=True) -> str:
-
+    def create(cls, name: str, information: str, commit=True):
         if len(name) > 16:
             raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('name', 16))
 
         if len(information) > 255:
             raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('information', 255))
 
-        attribs = dict(zip(('name', 'information'), (name, information)))
-        return Model.create(User, name, commit=commit, **attribs)
+        attribs = dict(zip(('name', 'information', ), (name, information)))
+        return Model.create(AccountType, name, commit=commit, **attribs)
     
+
+
     @property
     def name(self):
         return self._name
 
     def name(self, value):
         if value > 16:
-            raise ValueError()
+            raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('name', 16))
         self._name = value
     
 

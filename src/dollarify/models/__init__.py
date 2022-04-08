@@ -239,5 +239,4 @@ class AccountType(Model):
 class AccountAttribute(AccountType):
 
     table = 'account_attributes'
-    # loaded = deque(maxlen=5)
-    loaded = None
+    loaded = deque(maxlen=5)

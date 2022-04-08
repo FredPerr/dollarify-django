@@ -10,11 +10,30 @@ from dollarify.static import staticfiles
 from importlib.resources import Package
 from dollarify.settings import BASE_DIR
 
+class DBType:
+
+    BOOLEAN = (bool, 'BOOLEAN')
+    BLOB = (bytes, 'BLOB')
+    VARCHAR = (str, 'VARCHAR(%i)')
+    TEXT = (str, 'TEXT')
+    REAL = (float, 'REAL')
+    INTEGER = (int, 'INTEGER')
+
+
+class DBAttribute:
+
+    NOT_NULL = 'NOT NULL'
+    PRIMARY_KEY = 'PRIMARY KEY'
+    DEFAULT = 'DEFAULT=%s'
+
 
 class Database:
 
     CURSOR = None
     CONNECTION = None
+    TYPES = None
+    ATTRIBUTES = None
+
 
     def __init__(self) -> None:
         raise NotImplementedError("No instance of this class should be created.")
@@ -40,6 +59,9 @@ class Database:
         :return: A tuple: (database_connection, database_cursor)
         """
         cls._connect(*args, **kwargs)
+
+        Database.TYPES = cls.TYPES
+        Database.ATTRIBUTES = cls.ATTRIBUTES
 
         func_list = [name for name, value in inspect.getmembers(Database, predicate=inspect.isfunction) 
                     if not name.startswith("__") and not name == Database.connect.__name__]
@@ -83,6 +105,9 @@ class Database:
 
 
 class SQLiteDB(Database):
+
+    TYPES = (DBType.VARCHAR, DBType.BLOB, DBType.BOOLEAN, DBType.INTEGER, DBType.TEXT, DBType.REAL)
+    ATTRIBUTES = (DBAttribute.NOT_NULL, DBAttribute.PRIMARY_KEY)
 
     def _connect(db_path) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
         path = os.path.join(Path(BASE_DIR).parent, db_path)

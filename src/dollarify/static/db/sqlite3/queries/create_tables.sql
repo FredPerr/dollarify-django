@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS trades (
 
 CREATE TABLE IF NOT EXISTS accounts (
     uuid VARCHAR(32) NOT NULL PRIMARY KEY,
-    provider_id VARCHAR(32),
+    provider VARCHAR(32),
     owners VARCHAR(256) NOT NULL,
     name VARCHAR(64) NOT NULL,
     type_name VARCHAR(16) NOT NULL,
@@ -39,4 +39,9 @@ CREATE TABLE IF NOT EXISTS users (
     password BLOB NOT NULL,
     salt BLOB NOT NULL,
     latest_balance REAL
+);
+
+CREATE TABLE IF NOT EXISTS providers (
+    name VARCHAR(32) NOT NULL PRIMARY KEY,
+    information VARCHAR(255) NOT NULL
 );

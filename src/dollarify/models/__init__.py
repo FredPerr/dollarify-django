@@ -1,3 +1,4 @@
+from datetime import date
 import logging
 from collections import deque
 
@@ -211,14 +212,15 @@ class AccountType(Model):
 
     table = 'account_types'
     loaded = deque(maxlen=5)
-    excluded_vars = ()
     pk_col_index = 0
     column_names = ('name', 'information')
 
+    name_max_length = 16
+
 
     def create(cls, name: str, information: str, commit=True):
-        if len(name) > 16:
-            raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('name', 16))
+        if len(name) > cls.name_max_length:
+            raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('name', cls.name_max_length))
 
         if len(information) > 255:
             raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('information', 255))
@@ -232,7 +234,7 @@ class AccountType(Model):
 
     def name(self, value):
         if value > 16:
-            raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('name', 16))
+            raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('name', self.__class__.name_max_length))
         self._name = value
     
 
@@ -240,3 +242,45 @@ class AccountAttribute(AccountType):
 
     table = 'account_attributes'
     loaded = deque(maxlen=5)
+    pk_col_index = 0
+    column_names = ('uuid', 'provider_id')
+
+
+class Provider(AccountType):
+
+    table = 'providers'
+    loaded = deque(maxlen=10)
+    pk_col_index = 0
+    column_names = ('name', 'information')
+    name_max_length = 32
+
+
+class Account(Model):
+
+    table = 'accounts'
+    loaded = deque(maxlen=50)
+    column_names = ('uuid', 'provider', 'owners', 'name', 
+                    'type_name', 'attribute_name', 'latest_balance',
+                    'open_date', 'closed_date')
+    
+    
+    def create(cls, provider: str, owners: tuple, name: str, type_name: str,
+                attribute_name: str, latest_balance: float, open_date: date = None, closed_date: date = None, commit=True):
+
+        account_uuid = uuid.generate()
+        assert len(owners) < 9, "An account can only have 8 owners maximum."
+        for owner in owners:
+            assert len(owner) == 32, "The owners' UUID must be 32 character length."
+        owners = ''.join(owners)
+
+        assert len(name) <= 64, "The name of the account must not be greater than 64 characters."
+        assert len(type_name) <= 16, "The length of the name of the type of the account should not be greater than 16 characters." 
+        if attribute_name is not None:
+            assert len(attribute_name) <= 16, "The length of the name of the type of the account should not be greater than 16 characters." 
+        if open_date is None:
+            open_date = date.today()
+        if closed_date is not None:
+            assert closed_date >= open_date, "The date on which the account was created can not be after the date on which the account was closed."
+
+        attribs = dict(zip(cls.column_names, (account_uuid, provider, ''.join(owners), name, type_name, attribute_name, latest_balance, open_date, closed_date)))
+        return Model.create(cls, account_uuid, commit=commit, **attribs)

@@ -3,7 +3,7 @@ import sys
 import argparse
 
 from dollarify.db import Database, SQLiteDB, init
-from dollarify.models import AccountAttribute
+from dollarify.models import Account
 
 def test():
     pass

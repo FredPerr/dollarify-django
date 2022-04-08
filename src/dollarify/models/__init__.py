@@ -49,11 +49,12 @@ class Model:
 
     def __new__(cls: type, pk, **attribs):
         model = None
-        for m in cls.loaded:
-            if m.pk == pk:
-                model = m
-                cls.loaded.remove(m)
-                break
+        if cls.loaded is not None:
+            for m in cls.loaded:
+                if m.pk == pk:
+                    model = m
+                    cls.loaded.remove(m)
+                    break
         if model is None:
             model = super(type(cls), cls).__new__(cls)
             model.pk = pk
@@ -88,7 +89,6 @@ class Model:
 
 
     def create(cls, pk, commit=True, **attribs) -> type:
-
         if cls.exists(cls, pk):
             logging.warn(f"The model with the primary key {pk} already exists.")
             return None
@@ -96,6 +96,16 @@ class Model:
         Database.insert_one(cls.table, tuple(attribs.keys()), tuple(attribs.values()), commit=commit)
         return cls.get(cls, pk)
         
+    def delete(self, commit=True):
+        clazz = self.__class__
+        if not clazz.exists(clazz, self.pk):
+            logging.warn(f"The model wit hthe primary key {self.pk} does not exist.")
+            return
+        
+        Database.delete_one(clazz.table, clazz.column_names[clazz.pk_col_index], self.pk, commit=commit)
+        if clazz.loaded is not None:
+            clazz.loaded.remove(self)
+
         
     def exists(cls, pk):
         pk_col = cls.column_names[cls.pk_col_index]
@@ -200,7 +210,7 @@ class User(Model):
 class AccountType(Model):
 
     table = 'account_types'
-    loaded = deque(maxlen=10)
+    loaded = deque(maxlen=5)
     excluded_vars = ()
     pk_col_index = 0
     column_names = ('name', 'information')
@@ -213,10 +223,8 @@ class AccountType(Model):
         if len(information) > 255:
             raise ValueError(LENGTH_EXCEEDED_CHARACTERS % ('information', 255))
 
-        attribs = dict(zip(('name', 'information', ), (name, information)))
-        return Model.create(AccountType, name, commit=commit, **attribs)
-    
-
+        attribs = dict(zip(cls.column_names, (name, information)))
+        return Model.create(cls, name, commit=commit, **attribs)
 
     @property
     def name(self):
@@ -228,4 +236,8 @@ class AccountType(Model):
         self._name = value
     
 
+class AccountAttribute(AccountType):
 
+    table = 'account_attributes'
+    # loaded = deque(maxlen=5)
+    loaded = None

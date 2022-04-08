@@ -3,11 +3,10 @@ import sys
 import argparse
 
 from dollarify.db import Database, SQLiteDB, init
-from dollarify.models import AccountType
+from dollarify.models import AccountAttribute
 
 def test():
-    Database.delete_one('account_types', 'name', 'test')
-    
+    pass
 
 def connect(test_enabled: bool):
     Database.connect(SQLiteDB, 'database.sqlite3')

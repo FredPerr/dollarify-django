@@ -4,7 +4,7 @@ from collections import deque
 
 from dollarify.db import DBType, Database, DBAttribute
 from dollarify.utils import hashing, uuid
-from dollarify.models.validators import assert_min_max, validate_min_max
+from dollarify.models.validators import *
 
 
 LENGTH_EXCEEDED_CHARACTERS = "The length of %s must not exceed %i characters."
@@ -32,6 +32,7 @@ class ModelField:
         assert max_length >= 0, "The length of the field can't be negative."
         assert type(nullable) is bool, "The nullable parameter have to be set to True to allow for None value or False for the contrary."
         assert type(pk) is bool, "The type of the primary key (pk) parameter have to be a boolean of True or False."
+        assert re.match('^[a-zA-Z0-9_') is not None, "The name should only contain characters from a-Z and 0-9 or underscores (_)."
 
         self.db_type = db_type
         self.name = name
@@ -97,8 +98,8 @@ class BooleanField(ModelField):
 
 class BytesField(ModelField):
 
-    def __init__(self, name: str, default=None, nullable: bool = False, validators: tuple = None, min=None, max=None):
-        super().__init__(DBType.BLOB, name, 0, default, False, nullable, validators)
+    def __init__(self, name: str, default=None, pk: bool = False, nullable: bool = False, validators: tuple = None, min=None, max=None):
+        super().__init__(DBType.BLOB, name, 0, default, pk, nullable, validators)
         assert_min_max(bytes, min, max)
         self.min = min
         self.max = max
@@ -106,8 +107,8 @@ class BytesField(ModelField):
 
 class CharField(ModelField):
     
-    def __init__(self, name: str, max_length: int, default=None, nullable: bool = False, validators: tuple = None, min=None, max=None):
-        super().__init__(DBType.VARCHAR, name, 0, default, False, nullable, validators)
+    def __init__(self, name: str, max_length: int, default=None, pk: bool = False, nullable: bool = False, validators: tuple = None, min=None, max=None):
+        super().__init__(DBType.VARCHAR, name, 0, default, pk, nullable, validators)
         assert max_length > 0, "The maximum length have to be more than 0 for the Char type of field."
         assert_min_max(str, min, max)
         self.min = min
@@ -128,6 +129,9 @@ class TextField(ModelField):
         self.min = min
         self.max = max
 
+########################
+#       Model          #
+########################
 
 
 class Model:
@@ -140,7 +144,7 @@ class Model:
     The name of the database table where the data is stored.
     """
 
-    column_names = None
+    column_names = None # TODO Delete
     """
     The name of all the columns in the table (including the primary key column name)
     """
@@ -270,6 +274,13 @@ class User(Model):
     excluded_vars = ('password', 'salt')
     pk_col_index = 0
     column_names = ('uuid', 'username', 'password', 'salt', 'latest_balance')
+
+    uuid = CharField('uuid', 32, validators=(validate_uuid, ), pk=True)
+    username = CharField('username', 64, validators=(validate_username, ))
+    password = BytesField('password')
+    salt = BytesField('salt')
+    latest_balance = FloatField('latest_balance', default=0)
+
 
     def create(cls, username: str, password_raw: str, latest_balance: float = 0.0, commit=True):
 

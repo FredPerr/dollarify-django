@@ -19,11 +19,6 @@ class Model:
     The name of the database table where the data is stored.
     """
 
-    column_names = None
-    """
-    The name of all the columns in the table (including the primary key column name)
-    """
-
     pk_col_index = 0
     """
     The index of the primary key (col 1 is index 0). By default it is the first one (0).
@@ -68,7 +63,7 @@ class Model:
 
     def fetch(cls, pk):
         try:
-            response = Database.select_one(cls.table, pk, cls.column_names[cls.pk_col_index])
+            response = Database.select_one(cls.table, pk, cls.column_names()[cls.pk_col_index])
             response = [value for i, value in enumerate(response) if i != cls.pk_col_index]
             column_names = cls.get_column_names(cls)
             return dict(zip(column_names, response))

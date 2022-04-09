@@ -3,13 +3,12 @@ import sys
 import argparse
 
 from dollarify.db import Database, SQLiteDB, init
-from dollarify.models import IntegerField
+from dollarify.models import Model
 
 
 
 def test():
-    test = IntegerField('test', 30, True, nullable=False)
-    print(test.attributes_db)
+    fields = Model.get_fields(Model, True)
 
 def connect(test_enabled: bool):
     Database.connect(SQLiteDB, 'database.sqlite3')

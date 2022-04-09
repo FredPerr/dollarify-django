@@ -10,6 +10,7 @@ from dollarify.static import staticfiles
 from importlib.resources import Package
 from dollarify.settings import BASE_DIR
 
+
 class DBType:
 
     BOOLEAN = (bool, 'BOOLEAN')
@@ -58,17 +59,20 @@ class Database:
         Connect to the database.
         :return: A tuple: (database_connection, database_cursor)
         """
-        cls._connect(*args, **kwargs)
 
-        Database.TYPES = cls.TYPES
-        Database.ATTRIBUTES = cls.ATTRIBUTES
+
+
 
         func_list = [name for name, value in inspect.getmembers(Database, predicate=inspect.isfunction) 
                     if not name.startswith("__") and not name == Database.connect.__name__]
         
         for name in func_list:
             setattr(Database, name, getattr(cls, name))
+
+        Database.TYPES = cls.TYPES
+        Database.ATTRIBUTES = cls.ATTRIBUTES
         
+        cls._connect(*args, **kwargs)
 
     def commit():
         raise NotImplementedError()

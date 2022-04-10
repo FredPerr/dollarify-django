@@ -1,10 +1,7 @@
 from datetime import date
 import inspect
-import logging
-from collections import deque
 
-from dollarify.db import DBType, Database, DBAttribute
-from dollarify.utils import hashing, uuid
+from dollarify.db import DBType, DBAttribute, Database
 from dollarify.models.validators import *
 
 
@@ -43,6 +40,8 @@ class ModelField:
 
 
     def validate(self, value) -> bool:
+        if not self.validators:
+            return True
         for validator in self.validators:
             if not validator(value):
                 return False
@@ -136,12 +135,95 @@ class TextField(ModelField):
 
 
 class Model:
-    
+
     table_name = None
 
+    uuid = CharField('uuid', 32, pk=True)
     test = CharField('this_is_a_test', 50)
 
-    # fields
+    # fields here
+
+    # hidden attributes have an underscore before them, (one variable for each field)
+
+    def __init__(self):
+        raise NotImplementedError("The constructor is not usable.")
+                
+
+    def __setattr__(self, __name: str, __value):
+        field = self.__class__._get_field_from_name(self.__class__, __name)
+        is_field = not field is None
+        if is_field and not field[1].validate(__value):
+            raise ValueError(f"The value {str(__value)} of the field {__name} is not valid.")            
+        object.__setattr__(self, f'_{__name}' if is_field else __name, __value)
+    
+
+    def __getattribute__(self, __name: str):
+        value = object.__getattribute__(self, __name)
+        return object.__getattribute__(self, f'_{__name}' if isinstance(value, ModelField) else __name)
+
+    def __repr__(self) -> str:
+        return str({field[0]: getattr(self, field[0]) for field in self.__class__.get_fields(self.__class__)})
+
+    def __str__(self) -> str:
+        pk_field_name = self.__class__.get_pk_field(self.__class__, name_only=True)
+        header = f"[ {self.__class__.__name__} : {str(getattr(self, pk_field_name))} ]".center(60, '-') + '\n'
+        lines = tuple(f"{field[0]}:".ljust(20) + f" {getattr(self, field[0])}" for field in self.__class__.get_fields(self.__class__))
+        return header + '\n'.join(lines)
+        
+
+
+
+    def create(cls, commit=True, **field_values) -> type:
+        model = cls.__new__(cls, **field_values)
+        columns = tuple(cls._get_field_from_name(cls, key)[1].name for key in tuple(field_values.keys()))
+        # TODO: uncomment the line under
+        # Database.insert_one(cls.table_name, columns, tuple(field_values.values()), commit)
+        return model
+
 
     def get_fields(cls, names_only: bool = False):
+        """
+        Get the fields of the models (variable name, field object).
+        names_only: True to return only the name of the variables.
+        """
         return tuple(member[0] if names_only else member for member in inspect.getmembers(cls, lambda x: (not inspect.isroutine(x) and isinstance(x, ModelField)))) 
+    
+
+    def get_pk_field(cls, name_only: bool = False):
+        """
+        Get the primary key field name (variable name) and Field object attached to it.
+        name_only: True to return only the name of the variable.
+        """
+        fields = cls.get_fields(cls)
+        for field in fields:
+            if field[1].pk:
+                return field[0] if name_only else field
+        raise ValueError("No field was set as the primary key. The pk field can't be returned.")
+    
+
+    def _get_field_from_name(cls, field_name):
+        """
+        Get a field from its variable name.
+        """
+        for field in cls.get_fields(cls):
+            if field[0] == field_name:
+                return field
+        return None
+
+
+    def _get_db_columns(cls):
+        return tuple((field[1].name for field in cls.get_fields()))
+
+
+    def __new__(cls: type, **field_values):
+        model = super(type(cls), cls).__new__(cls)
+        fields = cls.get_fields(cls)
+        field_keys = tuple(field_values.keys())
+        for field in fields:
+            if field[0] in field_keys:
+                setattr(model, field[0], field_values[field[0]])
+            elif field[1].nullable and field[1].default is not None:
+                setattr(model, field[0], field[1].default)
+            else:
+                raise ValueError(f"A value must be provided for the field {field[0]}.")
+        return model

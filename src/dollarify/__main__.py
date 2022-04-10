@@ -8,7 +8,8 @@ from dollarify.models import Model
 
 
 def test():
-    fields = Model.get_fields(Model, True)
+    model = Model.create(Model, True, uuid='12345678901234567890123456789012', test='test')
+    print(repr(model))
 
 def connect(test_enabled: bool):
     Database.connect(SQLiteDB, 'database.sqlite3')

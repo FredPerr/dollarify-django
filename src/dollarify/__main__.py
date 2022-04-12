@@ -10,7 +10,7 @@ from dollarify.models import Model, User, get_models_classes
 def test():
     # model = User.create(User, True, uuid='12345678901234567890123456789012', test='test')
     # print(model)
-    print(get_models_classes([]))
+    # print(get_models_classes([]))
     pass
 
 def connect(test_enabled: bool):

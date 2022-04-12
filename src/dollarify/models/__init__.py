@@ -58,11 +58,11 @@ class ModelField:
     def attributes_db(self):
         attribs = []
         if self.default is not None:
-            attribs.append(DBAttribute.DEFAULT % self.default)
+            attribs.append(DBAttribute.DEFAULT % f"'{self.default}'" if isinstance(self.default, str) else str(self.default))
         if not self.nullable:
             attribs.append(DBAttribute.NOT_NULL)
         if self.pk:
-            attribs.append(DBAttribute.PRIMARY_KEY)
+            attribs.append(str(DBAttribute.PRIMARY_KEY))
         return ' '.join(attribs)
 
 
@@ -198,7 +198,7 @@ class Model:
 
     def fetch(cls, pk):
         try:
-            response = Database.select_one(cls.table_name, pk, cls.get_pk_field(cls)[1].name)
+            response = Database.select_one(cls.table_name(cls), pk, cls.get_pk_field(cls)[1].name)
             response = [value for i, value in enumerate(response) if i != cls.pk_col_index]
             return dict(zip(cls._get_db_columns(cls), response))
         except ValueError:
@@ -241,7 +241,7 @@ class Model:
 
     def _get_create_table_sql_query(cls):
         columns_sql = tuple(f"{field[0]} {field[1].type_db} {field[1].attributes_db}" for field in cls.get_fields(cls)[::-1])
-        return f"CREATE TABLE IF NOT EXISTS {cls.table_name} ({','.join(columns_sql)});"
+        return f"CREATE TABLE IF NOT EXISTS {cls.table_name} ({', '.join(columns_sql)});"
 
 
     def __new__(cls: type, **field_values):
@@ -267,6 +267,9 @@ class Model:
 
 
 class User(Model):
+
+    table_name = 'users'
+
     uuid = CharField('uuid', 32, pk=True)
     username = CharField('username', 64)
     password = BytesField('password')
@@ -275,22 +278,34 @@ class User(Model):
 
 
 class Provider(Model):
+
+    table_name = 'providers'
+
     name = CharField('name', 32, pk=True)
     information = TextField('information', max=255)
 
 
 class AccountType(Model):
+
+    table_name = 'account_types'
+
     name = CharField('name', 32, pk=True)
     information = TextField('information', max=255)
 
 
 class AccountAttribute(Model):
+
+    table_name = 'account_attributes'
+
     name = CharField('name', 32, pk=True)
     information = TextField('information', max=255)
     region = CharField('region', 3)
 
 
 class Account(Model):
+
+    table_name = 'accounts'
+
     uuid = CharField('uuid', 32, pk=True)
     provider = CharField('provider_uuid', 32, nullable=True)
     owners = CharField('owners', 256) # allows for 8 different uuids.
@@ -303,6 +318,9 @@ class Account(Model):
 
 
 class Trade(Model):
+
+    table_name = 'trades'
+
     id = IntegerField('id', pk=True)
     account = CharField('account_uuid', 32)
     ticker = CharField('ticker', 8)

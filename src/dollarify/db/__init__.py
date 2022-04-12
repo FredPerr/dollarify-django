@@ -181,7 +181,11 @@ def init():
     
     # Inititialize tables
     from dollarify.static.db.sqlite3 import queries
-    # from dollarify.models import get_models_classes
+    from dollarify.models import get_models_classes, Model
+    for model_class in get_models_classes([]):
+        sql = Model._get_create_table_sql_query(model_class)
+        print(sql)
+        # Database.query(Model._get_create_table_sql_query(model_class))
     # Database.query_script_file('create_tables.sql', queries)
     
     # Database.query_script_file('init_tables.sql', queries, commit=True)

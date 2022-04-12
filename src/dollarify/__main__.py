@@ -1,14 +1,18 @@
 import logging
+from pathlib import Path
 import sys
 import argparse
 
-from dollarify.db import Database, SQLiteDB, init
-from dollarify.models import Model, User, get_models_classes
+from dollarify.db import Database, SQLiteDB, init, backup_db
+from dollarify.models import AccountAttribute
 
 
 
 def test():
-    pass
+    all = AccountAttribute.all(AccountAttribute)
+    print(all)
+
+
 
 def connect(test_enabled: bool):
     Database.connect(SQLiteDB, 'database.sqlite3')

@@ -93,6 +93,12 @@ class Database:
         """
         raise NotImplementedError()
 
+    def select_all():
+        """
+        Select all the rows from a table.
+        """
+        raise NotImplementedError()
+
     def update_one():
         """
         Update a row into a table.
@@ -157,6 +163,13 @@ class SQLiteDB(Database):
             raise ValueError(f"The model with the {pk_col_name} {pk} was not found in the table {table}")
         return response
 
+    def select_all(table: str):
+        Database.query(f'SELECT * FROM {table};')
+        response = Database.CURSOR.fetchall()
+        if response is None or len(response) == 0:
+            raise ValueError(f'Could not load the rows in the database.')
+        return response
+
     def update_one(table: str, columns: tuple, task: tuple, pk_col: str, commit=True):
         """
         Update a row in the database.
@@ -178,6 +191,15 @@ class SQLiteDB(Database):
         pk: the primary key to search for.
         """
         Database.query(f"DELETE FROM {table} WHERE {pk_col_name}=?", task=(pk,), commit=commit)
+
+
+def backup_db(db_name: str, to_path: Path):
+    import shutil
+    try:
+        shutil.copyfile(db_name, to_path)
+        logging.info(f'The backup ({db_name}) -> ({to_path}) was succesffully completed!')
+    except:
+        logging.error(f'The backup failed ({db_name}) -> ({to_path})')
 
 
 ####################################

@@ -2,7 +2,7 @@ from datetime import datetime
 import inspect
 import sys
 from types import ModuleType
-from typing import OrderedDict, Tuple
+from typing import Tuple
 
 from dollarify.db import DBType, DBAttribute, Database
 from dollarify.models.validators import *
@@ -204,6 +204,18 @@ class Model:
         except ValueError:
             return None
 
+    def all(cls):
+        return Database.select_all(cls.table_name)
+
+
+    def get(cls, pk_value) -> type:
+        pk_field = cls.get_pk_field(cls, False)
+        # table: str, pk: str, pk_col_name: str, columns: str = '*'
+        values = Database.select_one(cls.table_name, pk_value, pk_field[1].name)
+        print(cls.get_fields(cls, True))
+        kvalues = dict(zip(cls.get_fields(cls, True), values))
+        return cls.__new__(cls, **kvalues)
+
 
     def get_fields(cls, names_only: bool = False):
         """
@@ -211,8 +223,9 @@ class Model:
         names_only: True to return only the name of the variables.
         """
         if cls.field_order:
-            return cls.field_order
-        members = cls.field_order if cls.field_order else inspect.getmembers(cls, lambda x: (not inspect.isroutine(x) and isinstance(x, ModelField)))[::-1]
+            members = cls.field_order
+        else:
+            members = cls.field_order if cls.field_order else inspect.getmembers(cls, lambda x: (not inspect.isroutine(x) and isinstance(x, ModelField)))[::-1]
         return tuple(member[0] if names_only else member for member in members) 
     
 
@@ -354,6 +367,53 @@ class Trade(Model):
 
     field_order = (('id', id), ('account', account), ('ticker', ticker), ('buy_date', buy_date), ('shares', shares), 
     ('buy_value', buy_value), ('fees', fees), ('sell_value', sell_value), ('sell_date', sell_date))
+
+
+class Paycheck(Model):
+    
+    table_name = 'paychecks'
+
+    id = IntegerField('id', pk=True)
+    date = DateField('date', default=datetime.now().strftime('%Y-%m-%d'))
+    account = CharField('account_uuid', 32)
+    provider = CharField('provider_uuid', 32, nullable=True)
+    amount = FloatField('amount', min=0)
+    hours = FloatField('hours', min=0, nullable=True)
+
+    field_order = (
+        ('id', id),
+        ('date', date),
+        ('account', account),
+        ('provider', provider),
+        ('amount', amount),
+        ('hours', hours),
+    )
+
+class Loan(Model):
+
+    table_name = 'loans'
+
+    borrower_uuid = CharField('borrower_uuid', 32, pk=True)
+    name = CharField('name', 32)
+    lender = CharField('lender', 32)
+    initial_amount = FloatField('initial_amount', min=0)
+    interest_rate = FloatField('interest_rate', default=0.0)
+    date_given = DateField('date_given', default=datetime.now().strftime('%Y-%m-%d'))
+    date_due = DateField('date_due', nullable=True)
+    description = TextField('description', nullable=True)
+
+    field_order = (
+        ('borrower_uuid', borrower_uuid),
+        ('name', name),
+        ('lender', lender),
+        ('initial_amount', initial_amount),
+        ('interest_rate', interest_rate),
+        ('date_given', date_given),
+        ('date_due', date_due),
+        ('description', description)
+    )
+
+
 
 
 ####################

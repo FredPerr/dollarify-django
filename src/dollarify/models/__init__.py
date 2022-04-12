@@ -58,7 +58,7 @@ class ModelField:
     def attributes_db(self):
         attribs = []
         if self.default is not None:
-            attribs.append(DBAttribute.DEFAULT % f"'{self.default}'" if isinstance(self.default, str) else str(self.default))
+            attribs.append(DBAttribute.DEFAULT % f"'{self.default}'")
         if not self.nullable:
             attribs.append(DBAttribute.NOT_NULL)
         if self.pk:
@@ -210,7 +210,7 @@ class Model:
         Get the fields of the models (variable name, field object).
         names_only: True to return only the name of the variables.
         """
-        return tuple(member[0] if names_only else member for member in inspect.getmembers(cls, lambda x: (not inspect.isroutine(x) and isinstance(x, ModelField)))) 
+        return tuple([member[0] if names_only else member for member in inspect.getmembers(cls, lambda x: (not inspect.isroutine(x) and isinstance(x, ModelField)))][::-1]) 
     
 
     def get_pk_field(cls, name_only: bool = False):
@@ -239,9 +239,10 @@ class Model:
         return tuple((field[1].name for field in cls.get_fields()))
 
 
-    def _get_create_table_sql_query(cls):
-        columns_sql = tuple(f"{field[0]} {field[1].type_db} {field[1].attributes_db}" for field in cls.get_fields(cls)[::-1])
-        return f"CREATE TABLE IF NOT EXISTS {cls.table_name} ({', '.join(columns_sql)});"
+    def create_table(cls):
+        fields = cls.get_fields(cls)
+        columns_sql = tuple(f"{field[0]} {field[1].type_db} {field[1].attributes_db}" for field in fields)
+        Database.query(f"CREATE TABLE IF NOT EXISTS {cls.table_name} ({', '.join(columns_sql)});", commit=True)
 
 
     def __new__(cls: type, **field_values):
@@ -345,7 +346,7 @@ def get_models_classes(modules: Tuple[ModuleType]):
     models = []
     for module in modules:
         for member in inspect.getmembers(module, inspect.isclass):
-            if issubclass(member[1], Model):
+            if issubclass(member[1], Model) and not member[1] == Model:
                 models.append(member[1])
     return models
 

@@ -25,7 +25,7 @@ class DBAttribute:
 
     NOT_NULL = 'NOT NULL'
     PRIMARY_KEY = 'PRIMARY KEY'
-    DEFAULT = 'DEFAULT=%s'
+    DEFAULT = "DEFAULT %s"
 
 
 class Database:
@@ -139,9 +139,9 @@ class SQLiteDB(Database):
     def commit():
         Database.CONNECTION.commit()
 
-    def insert_one(table: str, columns: tuple, task: tuple, commit=True):
+    def insert_one(table: str, columns: tuple, task: tuple, or_replace=False, commit=True):
         values = (len(task) * '?,').strip(',')
-        Database.query(f"INSERT INTO {table} ({','.join(columns)}) VALUES ({values});", task, commit=commit)
+        Database.query(f"INSERT {'OR REPLACE ' if or_replace else ''}INTO {table} ({','.join(columns)}) VALUES ({values});", task, commit=commit)
     
     def select_one(table: str, pk: str, pk_col_name: str, columns: str = '*'):
         Database.query(f'SELECT {columns} FROM {table} WHERE {pk_col_name}=?;', task=(pk,))
@@ -180,13 +180,24 @@ class SQLiteDB(Database):
 def init():
     
     # Inititialize tables
-    from dollarify.static.db.sqlite3 import queries
-    from dollarify.models import get_models_classes, Model
-    for model_class in get_models_classes([]):
-        sql = Model._get_create_table_sql_query(model_class)
-        print(sql)
-        # Database.query(Model._get_create_table_sql_query(model_class))
-    # Database.query_script_file('create_tables.sql', queries)
+    from dollarify.models import get_models_classes, Model, AccountAttribute, AccountType
     
-    # Database.query_script_file('init_tables.sql', queries, commit=True)
+    # Create the table if not exist
+    for model_class in get_models_classes([]):
+        Model.create_table(model_class)
+
+    # table: str, columns: tuple, task: tuple, commit=True
+
+    Database.insert_one(AccountAttribute.table_name, Model.get_fields(AccountAttribute, True), ('TFSA', 'No capital gain tax;Predefined limit of contribution per year', 'CAN'), or_replace=True)
+    Database.insert_one(AccountAttribute.table_name, Model.get_fields(AccountAttribute, True), ('RRSP', 'Delayed taxation on contribution;Predefined or calculated limit of contribution per year', 'CAN'), or_replace=True)
+
+    account_type_fields = Model.get_fields(AccountType, True)
+    print(account_type_fields)
+    Database.insert_one(AccountType.table_name, account_type_fields, ('CHQ', 'Checking Account;0.01% Interest Rate;No transactional fee;Not taxed'), or_replace=True)
+    Database.insert_one(AccountType.table_name, account_type_fields, ('HISA', 'High Interest Savings Account;0.1% Interest Rate;No transactional fee;Not taxed'), or_replace=True)
+    Database.insert_one(AccountType.table_name, account_type_fields, ('CREDIT', 'Credit card account;Variable Interest Rate;Variable Cashback or BONUSDOLLARS;Not taxed'), or_replace=True)
+    Database.insert_one(AccountType.table_name, account_type_fields, ('STOCK', 'Credit card account;Variable Interest Rate;Variable Cashback or BONUSDOLLARS;Not taxed'), or_replace=True)
+
+
+    
 

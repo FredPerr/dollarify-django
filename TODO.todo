@@ -1,2 +1,6 @@
 #- Add other table, such as income (salary), loans.
 #- Implement caching for the models.
+
+
+TODO: Add insert, update and other sql statement by keywork argument because the order is not correct in the database. 
+    Elements are stored in the wrong columns.

@@ -2,7 +2,7 @@ from datetime import datetime
 import inspect
 import sys
 from types import ModuleType
-from typing import Tuple
+from typing import OrderedDict, Tuple
 
 from dollarify.db import DBType, DBAttribute, Database
 from dollarify.models.validators import *
@@ -158,6 +158,7 @@ class DateTimeField(DateField):
 class Model:
 
     table_name = None
+    field_order = None
 
     # fields here to be added here in the subclass #
 
@@ -190,10 +191,9 @@ class Model:
         return header + '\n'.join(lines)
 
 
-    def create(cls, commit=True, **field_values) -> type:
+    def create(cls, or_replace=True,commit=True,**field_values) -> type:
         model = cls.__new__(cls, **field_values)
-        columns = tuple(cls._get_field_from_name(cls, key)[1].name for key in tuple(field_values.keys()))
-        # Database.insert_one(cls.table_name, columns, tuple(field_values.values()), commit) TODO: remove comment
+        Database.insert_one(cls.table_name, field_values, or_replace, commit)
         return model
 
     def fetch(cls, pk):
@@ -210,7 +210,10 @@ class Model:
         Get the fields of the models (variable name, field object).
         names_only: True to return only the name of the variables.
         """
-        return tuple([member[0] if names_only else member for member in inspect.getmembers(cls, lambda x: (not inspect.isroutine(x) and isinstance(x, ModelField)))][::-1]) 
+        if cls.field_order:
+            return cls.field_order
+        members = cls.field_order if cls.field_order else inspect.getmembers(cls, lambda x: (not inspect.isroutine(x) and isinstance(x, ModelField)))[::-1]
+        return tuple(member[0] if names_only else member for member in members) 
     
 
     def get_pk_field(cls, name_only: bool = False):
@@ -241,6 +244,7 @@ class Model:
 
     def create_table(cls):
         fields = cls.get_fields(cls)
+        
         columns_sql = tuple(f"{field[0]} {field[1].type_db} {field[1].attributes_db}" for field in fields)
         Database.query(f"CREATE TABLE IF NOT EXISTS {cls.table_name} ({', '.join(columns_sql)});", commit=True)
 
@@ -277,6 +281,12 @@ class User(Model):
     salt = BytesField('salt')
     latest_balance = FloatField('latest_balance', 0, nullable=True)
 
+    field_order = (
+        ('uuid', uuid), ('username', username), 
+        ('password', password), ('salt', salt), 
+        ('latest_balance', latest_balance)
+    )
+
 
 class Provider(Model):
 
@@ -284,6 +294,8 @@ class Provider(Model):
 
     name = CharField('name', 32, pk=True)
     information = TextField('information', max=255)
+
+    field_order = (('name', name), ('information', information))
 
 
 class AccountType(Model):
@@ -293,6 +305,8 @@ class AccountType(Model):
     name = CharField('name', 32, pk=True)
     information = TextField('information', max=255)
 
+    field_order = (('name', name), ('information', information))
+
 
 class AccountAttribute(Model):
 
@@ -301,6 +315,8 @@ class AccountAttribute(Model):
     name = CharField('name', 32, pk=True)
     information = TextField('information', max=255)
     region = CharField('region', 3)
+
+    field_order = (('name', name), ('information', information), ('region', region))
 
 
 class Account(Model):
@@ -315,7 +331,11 @@ class Account(Model):
     attribute_name = CharField('attribute_name', 16)
     latest_balance = FloatField('latest_balance', nullable=True)
     open_date = DateField('open_date', default=datetime.now().strftime('%Y-%m-%d'))
-    closed_date = DateField('closed_date', nullable=True)
+    close_date = DateField('close_date', nullable=True)
+
+    field_order = (('uuid', uuid), ('provider', provider), ('owners', owners), ('name', name), 
+    ('type_name', type_name), ('attribute_name', attribute_name), ('latest_balance', latest_balance), 
+    ('open_date', open_date), ('close_date', close_date))
 
 
 class Trade(Model):
@@ -331,6 +351,9 @@ class Trade(Model):
     fees = FloatField('fees', default=0)
     sell_value = FloatField('sell_value', nullable=True)
     sell_date = DateField('sell_date', nullable=True)
+
+    field_order = (('id', id), ('account', account), ('ticker', ticker), ('buy_date', buy_date), ('shares', shares), 
+    ('buy_value', buy_value), ('fees', fees), ('sell_value', sell_value), ('sell_date', sell_date))
 
 
 ####################

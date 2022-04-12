@@ -59,10 +59,6 @@ class Database:
         Connect to the database.
         :return: A tuple: (database_connection, database_cursor)
         """
-
-
-
-
         func_list = [name for name, value in inspect.getmembers(Database, predicate=inspect.isfunction) 
                     if not name.startswith("__") and not name == Database.connect.__name__]
         
@@ -185,7 +181,8 @@ def init():
     
     # Inititialize tables
     from dollarify.static.db.sqlite3 import queries
-
-    Database.query_script_file('create_tables.sql', queries)
-    Database.query_script_file('init_tables.sql', queries, commit=True)
+    # from dollarify.models import get_models_classes
+    # Database.query_script_file('create_tables.sql', queries)
+    
+    # Database.query_script_file('init_tables.sql', queries, commit=True)
 

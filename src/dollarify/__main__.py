@@ -3,13 +3,15 @@ import sys
 import argparse
 
 from dollarify.db import Database, SQLiteDB, init
-from dollarify.models import Model
+from dollarify.models import Model, User, get_models_classes
 
 
 
 def test():
-    model = Model.create(Model, True, uuid='12345678901234567890123456789012', test='test')
-    print(repr(model))
+    # model = User.create(User, True, uuid='12345678901234567890123456789012', test='test')
+    # print(model)
+    print(get_models_classes([]))
+    pass
 
 def connect(test_enabled: bool):
     Database.connect(SQLiteDB, 'database.sqlite3')

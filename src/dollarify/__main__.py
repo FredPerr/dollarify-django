@@ -26,7 +26,7 @@ def main():
     parser.add_argument('--test', '-t', action=argparse.BooleanOptionalAction, help='Activate the test mode')
     parser.add_argument('--debug', '-d', action=argparse.BooleanOptionalAction, help='Activate the debug mode')
     parser.add_argument('--api', '-a', action=argparse.BooleanOptionalAction, help='Run the flask api')
-    parser.add_argument('run', action='store_true')
+    parser.add_argument('run', action='store_true', help='Start the development server of the flask api.')
     namespace = parser.parse_args(args)
 
     mode = {

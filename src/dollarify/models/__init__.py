@@ -10,9 +10,6 @@ from dollarify.utils import uuid
 from dollarify.models.validators import *
 
 
-LENGTH_EXCEEDED_CHARACTERS = "The length of %s must not exceed %i characters."
-
-
 class ModelField:
 
     def __init__(self, db_type: tuple, name: str, max_length: int = 0, default = None,  pk: bool = False, nullable: bool = False, validators: tuple = None):

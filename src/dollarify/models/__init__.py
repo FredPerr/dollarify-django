@@ -3,6 +3,7 @@ import inspect
 import sys
 from types import ModuleType
 from typing import Tuple
+import math
 
 from dollarify.db import DBType, DBAttribute, Database
 from dollarify.utils.hashing import hash_password
@@ -300,6 +301,20 @@ class User(Model):
     def create(cls, uuid:str, username: str, password_raw: str, latest_balance: float, or_replace=True, commit=True) -> type:
         password, salt = hash_password(password_raw)
         return super().create(cls, or_replace, commit, uuid=uuid, username=username, password=password, salt=salt, latest_balance=latest_balance)
+    
+
+    @property
+    def accounts_uuids(self):
+        uuids = []
+        if self._accounts_uuids is None:
+            Database.query(f"SELECT uuid, owners FROM {Account.table_name};")
+            account_uuids_owners = Database.CURSOR.fetchall()
+            for uuid, owners in account_uuids_owners:
+                for i in range(math.floor(len(owners) / User.uuid.max_length) * User.uuid.max_length):
+                    if owners[i*32:i*32 + 32] == self.user.uuid:
+                        uuids.append(uuid)
+                        break
+        return uuids
 
 
 class Provider(Model):
@@ -412,6 +427,7 @@ class Paycheck(Model):
         ('hours', hours),
     )
 
+
 class Loan(Model):
 
     table_name = 'loans'
@@ -435,8 +451,6 @@ class Loan(Model):
         ('date_due', date_due),
         ('description', description)
     )
-
-
 
 
 ####################

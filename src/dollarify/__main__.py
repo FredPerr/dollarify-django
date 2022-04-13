@@ -1,17 +1,15 @@
 import logging
-from pathlib import Path
 import sys
 import argparse
 
-from dollarify.db import Database, SQLiteDB, init, backup_db
-from dollarify.models import AccountAttribute
+from dollarify.db import Database, SQLiteDB, init
+from dollarify.models import Trade
+from dollarify.utils import uuid
 
 
 
 def test():
-    all = AccountAttribute.all(AccountAttribute)
-    print(all)
-
+    Trade.create(Trade, uuid.generate(), 'APPL', None, 3, 100.01, 0.00, None, None)
 
 
 def connect(test_enabled: bool):

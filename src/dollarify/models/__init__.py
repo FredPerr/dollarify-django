@@ -210,7 +210,6 @@ class Model:
 
     def get(cls, pk_value) -> type:
         pk_field = cls.get_pk_field(cls, False)
-        # table: str, pk: str, pk_col_name: str, columns: str = '*'
         values = Database.select_one(cls.table_name, pk_value, pk_field[1].name)
         print(cls.get_fields(cls, True))
         kvalues = dict(zip(cls.get_fields(cls, True), values))
@@ -367,6 +366,15 @@ class Trade(Model):
 
     field_order = (('id', id), ('account', account), ('ticker', ticker), ('buy_date', buy_date), ('shares', shares), 
     ('buy_value', buy_value), ('fees', fees), ('sell_value', sell_value), ('sell_date', sell_date))
+
+    def create(cls, account_uuid: str, ticker: str, shares: int, buy_value: float, 
+    buy_date: datetime = None, fees: float = 0.0, sell_value: float = None, sell_date: datetime = None,
+    commit=True) -> type:
+        return super().create(cls, id=None, or_replace=True, commit=commit, 
+            account=account_uuid, ticker=ticker, buy_date=buy_date, 
+            shares=shares, buy_value=buy_value, fees=fees, 
+            sell_value=sell_value, sell_date=sell_date
+        )
 
 
 class Paycheck(Model):

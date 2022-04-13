@@ -5,6 +5,8 @@ from types import ModuleType
 from typing import Tuple
 
 from dollarify.db import DBType, DBAttribute, Database
+from dollarify.utils.hashing import hash_password
+from dollarify.utils import uuid
 from dollarify.models.validators import *
 
 
@@ -211,7 +213,6 @@ class Model:
     def get(cls, pk_value) -> type:
         pk_field = cls.get_pk_field(cls, False)
         values = Database.select_one(cls.table_name, pk_value, pk_field[1].name)
-        print(cls.get_fields(cls, True))
         kvalues = dict(zip(cls.get_fields(cls, True), values))
         return cls.__new__(cls, **kvalues)
 
@@ -299,6 +300,10 @@ class User(Model):
         ('latest_balance', latest_balance)
     )
 
+    def create(cls, uuid:str, username: str, password_raw: str, latest_balance: float, or_replace=True, commit=True) -> type:
+        password, salt = hash_password(password_raw)
+        return super().create(cls, or_replace, commit, uuid=uuid, username=username, password=password, salt=salt, latest_balance=latest_balance)
+
 
 class Provider(Model):
 
@@ -308,6 +313,9 @@ class Provider(Model):
     information = TextField('information', max=255)
 
     field_order = (('name', name), ('information', information))
+
+    def create(cls, name: str, information: str, or_replace=True, commit=True) -> type:
+        return super().create(cls, or_replace, commit, name=name, information=information)
 
 
 class AccountType(Model):
@@ -319,6 +327,9 @@ class AccountType(Model):
 
     field_order = (('name', name), ('information', information))
 
+    def create(cls, name: str, information: str, or_replace=True, commit=True) -> type:
+        return super().create(cls, or_replace, commit, name=name, information=information)
+
 
 class AccountAttribute(Model):
 
@@ -329,6 +340,9 @@ class AccountAttribute(Model):
     region = CharField('region', 3)
 
     field_order = (('name', name), ('information', information), ('region', region))
+
+    def create(cls, name: str, information: str, region: str, or_replace=True, commit=True) -> type:
+        return super().create(cls, or_replace, commit, name=name, region=region, information=information)
 
 
 class Account(Model):
@@ -348,6 +362,10 @@ class Account(Model):
     field_order = (('uuid', uuid), ('provider', provider), ('owners', owners), ('name', name), 
     ('type_name', type_name), ('attribute_name', attribute_name), ('latest_balance', latest_balance), 
     ('open_date', open_date), ('close_date', close_date))
+
+
+    def create(cls, provider: str, owners: list, name: str, type_name: str, attribute_name: str, latest_balance: float, open_date: datetime, close_date: datetime, or_replace=True, commit=True) -> type:
+        return super().create(cls, or_replace, commit, uuid=uuid.generate(), provider=provider, owners=''.join(owners), name=name, type_name=type_name, attribute_name=attribute_name, latest_balance=latest_balance, open_date=open_date, close_date=close_date)
 
 
 class Trade(Model):

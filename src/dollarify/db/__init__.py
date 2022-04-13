@@ -122,7 +122,7 @@ class SQLiteDB(Database):
         if not exists:
             logging.warning(f'The database "{path}" did not exist on the file system, it will be created.')
 
-        Database.CONNECTION = sqlite3.connect(db_path)
+        Database.CONNECTION = sqlite3.connect(db_path, check_same_thread=False)
         Database.CURSOR = Database.CONNECTION.cursor()
         logging.debug('Connected to the database successfully!')
 

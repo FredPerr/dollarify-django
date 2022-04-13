@@ -2,16 +2,12 @@ import logging
 import sys
 import argparse
 
-from dollarify.core import Profile
 from dollarify.db import Database, SQLiteDB, init
+from dollarify import api
 
 
 def test():
-    # Trade.create(Trade, uuid.generate(), 'APPL', None, 3, 100.01, 0.00, None, None)
-    # User.create(User, uuid.generate(), 'Test', 'Test123', 0.0)
-    profile = Profile('82addfde9c254b48a65efad439a790b8')
-    print(profile.accounts)    
-
+    pass
 
 def connect(test_enabled: bool):
     Database.connect(SQLiteDB, 'database.sqlite3')
@@ -23,17 +19,30 @@ def connect(test_enabled: bool):
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG if namespace.debug else logging.INFO)
+
     args = sys.argv[1:]
     parser = argparse.ArgumentParser(prog='Dollarify', description='Dollarify main command interface')
     parser.add_argument('--test', '-t', action=argparse.BooleanOptionalAction, help='Activate the test mode')
     parser.add_argument('--debug', '-d', action=argparse.BooleanOptionalAction, help='Activate the debug mode')
+    parser.add_argument('--api', '-a', action=argparse.BooleanOptionalAction, help='Run the flask api')
+    parser.add_argument('run', action='store_true')
     namespace = parser.parse_args(args)
-    
-    logging.basicConfig(level=logging.DEBUG if namespace.debug else logging.INFO)
+
+    mode = {
+        'test': namespace.test,
+        'debug': namespace.debug,
+        'api': namespace.api,
+    }
+
+    if namespace.run:
+        mode['api'] = True
 
     connect(namespace.test)
 
-    # Do some other stuff here.
+    if namespace.api:
+        api.app.run(port=8080, debug=namespace.debug)
+
 
     if Database is not None:
         Database.close()

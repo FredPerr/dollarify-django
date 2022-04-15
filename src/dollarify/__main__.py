@@ -37,6 +37,7 @@ def main():
 
     if namespace.run:
         mode['api'] = True
+        mode['debug'] = True
 
     connect(namespace.test)
 

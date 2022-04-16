@@ -2,7 +2,8 @@ import logging
 import sys
 import argparse
 
-from dollarify.db import Database, SQLiteDB, init
+from dollarify.db import DB, init, db_config
+from dollarify.utils import hashing
 from dollarify import api
 
 
@@ -10,7 +11,7 @@ def test():
     pass
 
 def connect(test_enabled: bool):
-    Database.connect(SQLiteDB, 'database.sqlite3')
+    DB.connect(**db_config())
     init()
     if test_enabled:
         logging.debug('*** Running the test function ***')
@@ -19,7 +20,6 @@ def connect(test_enabled: bool):
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG if namespace.debug else logging.INFO)
 
     args = sys.argv[1:]
     parser = argparse.ArgumentParser(prog='Dollarify', description='Dollarify main command interface')
@@ -39,14 +39,15 @@ def main():
         mode['api'] = True
         mode['debug'] = True
 
+    logging.basicConfig(level=logging.DEBUG if mode['debug'] else logging.INFO)
     connect(namespace.test)
 
     if namespace.api:
         api.app.run(port=8080, debug=namespace.debug)
 
 
-    if Database is not None:
-        Database.close()
+    if DB is not None:
+        DB.close()
 
 
 main()

@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS users, accounts, account_types, account_attributes, entities;

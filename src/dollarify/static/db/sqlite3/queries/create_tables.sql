@@ -1,12 +1,11 @@
 CREATE TABLE IF NOT EXISTS users (
-    id UUID DEFAULT uuid_generate_v4(),
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL,
     salt VARCHAR(32) NOT NULL,
     password VARCHAR(128) NOT NULL,
-    phone VARCHAR(15),
-    PRIMARY KEY (id)
+    phone VARCHAR(15)
 );
 
 CREATE TABLE IF NOT EXISTS account_types (

@@ -69,7 +69,7 @@ class DB:
 # Specific Dollarify DB Management #
 ####################################
 
-def init():
+def init(reset):
 
     # Check for the UUID v4 Functions (extension: uuid-ossp)
     cur = DB.CONNECTION.cursor()
@@ -81,13 +81,18 @@ def init():
     if not installed:
         logging.error('The extension uuid-ossp could not be installed.')
 
-    # Initialize the tables
-    # DB.execute_script('drop_tables.sql', queries)
-    # DB.execute_script('create_tables.sql', queries)
-    # DB.execute_script('init_tables.sql', queries)
-
-    from .users import insert, get
-    # insert('frederic.perr@gmail.com', 'Frédéric', 'Perron', 'This is a test', '418-111-1111')
-    value = get('frederic.perr@gmail.com')
-    print(value)
-    
+    if reset:
+        print("""
+#####################################################
+### Are you sure you want to RESET the database ? ###
+##################################################### 
+""")
+        response = input('Type YES to proceed: ')
+        if response == 'YES':
+            # Initialize the tables
+            DB.execute_script('drop_tables.sql', queries)
+            DB.execute_script('create_tables.sql', queries)
+            DB.execute_script('init_tables.sql', queries)
+            logging.info('The database has been reset successfully!')
+        else:
+            logging.info('The database reset was aborted.')

@@ -10,9 +10,9 @@ from dollarify import api
 def test():
     pass
 
-def connect(test_enabled: bool):
+def connect(test_enabled, reset):
     DB.connect(**db_config())
-    init()
+    init(reset)
     if test_enabled:
         logging.debug('*** Running the test function ***')
         test()
@@ -26,6 +26,7 @@ def main():
     parser.add_argument('--test', '-t', action=argparse.BooleanOptionalAction, help='Activate the test mode')
     parser.add_argument('--debug', '-d', action=argparse.BooleanOptionalAction, help='Activate the debug mode')
     parser.add_argument('--api', '-a', action=argparse.BooleanOptionalAction, help='Run the flask api')
+    parser.add_argument('--reset-db', '-rdb', action=argparse.BooleanOptionalAction, help='Reset the database')
     parser.add_argument('run', action='store_true', help='Start the development server of the flask api.')
     namespace = parser.parse_args(args)
 
@@ -40,7 +41,7 @@ def main():
         mode['debug'] = True
 
     logging.basicConfig(level=logging.DEBUG if mode['debug'] else logging.INFO)
-    connect(namespace.test)
+    connect(namespace.test, namespace.reset_db)
 
     if namespace.api:
         api.app.run(port=8080, debug=namespace.debug)

@@ -9,7 +9,7 @@ def hash_password(raw_password, salt=generate_salt(), iterations=100000):
     
     return salt, hashlib.pbkdf2_hmac(
         'sha256',
-        raw_password.encode('utf-8'),
+        raw_password.encode(),
         salt,
         iterations,
         dklen=128

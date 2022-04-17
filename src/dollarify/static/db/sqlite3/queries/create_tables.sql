@@ -1,11 +1,10 @@
 CREATE TABLE IF NOT EXISTS users (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    email VARCHAR(100) NOT NULL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    salt VARCHAR(32) NOT NULL,
-    password VARCHAR(128) NOT NULL,
-    phone VARCHAR(15)
+    phone VARCHAR(16),
+    password VARCHAR(256) NOT NULL,
+    salt VARCHAR(64) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS account_types (
@@ -41,10 +40,10 @@ CREATE TABLE IF NOT EXISTS stock_markets (
     short_name VARCHAR(10) PRIMARY KEY,
     full_name VARCHAR(40) NOT NULL,
     timezone VARCHAR(12) NOT NULL,
-    open_hour FLOAT NOT NULL,
+    open_hour DECIMAL(3,2) NOT NULL,
     close_hour FLOAT NOT NULL,
-    lunch_break_from FLOAT,
-    lunch_break_to FLOAT,
+    lunch_break_from DECIMAL(3,2),
+    lunch_break_to DECIMAL(3,2),
     holidays VARCHAR(50)[]
 );
 

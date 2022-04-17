@@ -1,9 +1,11 @@
+import codecs
 from importlib.resources import Package, read_text
 import logging
 import psycopg2
 from configparser import ConfigParser
 
 from dollarify.static.db.sqlite3 import queries
+from dollarify.utils import hashing
 
 
 
@@ -80,6 +82,12 @@ def init():
         logging.error('The extension uuid-ossp could not be installed.')
 
     # Initialize the tables
-    DB.execute_script('drop_tables.sql', queries)
-    DB.execute_script('create_tables.sql', queries)
-    DB.execute_script('init_tables.sql', queries)
+    # DB.execute_script('drop_tables.sql', queries)
+    # DB.execute_script('create_tables.sql', queries)
+    # DB.execute_script('init_tables.sql', queries)
+
+    from .users import insert, get
+    # insert('frederic.perr@gmail.com', 'Frédéric', 'Perron', 'This is a test', '418-111-1111')
+    value = get('frederic.perr@gmail.com')
+    print(value)
+    

@@ -5,10 +5,8 @@ import argparse
 from dollarify import db
 from dollarify import app
 from dollarify.utils import config
+from dollarify.debug import debug
 
-
-def debug():
-    pass
 
 
 def main():

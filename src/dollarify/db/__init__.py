@@ -1,98 +1,71 @@
-import codecs
 from importlib.resources import Package, read_text
 import logging
+
 import psycopg2
-from configparser import ConfigParser
+from psycopg2.extensions import connection
+
 
 from dollarify.static.db.sqlite3 import queries
-from dollarify.utils import hashing
 
 
+CONNECTION: connection = None
 
 
-def db_config(filename='database.ini', section='postgresql'):
-    parser = ConfigParser()
-    parser.read(filename)
-
-    db = {}
-    if parser.has_section(section):
-        params = parser.items(section)
-        for param in params:
-            db[param[0]] = param[1]
-    else:
-        raise Exception('Section {0} not found in the {1} file'.format(section, filename))
-
-    return db
-
-
-class DB:
-
-    CONNECTION = None
-
-    def __init__(self):
-        raise NotImplementedError("No instance of this class should be created.")
-
-    def connect(host: str, database: str, user: str, password: str, port: int = 5432):
-        try:
-            DB.CONNECTION = psycopg2.connect(
-                host=host,
-                database=database,
-                user=user,
-                password=password,
-                port=port
-            )
-            cur = DB.CONNECTION.cursor()
-            cur.execute('SELECT version();')
-
-            logging.debug(f'Running on {cur.fetchone()[0]}')
-        except (Exception, psycopg2.DatabaseError) as error:
-            logging.error(error)
-        
-
-    def close():
-        if DB.CONNECTION is not None:
-            DB.CONNECTION.close()
-            logging.debug(f"DB connection terminated.")
-
-    def execute_script(file_name, package: Package, commit=True):
-        cur = DB.CONNECTION.cursor()
-        script = read_text(package, file_name)
-        cur.execute(script)
-        if commit:
-            DB.CONNECTION.commit()
-        cur.close()
-
-    
-
-
-####################################
-# Specific Dollarify DB Management #
-####################################
-
-def init(reset):
-
-    # Check for the UUID v4 Functions (extension: uuid-ossp)
-    cur = DB.CONNECTION.cursor()
-    cur.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
-    cur.execute("SELECT pg_extension.oid FROM pg_extension WHERE pg_extension.extname='uuid-ossp';")
-    installed = cur.fetchone() is not None
+def execute_script(file_name, package: Package, commit=True):
+    cur = CONNECTION.cursor()
+    script = read_text(package, file_name)
+    cur.execute(script)
+    if commit:
+        CONNECTION.commit()
     cur.close()
 
-    if not installed:
-        logging.error('The extension uuid-ossp could not be installed.')
 
-    if reset:
-        print("""
-#####################################################
-### Are you sure you want to RESET the database ? ###
-##################################################### 
-""")
-        response = input('Type YES to proceed: ')
-        if response == 'YES':
+def connect(host: str, database: str, user: str, password: str, port: int = 5432 ,reset_db=False):
+    try:
+        global CONNECTION
+        CONNECTION = psycopg2.connect(
+            host=host,
+            database=database,
+            user=user,
+            password=password,
+            port=port
+        )
+
+        # Check for the UUID v4 Functions (extension: uuid-ossp)
+        cur = CONNECTION.cursor()
+        cur.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
+        cur.execute("SELECT pg_extension.oid FROM pg_extension WHERE pg_extension.extname='uuid-ossp';")
+        installed = cur.fetchone() is not None
+        cur.close()
+
+        if not installed:
+            raise ImportError('The extension uuid-ossp could not be installed.')
+    
+        if reset_db is True:
             # Initialize the tables
-            DB.execute_script('drop_tables.sql', queries)
-            DB.execute_script('create_tables.sql', queries)
-            DB.execute_script('init_tables.sql', queries)
+            execute_script('drop_tables.sql', queries)
+            execute_script('create_tables.sql', queries)
+            execute_script('init_tables.sql', queries)
             logging.info('The database has been reset successfully!')
         else:
             logging.info('The database reset was aborted.')
+
+        logging.debug(f'Running on {version()}')
+    except (psycopg2.DatabaseError) as error:
+        logging.error(error)
+        
+
+def close():
+    if CONNECTION is not None:
+        CONNECTION.close()
+        logging.debug(f"DB connection terminated.")
+
+
+def version():
+    cur = CONNECTION.cursor()
+    cur.execute("SELECT version();")
+    response = cur.fetchone()
+    cur.close()
+    assert response is not None, 'Could not retrieve the version of the database!'
+    return response[0]
+

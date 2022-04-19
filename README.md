@@ -10,6 +10,10 @@ Install the build package:
 > python3 -m pip install --upgrade build
 
 Setup the develop mode:
+> python3 -m pip install -e . 
+> 
+**or**
+
 > python3 -m setup develop
 
 Create a `config.ini` file at the root of the package folder (same level as `src/` folder). Add the following attributes inside:

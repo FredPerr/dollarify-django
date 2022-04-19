@@ -4,8 +4,12 @@ README.md
 pyproject.toml
 setup.py
 src/dollarify/__init__.py
+src/dollarify/__main__.py
 src/dollarify/dollarify.py
 src/dollarify_FredPerr.egg-info/PKG-INFO
 src/dollarify_FredPerr.egg-info/SOURCES.txt
 src/dollarify_FredPerr.egg-info/dependency_links.txt
+src/dollarify_FredPerr.egg-info/entry_points.txt
+src/dollarify_FredPerr.egg-info/not-zip-safe
+src/dollarify_FredPerr.egg-info/requires.txt
 src/dollarify_FredPerr.egg-info/top_level.txt

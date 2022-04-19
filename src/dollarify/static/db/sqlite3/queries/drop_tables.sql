@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS users, accounts, account_types, account_attributes, entities, stock_markets, stock_market_trades, loans, transfers, payckecks, payments CASCADE;

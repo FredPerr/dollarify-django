@@ -1,17 +1,37 @@
 # Dollarify
 
+A Complete Finance Overview in a single app.
+
 ## Installation
-By default, database authentication informations are stored in the database.ini file at the root of the project.
-### database.ini:
+
+**Recommanded**: Create a virtual environnement for the project.
+
+Install the build package:
+> python3 -m pip install --upgrade build
+
+Setup the develop mode:
+> python3 -m setup develop
+
+Create a `config.ini` file at the root of the package folder (same level as `src/` folder). Add the following attributes inside:
 ```
-[postgresql]
+[postgresql-database]
 host=localhost
-database=dollarify-api
-user=postgres
-password=SecurePas$1
+database=dollarify
+user=db_username
+password=pa$$w0rd
 port=5432
+
+[flask-dev-server]
+port=8000
+host=localhost
 ```
 
-## Website (GUI)
-The root of the website (based on Flask) is located in the <kbd>dollarify/__init__.py/</kbd> file.
-To start the web server, run the command 
+### Development Cycle
+
+#### Building the project
+Use the command:
+> python3 -m build
+
+#### Running the project
+Use the command:
+> python3 -m dollarify [--debug | -d]

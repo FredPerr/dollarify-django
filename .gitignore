@@ -1,5 +1,10 @@
-venv
+config.ini
+env/
+venv/
+virtualenv/
+build
 __pycache__
-.egg-info
-database.ini
-website.ini
+dist
+*.egg-info/
+*.pyc
+*.pyo

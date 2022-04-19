@@ -1,7 +1,9 @@
 import setuptools
 
+
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
+
 
 setuptools.setup(
     name="dollarify-FredPerr",
@@ -25,7 +27,7 @@ setuptools.setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'flask'
+        'flask',
     ],
     python_requires=">=3.6",
     entry_points={

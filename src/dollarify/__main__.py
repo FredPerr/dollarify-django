@@ -1,11 +1,14 @@
 import logging
 import sys
 import argparse
+import os
+
 
 from dollarify import db
 from dollarify import app
 from dollarify.utils import config
 from dollarify.debug import debug
+
 
 
 
@@ -26,6 +29,7 @@ def main():
         debug()
 
     if args.run:
+        os.environ['FLASK_ENV'] = 'development'
         app.run(**config.load('website.ini', 'website'), debug=args.debug)
 
 

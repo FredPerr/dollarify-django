@@ -1,6 +1,5 @@
-def main():
-    pass
+from . import dollarify
 
 
 if __name__ == '__main__':
-    main()
+    dollarify.app.run()

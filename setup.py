@@ -35,6 +35,7 @@ setuptools.setup(
     entry_points={
         'console_scripts': [
             'dollarify=dollarify.scripts.run:cli',
+            'secret-key=dollarify.scripts.secret_key:cli'
         ]
     }
 )

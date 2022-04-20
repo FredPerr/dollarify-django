@@ -7,6 +7,9 @@ src/dollarify/__init__.py
 src/dollarify/dollarify.py
 src/dollarify/utils/__init__.py
 src/dollarify/utils/config.py
+src/dollarify/views/__init__.py
+src/dollarify/views/home/__init__.py
+src/dollarify/views/http_codes/__init__.py
 src/dollarify_FredPerr.egg-info/PKG-INFO
 src/dollarify_FredPerr.egg-info/SOURCES.txt
 src/dollarify_FredPerr.egg-info/dependency_links.txt

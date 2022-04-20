@@ -21,7 +21,7 @@ A Complete Finance Overview in a single app.
 
 ## Installation
 
-**Recommanded**: Create a virtual environnement for the project.
+**Recommanded**: Create a virtual environnement (venv) for the project.
 
 Install the build package:
 > python3 -m pip install --upgrade build
@@ -52,10 +52,19 @@ host=localhost
 #### Building the project
 Use the command:
 > python3 -m build
-Reset the development environment
->python3 -m pip install -e . 
+
 
 #### Running the project
+
+** Don't forget to activate the virtual environment. **
+
 Use the command:
 > dollarify [--production | -p] [--debug | -d]
+
+
+# DEVELOPMENT NOTES:
+
+## TODO:
+1 - Create the base template and classic template files such as authentication.
+2 - Connect the database with the flask app.
 

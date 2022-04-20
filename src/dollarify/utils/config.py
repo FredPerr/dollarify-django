@@ -12,6 +12,6 @@ def load(file, section):
     if not parser.has_section(section):
         raise ValueError(f'The section {section} does not exists in the {file} file.')
     
-    for k, v in parser.items():
+    for k, v in parser.items(section):
         key_values[k] = v
     return key_values

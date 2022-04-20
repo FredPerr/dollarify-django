@@ -49,4 +49,4 @@ Use the command:
 
 ## TODO:
 1 - Create the base template and classic template files such as authentication.
-2 - Connect the database with the flask app.
+2 - Connect the database with the flask app (with SQLAlchemy)

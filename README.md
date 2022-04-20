@@ -4,7 +4,7 @@ A Complete Finance Overview in a single app.
 
 ## Installation
 
-**Recommanded**: Create a virtual environnement for the project.
+**Recommanded**: Create a virtual environnement (venv) for the project.
 
 Install the build package:
 > python3 -m pip install --upgrade build
@@ -36,6 +36,10 @@ host=localhost
 Use the command:
 > python3 -m build
 
+
 #### Running the project
+
+** Don't forget to activate the virtual environment. **
+
 Use the command:
-> python3 -m dollarify [--debug | -d]
+> dollarify [--production | -p] [--debug | -d]

@@ -17,7 +17,7 @@ def cli(debug, production):
     if not production:
         os.environ['FLASK_ENV'] = 'development'
 
-    dollarify.app = dollarify.create_app()
+    dollarify.app = dollarify.create_app(db_config=postgresql_config, flask_config=flask_config)
     dollarify.app.run(debug=debug)
 
     

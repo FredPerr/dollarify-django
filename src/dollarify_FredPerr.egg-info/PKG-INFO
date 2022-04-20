@@ -52,8 +52,10 @@ host=localhost
 #### Building the project
 Use the command:
 > python3 -m build
+Reset the development environment
+>python3 -m pip install -e . 
 
 #### Running the project
 Use the command:
-> python3 -m dollarify [--debug | -d]
+> dollarify [--production | -p] [--debug | -d]
 

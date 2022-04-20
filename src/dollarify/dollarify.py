@@ -18,7 +18,6 @@ def create_app(*, db_config, flask_config) -> Flask:
     )
     secret_key_value = os.getenv(flask_config['secret_key'])
     application.config['SECRET_KEY'] = secret_key_value
-    print(secret_key_value) # TODO: Test if the variable works after OS reload.
 
     views.register_blueprints(application)
     views.register_error_handlers(application)

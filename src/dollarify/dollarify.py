@@ -1,4 +1,7 @@
 from flask import Flask
 
 
-app = Flask("dollarify")
+app = None
+
+def create_app():
+    return Flask("dollarify")

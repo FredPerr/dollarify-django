@@ -23,16 +23,18 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     package_dir={"": "src"},
+    py_modules=['dollarify'],
     packages=setuptools.find_packages(where="src"),
     include_package_data=True,
     zip_safe=False,
     install_requires=[
+        'Click',
         'flask',
     ],
     python_requires=">=3.6",
     entry_points={
         'console_scripts': [
-            'main=dollarify:main',
+            'dollarify=dollarify.scripts.run:cli',
         ]
     }
 )

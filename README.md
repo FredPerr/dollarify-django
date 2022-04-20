@@ -48,9 +48,5 @@ Use the command:
 # DEVELOPMENT NOTES:
 
 ## TODO:
-1- Change the `static/` and `templates/` folder locations to the same level as `dollarify.py`.
-    Change the Blueprint template directory path of views accordingly.
-
-2- Verify if centralisation of blueprints in `views.__init__.py` is possible and wishable.
-
-3- Verify why the custom error handlers are not working (not called).
+1 - Create the base template and classic template files such as authentication.
+2 - Connect the database with the flask app.

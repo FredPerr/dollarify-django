@@ -1,8 +1,8 @@
 config.ini
 venv/
-build
+build/
 __pycache__
-dist
+dist/
 *.egg-info/
 *.pyc
 *.pyo

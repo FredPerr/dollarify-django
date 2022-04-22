@@ -1,4 +1,3 @@
-from multiprocessing import Manager
 import os
 
 from flask import Flask
@@ -19,7 +18,6 @@ def create_app():
         static_folder=os.path.join(BASE_DIR, 'dollarify/static'), 
         template_folder=os.path.join(BASE_DIR, 'dollarify/templates'),
     )
-    print(settings.FLASK_CONFIG)
     secret_key_value = os.getenv(settings.FLASK_CONFIG['secret_key'])
     a.config['SECRET_KEY'] = secret_key_value
     a.config['SQLALCHEMY_DATABASE_URI'] = os.environ[settings.DB_CONFIG['sqlalchemy_db_uri']]

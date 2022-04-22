@@ -37,8 +37,7 @@ setuptools.setup(
     python_requires=">=3.6",
     entry_points={
         'console_scripts': [
-            'run=dollarify.scripts.run:cli',
-            'manage=dollarify.scripts.manage:cli',
+            'dollarify=dollarify.main:cli',
         ]
     }
 )

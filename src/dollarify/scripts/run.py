@@ -3,11 +3,11 @@ import os
 import click
 
 from dollarify import dollarify
-from dollarify.utils import config
+from dollarify.scripts import main
 
 
 
-@click.command()
+@main.cli.command(name='run')
 @click.option('-d', '--debug', is_flag=True, default=False, help='Active the debug mode while running')
 @click.option('-p', '--production', is_flag=True, default=False, help='Active the production mode while running')
 def cli(debug, production):

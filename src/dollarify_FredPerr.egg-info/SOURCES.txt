@@ -5,6 +5,11 @@ pyproject.toml
 setup.py
 src/dollarify/__init__.py
 src/dollarify/dollarify.py
+src/dollarify/settings.py
+src/dollarify/scripts/__init__.py
+src/dollarify/scripts/main.py
+src/dollarify/scripts/manage.py
+src/dollarify/scripts/run.py
 src/dollarify/utils/__init__.py
 src/dollarify/utils/config.py
 src/dollarify/views/__init__.py

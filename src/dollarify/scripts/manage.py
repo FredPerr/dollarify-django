@@ -2,9 +2,11 @@ import os
 
 import click
 from flask_migrate.cli import db
+from dollarify.scripts import main
 
 
-@click.group()
+
+@main.cli.group(name='manage')
 def cli():
     pass
 

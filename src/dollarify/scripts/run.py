@@ -2,8 +2,9 @@ import os
 
 import click
 
-from dollarify.utils import config
 from dollarify import dollarify
+from dollarify.utils import config
+
 
 
 @click.command()
@@ -11,15 +12,13 @@ from dollarify import dollarify
 @click.option('-p', '--production', is_flag=True, default=False, help='Active the production mode while running')
 def cli(debug, production):
 
-    postgresql_config = config.load('config.ini', 'postgresql')
-    flask_config = config.load('config.ini', 'flask')
-
+    from dollarify import settings
+    
+    os.environ['FLASK_APP'] = settings.FLASK_APP
     if not production:
         os.environ['FLASK_ENV'] = 'development'
+        os.environ['FLASK_APP'] = 'dollarify'
 
-    dollarify.app = dollarify.create_app(db_config=postgresql_config, flask_config=flask_config)
-    dollarify.app.run(host=flask_config['host'], port=flask_config['port'], debug=debug)
+    dollarify.app = dollarify.create_app()
+    dollarify.app.run(host=settings.DB_CONFIG['host'], port=settings.FLASK_CONFIG['port'], debug=debug)
 
-    
-
-    

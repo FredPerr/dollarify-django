@@ -50,3 +50,5 @@ Use the command:
 ## TODO:
 1 - Create the base template and classic template files such as authentication.
 2 - Connect the database with the flask app (with SQLAlchemy)
+3 - Edithte dollarify command  to add init-db
+4- Refactor the configuration system

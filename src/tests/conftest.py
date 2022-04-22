@@ -4,8 +4,8 @@ from dollarify import dollarify
 
 
 @pytest.fixture()
-def app():
-    app = dollarify.create_app()
+def dollarify():
+    app = app.create_app()
     app.config.update({
         "TESTING": True,
     })

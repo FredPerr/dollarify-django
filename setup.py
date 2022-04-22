@@ -30,12 +30,15 @@ setuptools.setup(
     install_requires=[
         'Click',
         'flask',
+        'Flask-SQLAlchemy',
+        'Flask-Migrate',
+        'psycopg2',
     ],
     python_requires=">=3.6",
     entry_points={
         'console_scripts': [
-            'dollarify=dollarify.scripts.run:cli',
-            'secret-key=dollarify.scripts.secret_key:cli'
+            'run=dollarify.scripts.run:cli',
+            'manage=dollarify.scripts.manage:cli',
         ]
     }
 )

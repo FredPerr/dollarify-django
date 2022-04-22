@@ -8,24 +8,25 @@ from dollarify import views
 from dollarify import settings
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-
 def create_app():
+
+    DB = settings.DB
 
     a = Flask(
         import_name="dollarify", 
-        static_folder=os.path.join(BASE_DIR, 'dollarify/static'), 
-        template_folder=os.path.join(BASE_DIR, 'dollarify/templates'),
+        static_folder=os.path.join(settings.BASE_DIR, 'dollarify/static'), 
+        template_folder=os.path.join(settings.BASE_DIR, 'dollarify/templates'),
     )
-    secret_key_value = os.getenv(settings.FLASK_CONFIG['secret_key'])
-    a.config['SECRET_KEY'] = secret_key_value
-    a.config['SQLALCHEMY_DATABASE_URI'] = os.environ[settings.DB_CONFIG['sqlalchemy_db_uri']]
+
+    a.config['SECRET_KEY'] = settings.SECRET_KEY
+    a.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{DB['USER']}:{DB['PASSWORD']}@{DB['HOST']}/{DB['NAME']}"
     a.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     views.register_blueprints(a)
     views.register_error_handlers(a)
     
+    os.environ['FLASK_APP'] = settings.APP_NAME
+
     return a
     
 

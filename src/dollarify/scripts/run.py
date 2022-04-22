@@ -20,5 +20,5 @@ def cli(debug, production):
         os.environ['FLASK_APP'] = 'dollarify'
 
     dollarify.app = dollarify.create_app()
-    dollarify.app.run(host=settings.DB_CONFIG['host'], port=settings.FLASK_CONFIG['port'], debug=debug)
+    dollarify.app.run(host=settings.DB['HOST'], port=settings.FLASK_SERVER['PORT'], debug=debug)
 

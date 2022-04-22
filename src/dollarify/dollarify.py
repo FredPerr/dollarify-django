@@ -24,9 +24,6 @@ def create_app():
 
     views.register_blueprints(a)
     views.register_error_handlers(a)
-    
-    os.environ['FLASK_APP'] = settings.APP_NAME
-
     return a
     
 

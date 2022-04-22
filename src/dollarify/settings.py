@@ -1,14 +1,15 @@
 import os
 
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+
 # App name lowercased 
 APP_NAME = 'dollarify'
 
+
 # The Flask Application reference.
-FLASK_APP = 'dollarify.dollarify.app'
-
-
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+FLASK_APP = os.path.join(BASE_DIR, 'dollarify.dollarify')
 
 
 DB = {

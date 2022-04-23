@@ -1,4 +1,0 @@
-include dollarify/schema.sql
-graft dollarify/static
-graft dollarify/templates
-global-exclude *.pyc 

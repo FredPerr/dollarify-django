@@ -16,20 +16,6 @@ Setup the develop mode:
 
 > python3 -m setup develop
 
-Create a `config.ini` file at the root of the package folder (same level as `src/` folder). Add the following attributes inside:
-```
-[postgresql-database]
-host=localhost
-database=dollarify
-user=db_username
-password=pa$$w0rd
-port=5432
-
-[flask-dev-server]
-port=8000
-host=localhost
-```
-
 ### Development Cycle
 
 #### Building the project
@@ -48,7 +34,3 @@ Use the command:
 # DEVELOPMENT NOTES:
 
 ## TODO:
-1 - Create the base template and classic template files such as authentication.
-2 - Connect the database with the flask app (with SQLAlchemy)
-3 - Edithte dollarify command  to add init-db
-4- Refactor the configuration system

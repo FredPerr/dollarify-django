@@ -1,4 +1,3 @@
-config.ini
 venv/
 build/
 __pycache__
@@ -6,4 +5,3 @@ dist/
 *.egg-info/
 *.pyc
 *.pyo
-migrations/

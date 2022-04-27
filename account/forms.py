@@ -1,18 +1,40 @@
-from django.contrib.auth.forms import UserCreationForm as UCreationForm 
-from django.contrib.auth.forms import UserChangeForm as UChangeForm
+from django.contrib.auth.forms import (
+    UserCreationForm, UserChangeForm, 
+    AuthenticationForm,PasswordChangeForm, 
+    PasswordResetForm, SetPasswordForm
+)
+
 
 from .models import User
 
 
-class UserCreationForm(UCreationForm):
+class UserRegisterForm(UserCreationForm):
 
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name')
+
+
+class UserEditForm(UserChangeForm):
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name')
+
+
+class UserConnectForm(AuthenticationForm):
     class Meta:
         model = User
         fields = ('email',)
 
 
-class UserChangeForm(UChangeForm):
+class UserRecoverForm(PasswordResetForm):
+    pass
+    
 
-    class Meta:
-        model = User
-        fields = ('email',)
+class UserPasswordChangeForm(PasswordChangeForm):
+    pass
+
+
+class UserPasswordSetForm(SetPasswordForm):
+    pass

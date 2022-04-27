@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Dollarify - Change Password{% endblock %}
+
+{% block content %}
+  <h1>Password Change</h1>
+  <p>Enter your authentication information below to change your password.</p>
+
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Apply changes">
+  </form>
+{% endblock %}

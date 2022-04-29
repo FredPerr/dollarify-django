@@ -22,3 +22,5 @@ Use the command:
 # DEVELOPMENT NOTES:
 
 ## TODO:
+Add favicon to website
+Install SASS/SCSS and TS to project.

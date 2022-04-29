@@ -1,3 +1,4 @@
+{% load sass_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +11,7 @@
     <meta name="author" content="Fred Perron">
     <meta name="color-scheme" content="only light">
     <title>{% block title %}Dollarify{% endblock%}</title>
+    <link type="text/css" href="{% sass_src 'style/style.scss' %}" rel="stylesheet" media="screen">
 </head>
 <body>
     {% block content %}

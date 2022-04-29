@@ -23,4 +23,3 @@ Use the command:
 
 ## TODO:
 Add favicon to website
-Install SASS/SCSS and TS to project.

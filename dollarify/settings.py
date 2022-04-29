@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sass_processor',
+    'compressor',
     'account',
 ]
 
@@ -126,6 +126,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -134,7 +138,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'account.User'
 
 LOGIN_REDIRECT_URL = '/auth/'
-LOGIN_URL = '/auth/connect/'
+LOGIN_URL = 'account:auth-connect'
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
@@ -147,8 +151,12 @@ EMAIL_USE_TLS = True
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'sass_processor.finders.CssFinder',
+    'compressor.finders.CompressorFinder',
 ]
 
-SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
 
+COMPRESS_ROOT = '/static/'
+
+COMPRESS_PRECOMPILERS = [
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+]

@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 
-from account.models import Account, FinancialEntity, Transaction
+from account.models import Account, FinancialEntity, StockMarketTrade, Transaction
 from .forms import AccountCreateForm, FinancialEntityCreateForm
 
 
@@ -91,3 +91,10 @@ def account(request, id=None):
         return render(request, 'dashboard/account/index.html', context={
             'accounts': Account.objects.filter(user=request.user)
         })
+
+
+@login_required
+def stock_market_account(request):
+    return render(request, 'dashboard/account/stock_market/view.html', context={
+        'transactions': StockMarketTrade.objects.filter(source_entity__id=request.user.id)
+    })

@@ -12,5 +12,6 @@ urlpatterns = [
     path('entity/', financial_entity, name='dashboard-financial-entity'),
     path('entity/create', financial_entity_create, name='dashboard-financial-entity-create'),
     path('entity/<uuid:id>/', financial_entity, name='dashboard-financial-entity'),
-    
+
+    # path('trading/<uuid:id>/', financial_entity, name='dashboard-financial-entity'),    
 ]

@@ -4,10 +4,10 @@ A Complete Finance Overview in a single app.
 
 ## Installation
 
-**Recommanded**: Create a virtual environnement (venv) for the project.
+**Recommanded**: Create a virtual environnement (venv) for the project and activate it.
 
 Install the build package:
-> python3 -m pip install --upgrade build
+> pip install -r requirements.txt
 
 ### Development Cycle
 
@@ -22,4 +22,6 @@ Use the command:
 # DEVELOPMENT NOTES:
 
 ## TODO:
+Add the create view instead of function view for the Account and Financial entity creators;
+Add, in the accounts template, reference to account type and attribute pages.
 Add favicon to website

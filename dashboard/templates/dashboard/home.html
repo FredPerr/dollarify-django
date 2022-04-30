@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Dollarify - Dashboard {% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+<div>
+    <h3>Stock Market Accounts</h3>
+    <ul>
+        {% for sm_account in stock_market_accounts %}
+        <!-- Get the accounts -->
+            <li>{{sm_account.name}}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -31,26 +31,34 @@ class AccountAttribute(models.Model):
     full_name = models.CharField(max_length=32, null=True)
     information = models.TextField()
 
+    def __str__(self):
+        return self.short_name
+
 
 class AccountType(models.Model):
     short_name = models.CharField(max_length=32)
     full_name = models.CharField(max_length=32, null=True)
     information = models.TextField()
 
+    def __str__(self):
+        return self.short_name
+
 
 class FinancialEntity(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=32)
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True, blank=True)
 
 
 class Account(FinancialEntity):
 
+    user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
     type = models.ForeignKey(AccountType, related_name='type', on_delete=models.RESTRICT)
-    attribute = models.ForeignKey(AccountAttribute, related_name='attribute', on_delete=models.RESTRICT)
-    # name = (reference to superclass)
-    description = None
+    attribute = models.ForeignKey(AccountAttribute, related_name='attribute', on_delete=models.RESTRICT, null=True, blank=True)
 
+    def __str__(self) -> str:
+        attrib_name = self.attribute.short_name if self.attribute else ''
+        return f"{self.user.email} {self.type.short_name} {attrib_name}"
 
 
 class Region(models.Model):
@@ -83,8 +91,14 @@ class StockMarket(models.Model):
     lunch_end_hour = models.DecimalField(max_digits=4, decimal_places=2, default=None, null=True)
 
 
-class StockMarketTrade(models.Model):
-    account = models.ForeignKey(Account, related_name='account', on_delete=models.CASCADE)
+
+class Transaction(models.Model):
+    source_entity = models.ForeignKey(FinancialEntity, related_name='source_entity', on_delete=models.CASCADE)
+    destination_entity = models.ForeignKey(FinancialEntity, related_name='destination_entity', on_delete=models.CASCADE, null=True)
+    datetime = models.DateTimeField(default=timezone.now)
+
+
+class StockMarketTrade(Transaction):
     stock_market = models.ForeignKey(StockMarket, related_name='stock_market', on_delete=models.CASCADE)
     ticker = models.CharField(max_length=10)
     bought_value = models.DecimalField(decimal_places=3, max_digits=10)
@@ -94,31 +108,21 @@ class StockMarketTrade(models.Model):
     sold_value = models.DecimalField(max_digits=10, decimal_places=3)
 
 
-class Loan(models.Model):
-    financial_entity = models.ForeignKey(FinancialEntity, on_delete=models.RESTRICT)
+class Loan(Transaction):
     amount = models.DecimalField(max_digits=15, decimal_places=2)
     interest_rate = models.DecimalField(max_digits=4, decimal_places=2, default=0)
     due_date = models.DateField(null=True)
 
 
-class Transfer(models.Model):
-    source_entity = models.ForeignKey(FinancialEntity, related_name='transfer_source_entity', on_delete=models.CASCADE)
-    destination_account = models.ForeignKey(Account, related_name='transfer_account', on_delete=models.CASCADE)
+class Transfer(Transaction):
     amount = models.DecimalField(max_digits=15, decimal_places=2)
-    datetime = models.DateTimeField(default=timezone.now)
 
 
-class Payment(models.Model):
-    source_account = models.ForeignKey(Account, related_name='payment_source_account', on_delete=models.CASCADE)
-    destination_entity = models.ForeignKey(FinancialEntity, related_name='payment_destination_entity', on_delete=models.CASCADE, null=True)
+class Payment(Transaction):
     amount = models.DecimalField(max_digits=15, decimal_places=2)
-    datetime = models.DateTimeField(default=timezone.now)
     reason = models.CharField(max_length=50)
 
 
-class Paycheck(models.Model):
-    source_entity = models.ForeignKey(FinancialEntity, related_name='paycheck_source_entity', on_delete=models.CASCADE)
-    destination_account = models.ForeignKey(Account, related_name='paycheck_destination_account', on_delete=models.CASCADE, null=True)
+class Paycheck(Transaction):
     amount = models.DecimalField(max_digits=15, decimal_places=2)
-    date = models.DateField(default=timezone.now)
  

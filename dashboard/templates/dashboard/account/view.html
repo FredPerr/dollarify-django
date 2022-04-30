@@ -1,0 +1,31 @@
+{% extends "dashboard/home.html" %}
+
+{% block content %}
+
+<h1>{{account.name}} Account</h1>
+<h3>({{account.id}})</h3> 
+<h2>Type: {{account.type.full_name}}</h2>
+{% if account.attribute is not None %}<h2>Attribute: </h2>{{account.attribute.full_name}}{% endif %}
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <td>From</td>
+            <td>To</td>
+            <td>Date & Time</td>
+        </tr>
+        {% for transaction in transactions %}
+        <tr>
+            <td><a href="{% url 'dashboard-financial-entity' id=transaction.source_entity.id %}">{{transaction.source_entity.id}}</td>
+        </tr>
+        {% endfor %}
+    </thead>
+</table>
+<br/>
+
+<p>
+    :
+</p>
+{{request.session.form_data_fred}}
+
+{% endblock %}

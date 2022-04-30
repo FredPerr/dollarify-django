@@ -2,4 +2,7 @@
 {% block content %}
 <h1>Authentication Overview</h1>
 <h2>Hello, {{request.user.email}}!</h2>
+
+
+<a href="{% url 'dashboard' %}">Go to my dashboard</a>
 {% endblock %}

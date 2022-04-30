@@ -9,13 +9,12 @@ from django.contrib.auth.views import (
     PasswordResetConfirmView
 )
 
-from .models import User
+from .models import User, Account
 from .forms import (
     UserRegisterForm, UserEditForm, UserConnectForm, 
     UserPasswordChangeForm, UserRecoverForm,
     UserPasswordSetForm
 )
-
 
 
 class RegisterView(generic.CreateView):

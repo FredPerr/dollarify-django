@@ -1,18 +1,11 @@
 from django.forms import ModelForm
 
-from account.models import Account, FinancialEntity
+from account.models import StockMarketAccount
 
 
-class FinancialEntityCreateForm(ModelForm):
-
-    class Meta:
-        model = FinancialEntity
-        fields = ('name', 'description')
-
-
-class AccountCreateForm(ModelForm):
+class StockMarketAccountCreateForm(ModelForm):
 
     class Meta:
-        model = Account
-        fields = ('name', 'type', 'attribute', 'description')
+        model = StockMarketAccount
+        fields = ('name', 'verbose', 'exchange')
         exclude = ('user_id', )

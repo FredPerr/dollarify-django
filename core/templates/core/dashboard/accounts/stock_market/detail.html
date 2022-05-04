@@ -15,14 +15,14 @@
                 <td>Ticker</td>
                 <td>Bought On</td>
                 <td>Shares</td>
-                <td>Buy Value</td>
-                <td>Fees</td>
-                <td>Sold Price</td>
+                <td>Buy Value (~$)</td>
+                <td>Fees ($)</td>
+                <td>Sold Price (~$)</td>
                 <td>Sold On</td>
-                <td>Last Value</td>
-                <td>Total Value</td>
+                <td>Last Value (~$)</td>
+                <td>Total Value ($)</td>
 
-                <td>Profit</td>
+                <td>Profit ($)</td>
                 <td>Profit (%)</td>
                 <td>Duration</td>
                 <td>Currency</td>
@@ -32,12 +32,12 @@
             {% for trade in trades %}
             <tr>
                 <td>{{ trade.ticker }}</td>
-                <td>{{ trade.bought_on }}</td>
+                <td>{{ trade.bought_on|date:"Y-m-d" }}</td>
                 <td>{{ trade.amount }}</td>
                 <td>{{ trade.bought_value }}</td>
                 <td>{{ trade.fees }}</td>
                 <td>{{ trade.sold_value }}</td>
-                <td>{{ trade.sold_on }}</td>
+                <td>{{ trade.sold_on|date:"Y-m-d" }}</td>
                 <td>{{ trade.last_value }}</td>
                 <td>{{ trade.total_value }}</td>
 
@@ -45,7 +45,6 @@
                 <td>{{ trade.profit_percent }}</td>
                 <td>{{ trade.duration }}</td>
                 <td>{{ trade.currency }}</td>
-
             </tr>
             {% endfor %}
         </tbody>

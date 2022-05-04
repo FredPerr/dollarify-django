@@ -16,6 +16,12 @@ from .managers import UserManager
 from .validators import validate_phone_number
 
 
+CURRENCIES = (
+    ('CAN', 'CAN'),
+    ('USD', 'USD')
+)
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     email = EmailField('email address', unique=True)
     first_name = CharField(max_length=50)
@@ -70,6 +76,7 @@ class StockExchange(Entity):
 
 class StockMarketAccount(Account):
     exchange = ForeignKey(StockExchange, RESTRICT, 'exchange_fk')
+    currency = CharField(max_length=4, choices=CURRENCIES)
 
     # TODO: add properties that fetch account value from stock trades.
 
@@ -107,11 +114,6 @@ class FundTransfer(Transaction):
 class StockTrade(Transaction):
     source = ForeignKey(StockMarketAccount, CASCADE, 'source_stocktrade')
 
-    CURRENCIES = (
-        ('CAN', 'CAN'),
-        ('USD', 'USD')
-    )
-
     ticker = CharField(max_length=10)
     currency = CharField(max_length=4, choices=CURRENCIES)
     bought_value = DecimalField(max_digits=10, decimal_places=3)
@@ -143,6 +145,7 @@ class StockTrade(Transaction):
     @property
     def duration(self):
         offset = self.sold_on if not self.active else timezone.now()
+
         return offset - self.bought_on
 
     def __str__(self):

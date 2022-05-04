@@ -38,4 +38,3 @@ admin.site.register(User, CustomUserAdmin)
 
 for model in MODELS:
     admin.site.register(model)
-

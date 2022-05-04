@@ -1,3 +1,4 @@
+from django.forms import ModelForm
 from django.contrib.auth.forms import (
     UserCreationForm, UserChangeForm, 
     AuthenticationForm,PasswordChangeForm, 
@@ -5,7 +6,7 @@ from django.contrib.auth.forms import (
 )
 
 
-from .models import User
+from .models import User, StockMarketAccount
 
 
 class UserRegisterForm(UserCreationForm):
@@ -38,3 +39,15 @@ class UserPasswordChangeForm(PasswordChangeForm):
 
 class UserPasswordSetForm(SetPasswordForm):
     pass
+
+
+#################
+# Account forms #
+#################
+
+class StockMarketAccountCreateForm(ModelForm):
+
+    class Meta:
+        model = StockMarketAccount
+        fields = ('name', 'verbose', 'exchange')
+        exclude = ('user_id', )

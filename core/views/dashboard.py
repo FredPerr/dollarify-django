@@ -3,9 +3,10 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 
-from ..models import CheckingAccount, StockMarketAccount
+from ..models import CheckingAccount, FundTransfer, Loan, Paycheck, Payment, StockMarketAccount, StockTrade
 from ..forms import StockMarketAccountCreateForm
 
 
@@ -42,7 +43,12 @@ class StockMarketAccountDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Edit context here.
+        id = context['object'].id
+        # context['loans'] = Loan.objects.filter(target__id=id)
+        # context['paychecks'] = Paycheck.objects.filter(target__id=id)
+        # context['payments'] = Payment.objects.filter(source__id=id)
+        # context['fund_transfers'] = FundTransfer.objects.filter(Q(source__id=id) | Q(target__id=id))
+        context['trades'] = StockTrade.objects.filter(source__id=id)
         return context
 
 

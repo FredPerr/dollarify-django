@@ -6,7 +6,7 @@ from ..views.main import home
 
 urlpatterns = [
 
-    path('home/', home, name='home'),
+    path('', home, name='home'),
 
     path('auth/', include('core.urls.auth')),
     path('profile/', include('core.urls.profile')),

@@ -29,7 +29,7 @@ MODELS = (
     Entity, Account, StockExchange,
     StockMarketAccount, CheckingAccount, 
 
-    Transfer, FundTransfer, StockTrade, 
+    FundTransfer, StockTrade, 
     Loan, Payment, Paycheck,  
 )
 

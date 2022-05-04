@@ -1,0 +1,62 @@
+[
+    {
+        "model": "core.entity",
+        "pk": "0cc15b32-0876-4549-8964-a54aa4f35da4",
+        "fields": {
+            "name": "TSX",
+            "verbose": "Toronto Stock Exchange"
+        }
+    },
+    {
+        "model": "core.entity",
+        "pk": "79867b44-8a86-4236-86fa-96d26e1ba17a",
+        "fields": {
+            "name": "NYSE",
+            "verbose": "New York Stock Exchange"
+        }
+    },
+    {
+        "model": "core.entity",
+        "pk": "d73953ac-91b5-4f46-a568-fa3a1478ce36",
+        "fields": {
+            "name": "Nasdaq",
+            "verbose": "Nasdaq Stock Exchange"
+        }
+    },
+    {
+        "model": "core.stockexchange",
+        "pk": "0cc15b32-0876-4549-8964-a54aa4f35da4",
+        "fields": {
+            "region": "Toronto, Canada",
+            "timezone": "EDT",
+            "open_hour": "9.50",
+            "close_hour": "4.00",
+            "lunch_start_hour": null,
+            "lunch_end_hour": null
+        }
+    },
+    {
+        "model": "core.stockexchange",
+        "pk": "79867b44-8a86-4236-86fa-96d26e1ba17a",
+        "fields": {
+            "region": "New York, United States",
+            "timezone": "EDT",
+            "open_hour": "9.50",
+            "close_hour": "4.00",
+            "lunch_start_hour": null,
+            "lunch_end_hour": null
+        }
+    },
+    {
+        "model": "core.stockexchange",
+        "pk": "d73953ac-91b5-4f46-a568-fa3a1478ce36",
+        "fields": {
+            "region": "New York, United States",
+            "timezone": "EDT",
+            "open_hour": "9.50",
+            "close_hour": "4.00",
+            "lunch_start_hour": null,
+            "lunch_end_hour": null
+        }
+    }
+]

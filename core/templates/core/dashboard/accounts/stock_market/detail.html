@@ -7,6 +7,52 @@
 <h4>{{ object.id }}</h4>
 
 
+<div>
+    <h3>Trades</h3>
+    <table>
+        <thead>
+            <tr>
+                <td>Ticker</td>
+                <td>Bought On</td>
+                <td>Shares</td>
+                <td>Buy Value</td>
+                <td>Fees</td>
+                <td>Sold Price</td>
+                <td>Sold On</td>
+                <td>Last Value</td>
+                <td>Total Value</td>
+
+                <td>Profit</td>
+                <td>Profit (%)</td>
+                <td>Duration</td>
+                <td>Currency</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trade in trades %}
+            <tr>
+                <td>{{ trade.ticker }}</td>
+                <td>{{ trade.bought_on }}</td>
+                <td>{{ trade.amount }}</td>
+                <td>{{ trade.bought_value }}</td>
+                <td>{{ trade.fees }}</td>
+                <td>{{ trade.sold_value }}</td>
+                <td>{{ trade.sold_on }}</td>
+                <td>{{ trade.last_value }}</td>
+                <td>{{ trade.total_value }}</td>
+
+                <td>{{ trade.profit }}</td>
+                <td>{{ trade.profit_percent }}</td>
+                <td>{{ trade.duration }}</td>
+                <td>{{ trade.currency }}</td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
 <a href="{% url 'dashboard:overview' %}">Go back to my dashboard</a>
 <a href="{% url 'dashboard:stock-market-account-remove' id=object.id %}">Delete this account</a>
 {% endblock %}

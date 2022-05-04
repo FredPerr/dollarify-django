@@ -64,6 +64,9 @@ class StockExchange(Entity):
     lunch_start_hour = DecimalField(max_digits=4, decimal_places=2, default=None, null=True, blank=True)
     lunch_end_hour = DecimalField(max_digits=4, decimal_places=2, default=None, null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.verbose} ({self.name})"
+
 
 class StockMarketAccount(Account):
     exchange = ForeignKey(StockExchange, RESTRICT, 'exchange_fk')
@@ -92,19 +95,6 @@ class Transaction(Model):
         abstract = True
 
 
-class Transfer(Transaction):
-    """
-    Transaction from an Account to a named entity.
-    """
-
-    source = ForeignKey(Account, CASCADE, 'source_fk')
-    withdrew = BooleanField()
-    """
-    If true, the amount of the transfer will be withdrawn from the Account.
-    Otherwise, it will be added.
-    """
-
-
 class FundTransfer(Transaction):
     """
     Transaction between two accounts.
@@ -117,18 +107,52 @@ class FundTransfer(Transaction):
 class StockTrade(Transaction):
     source = ForeignKey(StockMarketAccount, CASCADE, 'source_stocktrade')
 
+    CURRENCIES = (
+        ('CAN', 'CAN'),
+        ('USD', 'USD')
+    )
+
     ticker = CharField(max_length=10)
+    currency = CharField(max_length=4, choices=CURRENCIES)
     bought_value = DecimalField(max_digits=10, decimal_places=3)
-    shares = IntegerField()
     bought_on = DateTimeField(default=timezone.now)
-    sold_on = DateTimeField(null=True)
-    sold_value = DecimalField(max_digits=10, decimal_places=3)
+    sold_on = DateTimeField(null=True, blank=True)
+    sold_value = DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
+    fees = DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    @property
+    def active(self):
+        return not self.sold_value and not self.sold_on
+
+    @property
+    def last_value(self):
+        return 0 if self.active else self.sold_value
+
+    @property
+    def total_value(self):
+        return round(self.last_value * self.amount, 2)
+
+    @property
+    def profit_percent(self):
+        return round(100 * (self.last_value / self.bought_value - 1), 2)
+
+    @property
+    def profit(self):
+        return round((self.last_value - self.bought_value) * self.amount, 2)
+
+    @property
+    def duration(self):
+        offset = self.sold_on if not self.active else timezone.now()
+        return offset - self.bought_on
+
+    def __str__(self):
+        return f"{self.source.id} ({self.source.name}) {self.ticker} {self.amount}"
 
 
 class Loan(Transaction):
 
     target = ForeignKey(Account, CASCADE, 'target_loan')
-    source = ForeignKey(Account, CASCADE, 'source_loan')
+    source = ForeignKey(Entity, CASCADE, 'source_loan')
     """
     The target account is the account on which the money is loaned.
     """
@@ -138,12 +162,12 @@ class Loan(Transaction):
 
 class Payment(Transaction):
     source = ForeignKey(Account, CASCADE, 'source_payment')
-    target = ForeignKey(Account, CASCADE, 'target_payment')
+    target = ForeignKey(Entity, CASCADE, 'target_payment')
     motive = CharField(max_length=24, null=True, blank=True)
 
 
 class Paycheck(Transaction):
-    source = ForeignKey(Account, CASCADE, 'source_paycheck')
+    source = ForeignKey(Entity, CASCADE, 'source_paycheck')
     target = ForeignKey(Account, CASCADE, 'target_paycheck')
     hours = DecimalField(null=True, blank=True, max_digits=7, decimal_places=2)
     

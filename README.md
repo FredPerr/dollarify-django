@@ -22,5 +22,5 @@ Use the command:
 # DEVELOPMENT NOTES:
 
 ## TODO:
-Add the CreateView instead of function view for the Account and Financial entity creators;
-Add the DetailView instead of function when possible.
+Verify for class based system instead of function based one.
+Populate Database when init (fixtures).

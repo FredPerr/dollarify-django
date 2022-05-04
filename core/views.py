@@ -19,6 +19,10 @@ from .forms import (
 )
 
 
+def home(request):
+    return render(request, 'home.html')
+
+
 class RegisterView(generic.CreateView):
     form_class = UserRegisterForm
     success_url = reverse_lazy("dashboard:overview")

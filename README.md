@@ -22,7 +22,5 @@ Use the command:
 # DEVELOPMENT NOTES:
 
 ## TODO:
-Add the create view instead of function view for the Account and Financial entity creators;
-Add the DetailView instaed of function when possible.
-Add, in the accounts template, reference to account type and attribute pages.
-Add favicon to website.
+Add the CreateView instead of function view for the Account and Financial entity creators;
+Add the DetailView instead of function when possible.

@@ -45,6 +45,10 @@ class Entity(Model):
     verbose = CharField(max_length=100, null=True, blank=True)
 
 
+    def __str__(self):
+        return f"{self.name} ({self.id})"
+
+
 class Account(Entity):
     user = ForeignKey(User, CASCADE, 'user_fk')
 

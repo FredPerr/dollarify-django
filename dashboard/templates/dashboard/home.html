@@ -4,6 +4,26 @@
 {% block content %}
 <h1>Dashboard</h1>
 <div>
-    
+    <h3>Accounts</h3>
+    <div>
+        <h4>Stock Market</h4>
+        <ul>
+            {% for stock_market_account in stock_market_accounts %}
+            <li>
+                <a href="#">{{stock_market_account.name}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <h4>Checking</h4>
+        <ul>
+            {% for checking_account in checking_accounts %}
+            <li>
+                <a href="#">{{checking_account.name}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}

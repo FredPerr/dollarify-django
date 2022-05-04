@@ -1,7 +1,7 @@
 from django.urls import path
 
 
-from ..views import (
+from ..views.password import (
     PasswordEditView, PasswordChangeDone, PasswordRecoverView, 
     password_recover_done, PasswordResetView, password_reset_complete
 )

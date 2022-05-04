@@ -1,7 +1,7 @@
 from django.urls import path
 
 
-from ..views import EditView, profile_overview
+from ..views.profile import EditView, profile_overview
 
 
 app_name = 'profile'

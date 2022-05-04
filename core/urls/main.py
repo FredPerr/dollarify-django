@@ -1,12 +1,12 @@
 from django.urls import path, include
 
 
-from ..views import home
+from ..views.main import home
 
 
 urlpatterns = [
 
-    path('home/', home),
+    path('home/', home, name='home'),
 
     path('auth/', include('core.urls.auth')),
     path('profile/', include('core.urls.profile')),

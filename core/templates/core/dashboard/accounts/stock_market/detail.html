@@ -7,6 +7,6 @@
 <h4>{{ object.id }}</h4>
 
 
-<a href="{% url 'dashboard:dashboard' %}">Go back to my dashboard</a>
+<a href="{% url 'dashboard:overview' %}">Go back to my dashboard</a>
 <a href="{% url 'dashboard:stock-market-account-remove' id=object.id %}">Delete this account</a>
 {% endblock %}

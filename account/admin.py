@@ -2,10 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import UserCreationForm, UserChangeForm
-from .models import (
-    FinancialEntity, Holiday, Loan, Paycheck, Payment, Region, Transfer, User, Account, AccountType, 
-    AccountAttribute, StockMarket, StockMarketTrade,
-)
+from .models import *
 
 
 class CustomUserAdmin(UserAdmin):
@@ -28,18 +25,17 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
 
 
-admin.site.register(User, CustomUserAdmin)
-admin.site.register(Account)
-admin.site.register(AccountType)
-admin.site.register(AccountAttribute)
-admin.site.register(StockMarket)
-admin.site.register(StockMarketTrade)
-admin.site.register(FinancialEntity)
-admin.site.register(Region)
-admin.site.register(Holiday)
-admin.site.register(Loan)
-admin.site.register(Transfer)
-admin.site.register(Payment)
-admin.site.register(Paycheck)
+MODELS = (
+    Entity, Account, StockExchange,
+    StockMarketAccount, CheckingAccount, 
 
+    Transfer, FundTransfer, StockTrade, 
+    Loan, Payment, Paycheck,  
+)
+
+
+admin.site.register(User, CustomUserAdmin)
+
+for model in MODELS:
+    admin.site.register(model)
 

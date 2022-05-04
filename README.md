@@ -24,3 +24,4 @@ Use the command:
 ## TODO:
 Verify for class based system instead of function based one.
 Populate Database when init (fixtures).
+Add the CRUD operations for entities, stock market accounts, stock market trades, income, transfers, etc.

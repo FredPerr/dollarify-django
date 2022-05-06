@@ -1,8 +1,9 @@
 import uuid
-import decimal
+from decimal import Decimal
 import datetime
 
 from django.utils import timezone
+from django.core.validators import MinValueValidator
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db.models import (
     Model, CharField, EmailField, 
@@ -16,7 +17,7 @@ from django.db.models import (
 from .managers import UserManager
 from .validators import validate_phone_number
 from .currency import CURRENCIES
-from core import currency
+from . import currency
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -75,11 +76,29 @@ class StockMarketAccount(Account):
     exchange = ForeignKey(StockExchange, RESTRICT, 'exchange_fk')
     currency = CharField(max_length=4, choices=CURRENCIES)
 
-    # TODO: add properties that fetch account value from stock trades.
+
+class IncomeAccount(Account):
+
+    @property
+    def paychecks(self):
+        return Paycheck.objects.filter(target=self)
+
+    @property
+    def total_earned(self):
+        total = 0
+        for paycheck in self.paychecks:
+            total += paycheck.amount
+        return total
+    
+    def total_time(self):
+        total = 0
+        for paycheck in self.paychecks:
+            total += paycheck.hours
+        return total
 
 
-class CheckingAccount(Account):
-    host = ForeignKey(Entity, RESTRICT, 'host_fk')
+    def __str__(self):
+        return f"{self.name}"
 
 
 ######################
@@ -113,7 +132,7 @@ class StockTrade(Transaction):
 
     ticker = CharField(max_length=10)
     currency = CharField(max_length=4, choices=CURRENCIES)
-    bought_value = DecimalField(max_digits=10, decimal_places=3)
+    bought_value = DecimalField(max_digits=10, decimal_places=3, validators=[MinValueValidator(0.001)])
     bought_on = DateTimeField(default=timezone.now)
     sold_on = DateTimeField(null=True, blank=True)
     sold_value = DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
@@ -125,11 +144,11 @@ class StockTrade(Transaction):
 
     @property
     def last_value(self):
-        return decimal.Decimal(0.0) if self.active else self.sold_value
+        return Decimal(0.0) if self.active else self.sold_value
 
     @property
     def total_value(self):
-        return round(decimal.Decimal(self.last_value) * self.amount * decimal.Decimal(currency.get_conversion_rate(self.currency, self.source.currency)), 2)
+        return round(Decimal(self.last_value) * self.amount * CurrencyRate.objects.get(from_cur=self.currency, to_cur=self.source.currency).rate, 2)
 
     @property
     def profit_percent(self):
@@ -168,7 +187,7 @@ class Payment(Transaction):
 
 class Paycheck(Transaction):
     source = ForeignKey(Entity, CASCADE, 'source_paycheck')
-    target = ForeignKey(Account, CASCADE, 'target_paycheck')
+    target = ForeignKey(IncomeAccount, CASCADE, 'target_paycheck')
     hours = DecimalField(null=True, blank=True, max_digits=7, decimal_places=2)
     
     period_start = DateField(null=True, blank=True)
@@ -184,16 +203,19 @@ class CurrencyRate(Model):
     from_cur = CharField(max_length=4)
     to_cur = CharField(max_length=4)
     last_value = DecimalField(max_digits=10, decimal_places=5)
-    last_updated = DateTimeField(auto_now_add=True)
+    last_updated = DateTimeField(default=timezone.now)
 
     @property
     def rate(self):
-        if datetime.datetime.now(timezone.utc) - self.last_updated > datetime.timedelta(hours=6):
-            rate = currency.get_conversion_rate(self.from_cur, self.to_cur)
-            self.last_value = rate
-            self.last_updated = timezone.now()
-            self.save()
-            return round(rate, 2)
+        if datetime.datetime.now(timezone.utc) - self.last_updated > datetime.timedelta(hours=3):
+            try:
+                rate = currency.get_conversion_rate(self.from_cur, self.to_cur)
+                self.last_value = rate
+                self.last_updated = timezone.now()
+                self.save()
+                return round(rate, 2)
+            except:
+                print('Could not reload the conversion rate.')
         return round(self.last_value, 2)
 
     def __str__(self):

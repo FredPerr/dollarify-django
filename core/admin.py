@@ -27,7 +27,7 @@ class CustomUserAdmin(UserAdmin):
 
 MODELS = (
     Entity, Account, StockExchange,
-    StockMarketAccount, CheckingAccount, 
+    StockMarketAccount, 
 
     FundTransfer, StockTrade, 
     Loan, Payment, Paycheck, CurrencyRate

@@ -28,6 +28,7 @@
                 <td>Profit (%)</td>
                 <td>Duration</td>
                 <td>Currency</td>
+                <td>&#x1F5D1;</td>
             </tr>
         </thead>
         <tbody>
@@ -47,6 +48,7 @@
                 <td>{{ trade.profit_percent }}</td>
                 <td>{{ trade.duration }}</td>
                 <td>{{ trade.currency }}</td>
+                <td><a href="{% url 'dashboard:stock-market-del-trade' id=object.id pk=trade.pk %}">&#9746;</a></td>
             </tr>
             {% endfor %}
         </tbody>

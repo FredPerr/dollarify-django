@@ -2,7 +2,7 @@ from django.urls import path
 
 
 from ..views.dashboard import (
-    StockMarketNewTradeView, dashboard_overview, StockMarketAccountCreateView, 
+    StockMarketDelTradeView, StockMarketNewTradeView, dashboard_overview, StockMarketAccountCreateView, 
     StockMarketAccountDetailView, StockMarketAccountDeleteView
 )
 
@@ -18,4 +18,5 @@ urlpatterns = [
     path('account/stock-market/delete/<uuid:id>/', StockMarketAccountDeleteView.as_view(), name='stock-market-account-remove'),
 
     path('account/stock-market/<uuid:id>/new-trade/', StockMarketNewTradeView.as_view(), name='stock-market-new-trade'),
+    path('account/stock-market/<uuid:id>/del-trade/<pk>/', StockMarketDelTradeView.as_view(), name='stock-market-del-trade'),
 ]

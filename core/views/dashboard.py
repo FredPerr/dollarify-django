@@ -3,11 +3,11 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 
 
-from ..models import CheckingAccount, FundTransfer, Loan, Paycheck, Payment, StockMarketAccount, StockTrade
-from ..forms import StockMarketAccountCreateForm
+from ..models import CheckingAccount, CurrencyRate, StockMarketAccount, StockTrade
+from ..forms import StockMarketAccountCreateForm, StockMarketTradeCreateForm
+from .. import currency
 
 
 @login_required
@@ -49,6 +49,8 @@ class StockMarketAccountDetailView(DetailView):
         # context['payments'] = Payment.objects.filter(source__id=id)
         # context['fund_transfers'] = FundTransfer.objects.filter(Q(source__id=id) | Q(target__id=id))
         context['trades'] = StockTrade.objects.filter(source__id=id)
+        context['USD_to_CAD_rate'] = CurrencyRate.objects.get(from_cur='USD', to_cur='CAD').rate
+        context['CAD_to_USD_rate'] = CurrencyRate.objects.get(from_cur='CAD', to_cur='USD').rate
         return context
 
 
@@ -61,3 +63,19 @@ class StockMarketAccountDeleteView(DeleteView):
 
     def get_queryset(self):
         return super().get_queryset().filter(id=self.kwargs['id'])
+
+class StockMarketNewTradeView(CreateView):
+    model = StockTrade
+    form_class = StockMarketTradeCreateForm
+    template_name = 'core/dashboard/accounts/stock_market/new-trade.html'
+
+    def get_success_url(self):
+        return reverse_lazy('dashboard:stock-market-account-detail', uuid=self.kwargs['id'])
+    
+    def post(self, request, *args, **kwargs):
+        form = StockMarketTradeCreateForm(request.POST)
+        if form.is_valid():
+            trade = form.save(commit=False)
+            trade.source = StockMarketAccount.objects.get(id=self.kwargs['id'])
+            trade.save()
+            return HttpResponseRedirect(reverse_lazy('dashboard:stock-market-account-detail', kwargs={'id': self.kwargs['id']}))

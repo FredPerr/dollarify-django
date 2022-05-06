@@ -5,6 +5,8 @@
 
 <h1>{{ object.name }}</h1>
 <h4>{{ object.id }}</h4>
+<span>USD/CAD: {{USD_to_CAD_rate}}</span>
+<span>CAD/USD: {{CAD_to_USD_rate}}</span>
 
 
 <div>
@@ -51,6 +53,8 @@
     </table>
 </div>
 
+
+<a href="{% url 'dashboard:stock-market-new-trade' id=object.id %}">Add a trade</a>
 
 <a href="{% url 'dashboard:overview' %}">Go back to my dashboard</a>
 <a href="{% url 'dashboard:stock-market-account-remove' id=object.id %}">Delete this account</a>

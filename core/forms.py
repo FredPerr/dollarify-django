@@ -6,7 +6,7 @@ from django.contrib.auth.forms import (
 )
 
 
-from .models import User, StockMarketAccount
+from .models import StockTrade, User, StockMarketAccount
 
 
 class UserRegisterForm(UserCreationForm):
@@ -51,3 +51,15 @@ class StockMarketAccountCreateForm(ModelForm):
         model = StockMarketAccount
         fields = ('name', 'verbose', 'exchange')
         exclude = ('user_id', )
+
+
+
+class StockMarketTradeCreateForm(ModelForm):
+
+    class Meta:
+        model = StockTrade
+        fields = ('ticker', 'currency', 'amount', 'bought_value', 'bought_on', 'sold_on', 'sold_value', 'fees')
+        exclude = ('source', )
+
+
+        

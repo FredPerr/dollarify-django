@@ -23,4 +23,5 @@ Use the command:
 
 ## TODO:
 Check for conversion rate in the trades table.
+Create the api for live stock price.
 Add the CRUD operations for entities, stock market accounts, stock market trades, income, transfers, etc.

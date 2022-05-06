@@ -1,4 +1,6 @@
 import uuid
+import decimal
+import datetime
 
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
@@ -7,19 +9,14 @@ from django.db.models import (
     BooleanField, DateTimeField, 
     DateField, UUIDField, 
     ForeignKey, DecimalField, 
-    IntegerField, CASCADE, 
-    RESTRICT,
+    CASCADE, RESTRICT,
 )
 
 
 from .managers import UserManager
 from .validators import validate_phone_number
-
-
-CURRENCIES = (
-    ('CAN', 'CAN'),
-    ('USD', 'USD')
-)
+from .currency import CURRENCIES
+from core import currency
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -128,11 +125,11 @@ class StockTrade(Transaction):
 
     @property
     def last_value(self):
-        return 0 if self.active else self.sold_value
+        return decimal.Decimal(0.0) if self.active else self.sold_value
 
     @property
     def total_value(self):
-        return round(self.last_value * self.amount, 2)
+        return round(decimal.Decimal(self.last_value) * self.amount * decimal.Decimal(currency.get_conversion_rate(self.currency, self.source.currency)), 2)
 
     @property
     def profit_percent(self):
@@ -179,3 +176,28 @@ class Paycheck(Transaction):
 
     over_hours = DecimalField(null=True, blank=True, max_digits=6, decimal_places=2)
     over_rate = DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+
+
+
+class CurrencyRate(Model):
+
+    from_cur = CharField(max_length=4)
+    to_cur = CharField(max_length=4)
+    last_value = DecimalField(max_digits=10, decimal_places=5)
+    last_updated = DateTimeField(auto_now_add=True)
+
+    @property
+    def rate(self):
+        if datetime.datetime.now(timezone.utc) - self.last_updated > datetime.timedelta(hours=6):
+            rate = currency.get_conversion_rate(self.from_cur, self.to_cur)
+            self.last_value = rate
+            self.last_updated = timezone.now()
+            self.save()
+            return round(rate, 2)
+        return round(self.last_value, 2)
+
+    def __str__(self):
+        return f"{self.from_cur}/{self.to_cur}"
+
+
+

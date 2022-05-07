@@ -7,8 +7,8 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.decorators import login_required
 
 
-from ..models import  CurrencyRate, IncomeAccount, StockMarketAccount, StockTrade
-from ..forms import StockMarketAccountCreateForm, StockMarketTradeCreateForm
+from ..models import  CurrencyRate, Entity, IncomeAccount, Paycheck, StockMarketAccount, StockTrade
+from ..forms import PaycheckCreateForm, StockMarketAccountCreateForm, StockMarketTradeCreateForm, IncomeAccountCreateForm
 
 
 @login_required
@@ -90,4 +90,79 @@ class StockMarketDelTradeView(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('dashboard:stock-market-account-detail', kwargs={'id':self.kwargs['id']})
+    
+
+# Income #
+
+class IncomeAccountCreateView(CreateView):
+    model = IncomeAccount
+    form_class = IncomeAccountCreateForm
+    template_name = 'core/dashboard/accounts/income/create.html'
+
+
+    def post(self, request, *args, **kwargs):
+        form = IncomeAccountCreateForm(request.POST)
+        if form.is_valid():
+            account = form.save(commit=False)
+            account.user = request.user
+            account.name = account.source.name
+            account.verbose = account.source.verbose
+            account.save()
+            return HttpResponseRedirect(reverse_lazy('dashboard:income-account-detail', kwargs={'id': account.id}))
+
+
+class IncomeAccountDetailView(DetailView):
+    model = IncomeAccount
+    template_name = 'core/dashboard/accounts/income/detail.html'
+    pk_url_kwarg = 'id'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(id=self.kwargs['id'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['paychecks'] = Paycheck.objects.filter(target__id=self.kwargs['id'], )
+        return context
+
+
+class IncomeAccountDeleteView(DeleteView):
+    model = IncomeAccount
+    template_name = 'core/dashboard/accounts/income/delete.html'
+    success_url = reverse_lazy('dashboard:overview')
+
+    pk_url_kwarg = 'id'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(id=self.kwargs['id'])
+
+
+class IncomeNewPaycheckView(CreateView):
+    model = Paycheck
+    form_class = PaycheckCreateForm
+    template_name = 'core/dashboard/accounts/income/new-paycheck.html'
+
+    def get_success_url(self):
+        return reverse_lazy('dashboard:income-account-detail', kwargs={'id':self.kwargs['id']})
+    
+    def post(self, request, *args, **kwargs):
+        form = PaycheckCreateForm(request.POST)
+        if form.is_valid():
+            paycheck = form.save(commit=False)
+            paycheck.target = IncomeAccount.objects.get(id=self.kwargs['id'])
+            paycheck.save()
+            return HttpResponseRedirect(reverse_lazy('dashboard:income-account-detail', kwargs={'id': self.kwargs['id']}))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['id'] = self.kwargs['id']
+        return context
+
+
+class IncomeDelPaycheckView(DeleteView):
+    model = Paycheck
+    template_name = 'core/dashboard/accounts/income/del-paycheck.html'
+
+
+    def get_success_url(self):
+        return reverse_lazy('dashboard:income-account-detail', kwargs={'id':self.kwargs['id']})
     

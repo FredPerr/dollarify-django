@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Dollarify - {{object.name}} {% endblock %}
+
+{% block content %}
+
+<h1>{{ object.verbose }}</h1>
+
+<div>
+    <h3>Paychecks</h3>
+    <table>
+        <thead>
+            <tr>
+                <td>Earned</td>
+                <td>Hours worked</td>
+                <td>Period start</td>
+                <td>Period end</td>
+                <td>Over hours</td>
+                <td>Over rate</td>
+
+                <td>&#x1F5D1;</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paycheck in paychecks %}
+            <tr>
+                <td>{{ paycheck.amount }}</td>
+                <td>{{ paycheck.hours }}</td>
+                <td>{{ paycheck.period_start }}</td>
+                <td>{{ paycheck.period_end }}</td>
+                <td>{{ paycheck.over_hours }}</td>
+                <td>{{ paycheck.over_rate }}</td>
+                
+                <td><a href="{% url 'dashboard:income-del-paycheck' id=object.id pk=paycheck.pk %}">&#9746;</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<a href="{% url 'dashboard:income-new-paycheck' id=object.id %}">Add a paycheck</a>
+
+<a href="{% url 'dashboard:overview' %}">Go back to my dashboard</a>
+<a href="{% url 'dashboard:income-account-remove' id=object.id %}">Delete this account</a>
+{% endblock %}

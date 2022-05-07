@@ -6,7 +6,7 @@ from django.contrib.auth.forms import (
 )
 
 
-from .models import StockTrade, User, StockMarketAccount
+from .models import IncomeAccount, Paycheck, StockTrade, User, StockMarketAccount
 
 
 class UserRegisterForm(UserCreationForm):
@@ -60,6 +60,24 @@ class StockMarketTradeCreateForm(ModelForm):
         model = StockTrade
         fields = ('ticker', 'currency', 'amount', 'bought_value', 'bought_on', 'sold_on', 'sold_value', 'fees')
         exclude = ('source', )
+
+
+
+class IncomeAccountCreateForm(ModelForm):
+
+    class Meta:
+        model = IncomeAccount
+        fields = ('source',)
+        exclude = ('user_id', )
+
+
+
+class PaycheckCreateForm(ModelForm):
+
+    class Meta:
+        model = Paycheck
+        fields = ('amount', 'hours', 'period_start', 'period_end', 'over_hours', 'over_rate')
+        exclude = ('target', )
 
 
         

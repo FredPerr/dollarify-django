@@ -16,7 +16,7 @@
         </ul>
     </div>
     <div>
-        <h4>Income (<a href="#">new</a>)</h4>
+        <h4>Income (<a href="{% url 'dashboard:income-account-create' %}">new</a>)</h4>
         <ul>
             {% for income_account in income_accounts %}
             <li>

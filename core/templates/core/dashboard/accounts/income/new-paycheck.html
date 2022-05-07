@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Dollarify - New Paycheck {% endblock %}
+
+{% block content %}
+
+<h1>Add a new paycheck</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add</button>
+</form>
+
+<a href="{% url 'dashboard:income-account-detail' id=id %}">Go back to the account overview</a>
+{% endblock %}

@@ -30,7 +30,8 @@ MODELS = (
     StockMarketAccount, 
 
     FundTransfer, StockTrade, 
-    Loan, Payment, Paycheck, CurrencyRate
+    Loan, Payment, Paycheck, CurrencyRate,
+    IncomeAccount
 )
 
 

@@ -10,7 +10,7 @@ from django.db.models import (
     BooleanField, DateTimeField, 
     DateField, UUIDField, 
     ForeignKey, DecimalField, 
-    CASCADE, RESTRICT,
+    CASCADE, RESTRICT, SET_NULL
 )
 
 
@@ -78,6 +78,8 @@ class StockMarketAccount(Account):
 
 
 class IncomeAccount(Account):
+
+    source = ForeignKey(Entity, RESTRICT, 'source_income')
 
     @property
     def paychecks(self):
@@ -186,7 +188,6 @@ class Payment(Transaction):
 
 
 class Paycheck(Transaction):
-    source = ForeignKey(Entity, CASCADE, 'source_paycheck')
     target = ForeignKey(IncomeAccount, CASCADE, 'target_paycheck')
     hours = DecimalField(null=True, blank=True, max_digits=7, decimal_places=2)
     
@@ -194,7 +195,11 @@ class Paycheck(Transaction):
     period_end = DateField(null=True, blank=True)
 
     over_hours = DecimalField(null=True, blank=True, max_digits=6, decimal_places=2)
-    over_rate = DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    over_rate = DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=1.5)
+
+    def __str__(self):
+        period = f" from {self.period_start} to {self.period_end}" if self.period_end and self.period_start else ""
+        return f"Paycheck #{self.id}: {self.hours} hours for ${self.amount}{period}"
 
 
 

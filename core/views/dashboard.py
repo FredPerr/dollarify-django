@@ -7,8 +7,8 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.decorators import login_required
 
 
-from ..models import  CurrencyRate, Entity, IncomeAccount, Paycheck, StockMarketAccount, StockTrade
-from ..forms import PaycheckCreateForm, StockMarketAccountCreateForm, StockMarketTradeCreateForm, IncomeAccountCreateForm
+from ..models import  CurrencyRate, Entity, IncomeAccount, IncomeSourceEntity, Paycheck, StockMarketAccount, StockTrade
+from ..forms import IncomeSourceCreateForm, PaycheckCreateForm, StockMarketAccountCreateForm, StockMarketTradeCreateForm, IncomeAccountCreateForm
 
 
 @login_required
@@ -165,4 +165,20 @@ class IncomeDelPaycheckView(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('dashboard:income-account-detail', kwargs={'id':self.kwargs['id']})
+    
+
+class IncomeSourceEntityCreateView(CreateView):
+    model = IncomeSourceEntity
+    template_name = 'core/dashboard/accounts/income/create-source.html'
+    form_class = IncomeSourceCreateForm
+
+    def get_success_url(self):
+        return reverse_lazy('dashboard:overview')
+
+class IncomeSourceentityDelView(DeleteView):
+    model = IncomeSourceEntity
+    template_name = 'core/dashboard/accounts/income/delete-source.html'
+
+    def get_success_url(self):
+        return reverse_lazy('dashboard:overview')
     

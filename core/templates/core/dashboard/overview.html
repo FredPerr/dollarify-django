@@ -20,7 +20,7 @@
         <ul>
             {% for income_account in income_accounts %}
             <li>
-                <a href="#">{{income_account.name}}</a>
+                <a href="{% url 'dashboard:income-account-detail' id=income_account.id %}">{{income_account.name}}</a>
             </li>
             {% endfor %}
         </ul>

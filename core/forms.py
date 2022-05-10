@@ -6,7 +6,7 @@ from django.contrib.auth.forms import (
 )
 
 
-from .models import IncomeAccount, Paycheck, StockTrade, User, StockMarketAccount
+from .models import IncomeAccount, IncomeSourceEntity, Paycheck, StockTrade, User, StockMarketAccount
 
 
 class UserRegisterForm(UserCreationForm):
@@ -80,4 +80,8 @@ class PaycheckCreateForm(ModelForm):
         exclude = ('target', )
 
 
-        
+class IncomeSourceCreateForm(ModelForm):
+
+    class Meta:
+        model = IncomeSourceEntity
+        fields = ('name', 'verbose')

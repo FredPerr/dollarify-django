@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Dollarify - New Income Source {% endblock %}
+
+{% block content %}
+
+<h1>Add a new Income source</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add</button>
+</form>
+<a href="{% url 'dashboard:overview' %}">Go back to dashboard overview</a>
+
+{% endblock %}

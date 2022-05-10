@@ -77,9 +77,13 @@ class StockMarketAccount(Account):
     currency = CharField(max_length=4, choices=CURRENCIES)
 
 
+class IncomeSourceEntity(Entity):
+    pass
+
+
 class IncomeAccount(Account):
 
-    source = ForeignKey(Entity, RESTRICT, 'source_income')
+    source = ForeignKey(IncomeSourceEntity, RESTRICT, 'source_income')
 
     @property
     def paychecks(self):

@@ -3,12 +3,16 @@
 
 {% block content %}
 
-<h1>Create a new Income source</h1>
+<h1>Create a new Income Account</h1>
 
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Create</button>
 </form>
+<p>
+    You can't find your income source ?
+    <a href="{% url 'dashboard:income-source-create' %}">Add a new one</a>
+</p>
 
 {% endblock %}

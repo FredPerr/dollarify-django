@@ -1,9 +1,11 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, NumberInput
 from django.contrib.auth.forms import (
     UserCreationForm, UserChangeForm, 
     AuthenticationForm,PasswordChangeForm, 
     PasswordResetForm, SetPasswordForm
 )
+
+from core.widget import DatePickerInput, TimePickerInput
 
 
 from .models import IncomeAccount, IncomeSourceEntity, Paycheck, StockTrade, User, StockMarketAccount
@@ -58,8 +60,18 @@ class StockMarketTradeCreateForm(ModelForm):
 
     class Meta:
         model = StockTrade
-        fields = ('ticker', 'currency', 'amount', 'bought_value', 'bought_on', 'sold_on', 'sold_value', 'fees')
+        fields = ('ticker', 'currency', 'amount', 'bought_value', 'bought_on_date', 'bought_on_time', 'sold_on_date', 'sold_on_time', 'sold_value', 'fees')
         exclude = ('source', )
+        widgets = {
+            'bought_on_date': DatePickerInput(),
+            'bought_on_time': TimePickerInput(),
+            'sold_on_date': DatePickerInput(),
+            'sold_on_time': TimePickerInput(),
+            'amount': NumberInput(attrs={
+                'step':1, 
+                'pattern':'^\\$?(([1-9](\\d*|\\d{0,2}(,\\d{3})*))|0)(\\.\\d{1,2})?$'
+            })
+        }
 
 
 

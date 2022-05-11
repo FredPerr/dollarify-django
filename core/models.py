@@ -1,6 +1,7 @@
 import uuid
 from decimal import Decimal
 import datetime
+import logging
 
 from django.utils import timezone
 from django.core.validators import MinValueValidator
@@ -10,7 +11,7 @@ from django.db.models import (
     BooleanField, DateTimeField, 
     DateField, UUIDField, 
     ForeignKey, DecimalField, 
-    CASCADE, RESTRICT, SET_NULL
+    CASCADE, RESTRICT, TimeField
 )
 
 
@@ -139,14 +140,25 @@ class StockTrade(Transaction):
     ticker = CharField(max_length=10)
     currency = CharField(max_length=4, choices=CURRENCIES)
     bought_value = DecimalField(max_digits=10, decimal_places=3, validators=[MinValueValidator(0.001)])
-    bought_on = DateTimeField(default=timezone.now)
-    sold_on = DateTimeField(null=True, blank=True)
+    bought_on_date = DateField(default=timezone.now)
+    bought_on_time = TimeField(default=datetime.time(0,0))
+    sold_on_date = DateField(null=True, blank=True)
+    sold_on_time = TimeField(default=datetime.time(0,0))
     sold_value = DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
     fees = DecimalField(max_digits=10, decimal_places=2, default=0)
 
     @property
+    def bought_on(self):
+        return datetime.datetime.combine(self.bought_on_date, self.bought_on_time)
+    
+    @property
+    def sold_on(self):
+        if self.sold_on_date and self.sold_on_time:
+            return datetime.datetime.combine(self.sold_on_date, self.sold_on_time)
+
+    @property
     def active(self):
-        return not self.sold_value and not self.sold_on
+        return not (self.sold_value or self.sold_on)
 
     @property
     def last_value(self):
@@ -154,7 +166,8 @@ class StockTrade(Transaction):
 
     @property
     def total_value(self):
-        return round(Decimal(self.last_value) * self.amount * CurrencyRate.objects.get(from_cur=self.currency, to_cur=self.source.currency).rate, 2)
+        # logging.error(msg=str(self.active))
+        return round(Decimal(self.last_value) * Decimal(self.amount) * CurrencyRate.objects.get(from_cur=self.currency, to_cur=self.source.currency).rate, 2)
 
     @property
     def profit_percent(self):
@@ -166,7 +179,7 @@ class StockTrade(Transaction):
 
     @property
     def duration(self):
-        offset = self.sold_on if not self.active else timezone.now()
+        offset = self.sold_on if not self.active else datetime.datetime.replace(timezone.now(), tzinfo=None)
 
         return offset - self.bought_on
 

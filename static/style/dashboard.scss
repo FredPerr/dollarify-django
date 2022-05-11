@@ -1,0 +1,58 @@
+@import 'static/style/style';
+
+
+#dashboard {
+    display: grid;
+    height: 100vh;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: 50px 1fr 25px;
+    grid-template-areas: 
+        "sidebar header"
+        "sidebar main"
+        "sidebar footer";
+}
+
+header {
+    grid-area: header;
+}
+
+footer {
+    grid-area: footer;
+}
+
+
+header, footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    background-color: #648ca6;
+}
+
+
+main {
+    grid-area: main;
+    background-color: color(bg, white);
+}
+
+
+aside {
+    grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    border-right: 2px solid color(border, blue);
+    background-color: color(bg, grayish);
+
+    h1 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .section {
+    }
+
+    ul {
+        list-style-type: none;
+    }
+}

@@ -15,18 +15,21 @@
     <header>
         <h1>Dollarify</h1>
         <button>☰</button>
-
+        
         <div class="dropdown">
-            <button class="dropdown-button" onclick="getElementById('create-new-dropdown-content').classList.toggle('dropdown-content-visible')">Create new</button>
-            <div id="create-new-dropdown-content" class="dropdown-content">
-                <a href="#">Stock Market Account</a>
-                <a href="#">Income Source</a>
+            <button class="dropdown-toggle" onclick="expand_dropdown_menu('create-new-dropdown');">Create new</button>
+            <div id="create-new-dropdown" class="dropdown-menu">
+                <a class="dropdown-item" href="#">
+                    <i>&#x1f5e0;</i> <span>Stock Market Account</span>
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i>$</i> <span>Income Source</span>
+                </a>
             </div>
         </div>
-
+        
     </header>
     <aside>
-        <h1>Dashboard</h1>
         <div class="section">
             <h3>Accounts</h3>
             <div class="subsection">
@@ -54,5 +57,5 @@
     <main></main>
     <footer></footer>
 </div>
-<script src="{% static 'script/dropdown.js' %}"></script>
+<script src="{% static 'script/dropdowns.js' %}"></script>
 {% endblock %}

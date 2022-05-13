@@ -2,15 +2,25 @@
 
 
 $palette: (
+
+    // generic: (
+    //     //
+    // ),
+    // border: (
+    // ),
     font: (
-        base: #1D2023,
-        lighter: #34373B,
-        light: #FCFCFD,
+        white: white,
+        base: #6E768E,
+        hover: #348CD4,
         link: #26538d
     ),
     bg: (
-        white: #FCFCFD,
-        grayish: #e6e6e9,
+        white: white,
+        hover: #F2F8FB,
+        main: #ECF2F5,
+        header: #348CD4,
+        sidebar: white,
+        footer: #E4ECF1,
     ),
     border: (
         blue: rgb(214, 214, 233),
@@ -44,7 +54,7 @@ $palette: (
 
 * {
     font-family: 'Raleway', sans-serif;
-    color: color(font);
+    color: color(font, base);
     margin: 0;
     padding: 0;
 }
@@ -53,7 +63,11 @@ a {
     color: color(font, link);
     text-decoration: none;
     &::before{
-        content: '🔗';
+        // content: '🔗';
+    }
+
+    &:hover {
+        color: color(font, hover);
     }
 }
 
@@ -69,40 +83,47 @@ table {
     }
 }
 
+.show {
+    display: block !important;
+}
+
+
+/* Dropdowns */
+
 .dropdown {
     display: inline-block;
     position: relative;
 
-    button {
+    .dropdown-toggle {
         border: none;
-    }
 
-    > button::after {
-        content: '▾';
+        &::after {
+            content: '▾';
+        }
     }
 
     &:hover {
-        // BG color
+        background-color: color(bg, hover);
     }
-
-.dropdown-content-visible {
-    display: block;
 }
 
-}
 
-.dropdown-content {
-    background-color: white;
+.dropdown-menu {
+    background-color: color(bg,white);
     display: none;
     position: absolute;
-    width: 100%;
     overflow: auto;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 
     a {
-        display: block;
-        color: #000000;
+        display: inline-block;
+        clear: both;
+        white-space: nowrap;
+        color: color(font, base);
         padding: 5px;
         text-decoration: none;
+        &:hover {
+            color: color(font, base);
+        }
     }
 }

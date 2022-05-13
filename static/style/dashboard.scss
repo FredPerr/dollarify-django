@@ -7,32 +7,33 @@
     grid-template-columns: 200px 1fr;
     grid-template-rows: 50px 1fr 25px;
     grid-template-areas: 
-        "sidebar header"
+        "header header"
         "sidebar main"
         "sidebar footer";
 }
 
 header {
     grid-area: header;
+    background-color: color(bg, header);
 }
 
 footer {
     grid-area: footer;
+    background-color: color(bg, footer);
 }
 
 
 header, footer {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: left;
     padding: 0 16px;
-    background-color: #648ca6;
 }
 
 
 main {
     grid-area: main;
-    background-color: color(bg, white);
+    background-color: color(bg, main);
 }
 
 
@@ -41,8 +42,8 @@ aside {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    border-right: 2px solid color(border, blue);
-    background-color: color(bg, grayish);
+    box-shadow: 0 0 2px 0 rgba(#000000, 0.1);
+    background-color: color(bg, sidebar);
 
     h1 {
         font-size: 1.5rem;

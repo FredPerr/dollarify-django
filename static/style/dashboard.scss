@@ -13,7 +13,6 @@
 }
 
 header {
-
     grid-area: header;
     background-color: theme(body-bg);
     filter: brightness(110%);
@@ -22,7 +21,7 @@ header {
     grid-template: 3rem 1fr;
 
     #sidebar-toggle {
-        grid-area: 1/1/1/1;
+        grid-area: 1/1/1/1; 
     }
 
     .dropdown:first-of-type {
@@ -38,6 +37,30 @@ header {
     .user {
         margin-left: auto;
         margin-right: 6rem;
+    }
+
+    button {
+        display: block;
+        span {
+            pointer-events: none;
+        }
+        span:hover {
+            background-color: darken(theme(body-bg), 0.8%);
+        }
+    }
+
+    #sidebar-toggle {
+        height: 100%;
+        width: 4rem;
+        margin-left: 0 !important;
+    }
+
+    button, span, i {
+        color: rgba(theme(white), 0.7);
+    }
+
+    .fa {
+        color: rgba(theme(white), 0.7);
     }
 }
 
@@ -119,5 +142,7 @@ aside {
         }
         padding: 1rem 1.6rem;
         font-size: 1rem;
+
+        
     }
 }

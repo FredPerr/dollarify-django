@@ -12,5 +12,6 @@ window.onclick = function(event){
 };
 
 function expand_dropdown_menu(id){
+    alert('hey')
     document.getElementById(id).classList.toggle('show');
 }

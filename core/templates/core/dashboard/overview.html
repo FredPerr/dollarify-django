@@ -12,22 +12,22 @@
 {% endcompress %}
 <div id="dashboard">
     <header>
-        <button class="navbar-item" id="sidebar-toggle">☰</button>
+        <button class="navbar-item" id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
         
         <div class="navbar-item dropdown">
-            <button class="dropdown-toggle" onclick="expand_dropdown_menu('create-new-dropdown');">Create new</button>
+            <button class="dropdown-toggle" onclick="expand_dropdown_menu('create-new-dropdown');"><i class="fa-solid fa-square-plus"></i> <span>Create new</span></button>
             <div id="create-new-dropdown" class="dropdown-menu">
                 <a class="dropdown-item" href="{% url 'dashboard:stock-market-account-create' %}">
                     <i>&#x1f5e0;</i> <span>Stock Market Account</span>
                 </a>
                 <a class="dropdown-item" href="{% url 'dashboard:income-account-create' %}">
-                    <i>$</i> <span>Income Source</span>
+                    <i class="fa-solid fa-wallet"></i> <span>Income Source</span>
                 </a>
             </div>
         </div>
 
         <div class="user navbar-item dropdown">
-            <button class="dropdown-toggle" onclick="expand_dropdown_menu('user-dropdown');">Frederic</button>
+            <button class="dropdown-toggle" onclick="expand_dropdown_menu('user-dropdown');"><i class="fa-solid fa-user"></i> <span>Frederic Perron</span></button>
             <div id="user-dropdown" class="dropdown-menu">
                 <a class="dropdown-item" href="#"><i>#</i> <span>Profile</span></a>
                 <hr/>
@@ -45,12 +45,16 @@
             <ul class="menu-items">
                 <li class="menu-title">Stock Market</li>
                 {% for stock_market_account in stock_market_accounts %}
-                <li class="menu-item"><a href="{% url 'dashboard:stock-market-account-detail' id=stock_market_account.id %}"><i>&#9634;</i> <span>{{stock_market_account.verbose}}</span></a></li>
+                <li class="menu-item"><a href="{% url 'dashboard:stock-market-account-detail' id=stock_market_account.id %}">
+                    <i class="fa fa-solid fa-money-bill-trend-up"></i> <span>{{stock_market_account.verbose}}</span></a>
+                </li>
                 {% endfor %}
                 
                 <li class="menu-title">Income Sources</li>
                 {% for income_account in income_accounts %}
-                <li class="menu-item"><a href="{% url 'dashboard:income-account-detail' id=income_account.id %}"><i>&#9634;</i> <span>{{income_account.source.name}}</span></a></li>
+                <li class="menu-item"><a href="{% url 'dashboard:income-account-detail' id=income_account.id %}">
+                    <i class="fa-solid fa-wallet"></i> <span>{{income_account.source.name}}</span></a>
+                </li>
                 {% endfor %}
             </ul>
         </div>

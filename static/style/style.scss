@@ -46,7 +46,7 @@ $theme-attributes:(
     black-rgb: (0,0,0),
     body-color-rgb: (148,160,173),
     body-bg-rgb: (48,56,65),
-    font-sans-serif: ("Poppins", sans-serif),
+    font-sans-serif: ( "FontAwesome","Poppins", sans-serif),
     body-font-family: (Poppins, sans-serif),
     body-font-size: 0.8125rem,
     body-font-weight: 400,
@@ -84,35 +84,23 @@ $theme-attributes:(
 
 
 * {
-    font-family: theme(font-sans-serif);
-    font-weight: 200;
     color: theme(white);
     margin: 0;
     padding: 0;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.5px;
     box-sizing: border-box;
 }
 
 
 body {
+    font-weight: 200;
     background-color: theme(body-bg);
     color: theme(body-color);
     font-family: theme(body-font-family);
 	font-size: theme(body-font-size);
 	font-weight: theme(body-font-weight);
 	line-height: theme(body-line-height);
-	text-align: theme(body-text-align);
 	-webkit-text-size-adjust: 100%;
-}
-
-
-a {
-    // color: color(font, link);
-    text-decoration: none;
-
-    &:hover {
-        // color: color(font, hover);
-    }
 }
 
 
@@ -133,6 +121,10 @@ button {
     cursor: pointer;
 }
 
+a {
+    text-decoration: none;
+}
+
 .show {
     display: block !important;
 }
@@ -148,7 +140,6 @@ button {
 
     .dropdown-toggle {
         border: none;
-        // color: color(font, gray);
         background-color: transparent;
         height: 100%;
         padding: 0 1.7rem;

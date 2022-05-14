@@ -7,19 +7,45 @@
     grid-template-columns: 200px 1fr;
     grid-template-rows: 50px 1fr 25px;
     grid-template-areas: 
-        "header header"
+        "sidebar header"
         "sidebar main"
         "sidebar footer";
 }
 
 header {
+
     grid-area: header;
-    background-color: color(bg, header);
+    background-color: theme(body-bg);
+    filter: brightness(110%);
+
+    display: grid;
+    grid-template: 3rem 1fr;
+
+    #sidebar-toggle {
+        grid-area: 1/1/1/1;
+    }
+
+    .dropdown:first-of-type {
+        grid-area: 1/2/1/2;
+        column-gap: 1rem;
+    }
+
+
+    .navbar-item {
+        margin: 0 1.7rem;
+    }
+
+    .user {
+        margin-left: auto;
+        margin-right: 6rem;
+    }
 }
 
 footer {
     grid-area: footer;
     background-color: color(bg, footer);
+    background-color: theme(body-bg);
+    filter: brightness(85%);
 }
 
 
@@ -33,7 +59,6 @@ header, footer {
 
 main {
     grid-area: main;
-    background-color: color(bg, main);
 }
 
 
@@ -42,18 +67,57 @@ aside {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    box-shadow: 0 0 2px 0 rgba(#000000, 0.1);
-    background-color: color(bg, sidebar);
+    box-shadow: 0 0 2px 0 rgba(black, 0.1);
+    background: theme(body-bg);
+    filter: brightness(97%);
+    
+    .logo-container {
+        margin: .5rem 0;
+        justify-content: center;
+        display: inline-flex;
+        align-items: center;
 
-    h1 {
-        font-size: 1.5rem;
-        text-align: center;
-    }
-
-    .section {
+        img {
+            max-width: 12rem;
+        }
     }
 
     ul {
         list-style-type: none;
+    }
+
+
+    .menu-items {
+        font-size: 0.9rem;
+        width: 100%;
+        overflow-y: auto;
+    }
+
+    .menu-title {
+        color: rgba(theme(white), 0.5);
+        text-transform: uppercase;
+        padding: 2.5rem 0 1rem 1.2rem;
+    }
+
+    .menu-item {
+        box-sizing: border-box;
+        width: 100%;
+        cursor: pointer;
+        a {
+            width: 100%;
+            height: 100%;
+            span {
+                color: rgba(theme(white), 0.8);
+            }
+
+            i {
+                margin-right: 0.4rem;
+            }
+        }
+        &:hover {
+            background-color: theme(gray-100);
+        }
+        padding: 1rem 1.6rem;
+        font-size: 1rem;
     }
 }

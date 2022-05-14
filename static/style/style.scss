@@ -1,48 +1,79 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,500;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&display=swap');
 
 
-$palette: (
-
-    // generic: (
-    //     //
-    // ),
-    // border: (
-    // ),
-    font: (
-        white: white,
-        base: #6E768E,
-        hover: #348CD4,
-        link: #26538d
-    ),
-    bg: (
-        white: white,
-        hover: #F2F8FB,
-        main: #ECF2F5,
-        header: #348CD4,
-        sidebar: white,
-        footer: #E4ECF1,
-    ),
-    border: (
-        blue: rgb(214, 214, 233),
-    ),
+$theme-attributes:(
+    indigo: #675aa9,
+    blue: #348cd4,
+    purple: #8892d6,
+    pink: #f06292,
+    red: #f7531f,
+    orange: #fd7e14,
+    yellow: #ff9800,
+    green: #78c350,
+    teal: #02a8b5,
+    cyan: #45bbe0,
+    white: #fff,
+    gray: #cedeef,
+    gray-dark: #f7f7f7,
+    gray-100: #323a46,
+    gray-200: #36404a,
+    gray-300: #424e5a,
+    gray-400: #5d7186,
+    gray-500: #8c98a5,
+    gray-600: #cedeef,
+    gray-700: #dee2e6,
+    gray-800: #f7f7f7,
+    gray-900: #f3f7f9,
+    primary: #348cd4,
+    secondary: #cedeef,
+    success: #78c350,
+    info: #45bbe0,
+    warning: #ff9800,
+    danger: #f7531f,
+    light: #424e5a,
+    dark: #f3f7f9,
+    primary-rgb: (52,140,212),
+    secondary-rgb: (206,222,239),
+    success-rgb: (120,195,80),
+    info-rgb: (69,187,224),
+    warning-rgb: (255,152,0),
+    danger-rgb: (247,83,31),
+    light-rgb: (66,78,90),
+    dark-rgb: (243,247,249),
+    pink-rgb: (240,98,146),
+    purple-rgb: (136,146,214),
+    white-rgb: (255,255,255),
+    black-rgb: (0,0,0),
+    body-color-rgb: (148,160,173),
+    body-bg-rgb: (48,56,65),
+    font-sans-serif: ("Poppins", sans-serif),
+    body-font-family: (Poppins, sans-serif),
+    body-font-size: 0.8125rem,
+    body-font-weight: 400,
+    body-line-height: 1.5,
+    body-color: #94a0ad,
+    body-bg: #303841,
+    brand-blue: #0095BB,
+    brand-green: #00A45F,
+    brand-gradient: linear-gradient(45deg, rgba(0,149,187,1) 0%, rgba(0,164,95,1) 100%),
 );
 
 
-@function color($color, $tone:base){
+@function theme($attrib){
 
-    @if map-has-key($palette,$color){
-        $color: map-get($palette,$color);
+    @if map-has-key($theme-attributes, $attrib){
+        $color: map-get($theme-attributes, $attrib);
 
-            @if map-has-key($color,$tone){
-                $tone: map-get($color,$tone);
-                @return $tone;
+            @if map-has-key($theme-attributes,$attrib){
+                $attrib: map-get($theme-attributes, $attrib);
+                @return $attrib;
             }
 
-            @warn "unknown tone `#{$tone}` in color";
+            @warn "unknown tone `#{$attrib}` in color";
             @return null;        
     }
 
-    @warn "unknown color `#{$color}` in palette";
+    @warn "unknown color `#{$attrib}` in palette";
     @return null;
 }
 
@@ -53,21 +84,34 @@ $palette: (
 
 
 * {
-    font-family: 'Raleway', sans-serif;
-    color: color(font, base);
+    font-family: theme(font-sans-serif);
+    font-weight: 200;
+    color: theme(white);
     margin: 0;
     padding: 0;
+    letter-spacing: 0.8px;
+    box-sizing: border-box;
 }
 
+
+body {
+    background-color: theme(body-bg);
+    color: theme(body-color);
+    font-family: theme(body-font-family);
+	font-size: theme(body-font-size);
+	font-weight: theme(body-font-weight);
+	line-height: theme(body-line-height);
+	text-align: theme(body-text-align);
+	-webkit-text-size-adjust: 100%;
+}
+
+
 a {
-    color: color(font, link);
+    // color: color(font, link);
     text-decoration: none;
-    &::before{
-        // content: '🔗';
-    }
 
     &:hover {
-        color: color(font, hover);
+        // color: color(font, hover);
     }
 }
 
@@ -83,6 +127,12 @@ table {
     }
 }
 
+button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
 .show {
     display: block !important;
 }
@@ -91,39 +141,58 @@ table {
 /* Dropdowns */
 
 .dropdown {
+    
     display: inline-block;
     position: relative;
+    height: 100%;
 
     .dropdown-toggle {
         border: none;
+        // color: color(font, gray);
+        background-color: transparent;
+        height: 100%;
+        padding: 0 1.7rem;
 
         &::after {
             content: '▾';
         }
+        &:hover {
+            background-color: darken(theme(body-bg), 0.8%);
+        }
+        &:focus {
+            background-color: darken(theme(body-bg), 0.8%);
+        }
     }
 
-    &:hover {
-        background-color: color(bg, hover);
+    hr {
+        height: 1px;
+        border: none;
+        background-color: theme(gray-300);
     }
 }
 
-
 .dropdown-menu {
-    background-color: color(bg,white);
+    background-color: theme(body-bg);
+    filter: brightness(110%);
+    font-size: 1rem;
     display: none;
     position: absolute;
     overflow: auto;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-
+    box-shadow: 0 3px 6px -1px rgba(0,0,0,.14);
+    background-clip: padding-box;
+    border-radius: .25rem;
+    padding: 0.5rem 0;
+    
     a {
         display: inline-block;
         clear: both;
+        width: 100%;
+        height: 100%;
         white-space: nowrap;
-        color: color(font, base);
-        padding: 5px;
         text-decoration: none;
+        padding: 0.7rem 1rem;
         &:hover {
-            color: color(font, base);
+            background-color: darken(theme(body-bg), 0.8%);
         }
     }
 }

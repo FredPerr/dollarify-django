@@ -5,7 +5,6 @@
 {% block title %}Dollarify - Dashboard {% endblock %}
 
 
-
 {% block content %}
 
 {% compress css %}
@@ -13,46 +12,49 @@
 {% endcompress %}
 <div id="dashboard">
     <header>
-        <h1>Dollarify</h1>
-        <button>☰</button>
+        <button class="navbar-item" id="sidebar-toggle">☰</button>
         
-        <div class="dropdown">
+        <div class="navbar-item dropdown">
             <button class="dropdown-toggle" onclick="expand_dropdown_menu('create-new-dropdown');">Create new</button>
             <div id="create-new-dropdown" class="dropdown-menu">
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{% url 'dashboard:stock-market-account-create' %}">
                     <i>&#x1f5e0;</i> <span>Stock Market Account</span>
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{% url 'dashboard:income-account-create' %}">
                     <i>$</i> <span>Income Source</span>
                 </a>
+            </div>
+        </div>
+
+        <div class="user navbar-item dropdown">
+            <button class="dropdown-toggle" onclick="expand_dropdown_menu('user-dropdown');">Frederic</button>
+            <div id="user-dropdown" class="dropdown-menu">
+                <a class="dropdown-item" href="#"><i>#</i> <span>Profile</span></a>
+                <hr/>
+                <a class="dropdown-item" href="#"><i>#</i> <span>Disconnect</span></a>
             </div>
         </div>
         
     </header>
     <aside>
-        <div class="section">
-            <h3>Accounts</h3>
-            <div class="subsection">
-                <h4>Stock Market (<a href="{% url 'dashboard:stock-market-account-create' %}">new</a>)</h4>
-                <ul>
-                    {% for stock_market_account in stock_market_accounts %}
-                    <li>
-                        <a href="{% url 'dashboard:stock-market-account-detail' id=stock_market_account.id %}">{{stock_market_account.name}}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="subsection">
-                <h4>Income (<a href="{% url 'dashboard:income-account-create' %}">new</a>)</h4>
-                <ul>
-                    {% for income_account in income_accounts %}
-                    <li>
-                        <a href="{% url 'dashboard:income-account-detail' id=income_account.id %}">{{income_account.name}}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
+        <div class="logo-container">
+            <a href="{% url 'dashboard:overview' %}">
+                <img src="{% static 'img/dollarify-written-logo.png' %}" alt="">
+            </a>
         </div>
+            <ul class="menu-items">
+                <li class="menu-title">Stock Market</li>
+                {% for stock_market_account in stock_market_accounts %}
+                <li class="menu-item"><a href="{% url 'dashboard:stock-market-account-detail' id=stock_market_account.id %}"><i>&#9634;</i> <span>{{stock_market_account.verbose}}</span></a></li>
+                {% endfor %}
+                
+                <li class="menu-title">Income Sources</li>
+                {% for income_account in income_accounts %}
+                <li class="menu-item"><a href="{% url 'dashboard:income-account-detail' id=income_account.id %}"><i>&#9634;</i> <span>{{income_account.source.name}}</span></a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        
     </aside>
     <main></main>
     <footer></footer>

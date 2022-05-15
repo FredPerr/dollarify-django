@@ -1,13 +1,17 @@
-{% extends "base.html" %}
+{% extends "form-template.html" %}
 {% block title %}Dollarify - {{object.name}} {% endblock %}
 
-{% block content %}
-
+{% block form-content %}
+<h2>Delete</h2>
+<span>Stock Market Trade</span> 
+<hr/>
 <form method="post">
     {% csrf_token %}
     <p>Are you sure you want to delete "{{ object }}"?</p>
     {{ form.as_p }}
     <button type="submit">Confirm</button>
 </form>
-<a href="{% url 'dashboard:stock-market-account-detail' id=object.source.id %}">Go back</a>
+<div class="form-links">
+    <a href="{% url 'dashboard:stock-market-account-detail' id=object.source.id %}">Go back</a>
+</div>
 {% endblock %}

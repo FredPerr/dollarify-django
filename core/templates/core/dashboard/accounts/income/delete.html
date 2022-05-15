@@ -1,7 +1,12 @@
-{% extends "base.html" %}
+{% extends "form-template.html" %}
 {% block title %}Dollarify - {{object.name}} {% endblock %}
 
-{% block content %}
+{% block form-content %}
+
+
+<h2>Delete</h1>
+<span>Income Account</span>
+<hr/>
 
 <form method="post">
     {% csrf_token %}

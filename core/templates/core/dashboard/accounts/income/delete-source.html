@@ -1,7 +1,11 @@
-{% extends "base.html" %}
+{% extends "form-template.html" %}
 {% block title %}Dollarify - {{object.name}} {% endblock %}
 
-{% block content %}
+{% block form-content %}
+
+<h2>Delete</h1>
+<span>Income Source</span>
+<hr/>
 
 <form method="post">
     {% csrf_token %}
@@ -9,5 +13,8 @@
     {{ form.as_p }}
     <button type="submit">Remove</button>
 </form>
-<a href="{% url 'dashboard:overview' %}">Go back to dashboard overview</a>
+
+<div class="form-links">
+    <a href="{% url 'dashboard:overview' %}">Go back to dashboard overview</a>
+</div>
 {% endblock %}

@@ -1,18 +1,19 @@
-{% extends "base.html" %}
+{% extends "form-template.html" %}
 {% block title %}Dollarify - New Income {% endblock %}
 
-{% block content %}
+{% block form-content %}
 
-<h1>Create a new Income Account</h1>
+<h2>Create</h1>
+<span>Income Account</span>
+<hr/>
 
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Create</button>
 </form>
-<p>
-    You can't find your income source ?
-    <a href="{% url 'dashboard:income-source-create' %}">Add a new one</a>
-</p>
+<div class="form-links">
+    <a href="{% url 'dashboard:income-source-create' %}">You can't find your income source ? Add a new one</a>
+</div>
 
 {% endblock %}

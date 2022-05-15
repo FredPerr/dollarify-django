@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&display=swap');
 
-
 $theme-attributes:(
     indigo: #675aa9,
     blue: #348cd4,
@@ -46,8 +45,8 @@ $theme-attributes:(
     black-rgb: (0,0,0),
     body-color-rgb: (148,160,173),
     body-bg-rgb: (48,56,65),
-    font-sans-serif: ( "FontAwesome","Poppins", sans-serif),
-    body-font-family: (Poppins, sans-serif),
+    font-sans-serif: ("FontAwesome" ,"Poppins", sans-serif),
+    body-font-family: (FontAwesome, Poppins, sans-serif),
     body-font-size: 0.8125rem,
     body-font-weight: 400,
     body-line-height: 1.5,
@@ -91,11 +90,12 @@ $theme-attributes:(
     box-sizing: border-box;
 }
 
+.body-bg { background-color: theme(body-bg); }
+.body-color { color: theme(body-color); }
+
 
 body {
     font-weight: 200;
-    background-color: theme(body-bg);
-    color: theme(body-color);
     font-family: theme(body-font-family);
 	font-size: theme(body-font-size);
 	font-weight: theme(body-font-weight);
@@ -104,61 +104,118 @@ body {
 }
 
 
-table {
-    border-collapse: collapse;
-    thead {
-        text-align: center;
-    }
-    
-    td {
-         border: 1px solid black;
+button {
+    border: none;
+    cursor: pointer;
+    background-color: theme(body-bg);
+
+    &:hover, &:focus {
+        background-color: darken(theme(body-bg), 0.8%);
     }
 }
 
-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-}
 
 a {
     text-decoration: none;
 }
+
+footer {
+    text-align: center;
+}
+
+
+.form-container {
+    
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin: 10vh auto;
+    background-color: theme(gray-200);
+    padding: 4rem 6rem;
+    h2 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    > span {
+        margin: 1rem auto 0 auto;
+        font-size: 1.2rem;
+    }
+
+    > hr {
+        border: none;
+        height: 0.3px;
+        background-color: darken(theme(gray-200), 0.8%);
+        margin: 1rem 0;
+    }
+    .form-links {
+        margin-top: .6rem;
+        display: flex;
+        justify-content: space-between;
+        a {
+            color: lighten(theme(body-color), 10%);
+        }
+    }
+}
+
+
+form {
+
+    p {
+        margin-bottom: 1rem;
+
+    }
+
+    label {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        color: lighten(theme(body-color), 10%);
+    }
+
+    select, input, button {
+        background-color: darken(theme(gray-200), 0.8%);
+        border: none;
+        box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.1);
+        padding: 0.6rem 1rem;
+    }
+    
+    input, button {
+        width: 100%;
+    }
+
+    button[type=submit]{
+        margin-top: 1rem;
+    }
+    
+    input:hover, select:hover {
+        background-color: darken(theme(gray-200), 1%);
+    }
+
+}
+
 
 .show {
     display: block !important;
 }
 
 
-/* Dropdowns */
-
+/***********
+  Dropdowns 
+************/
 .dropdown {
-    
     display: inline-block;
     position: relative;
     height: 100%;
+}
 
-    .dropdown-toggle {
-        border: none;
-        background-color: transparent;
-        height: 100%;
-        padding: 0 1.7rem;
-
-        &::after {
-            content: '▾';
-        }
-        &:hover {
-            background-color: darken(theme(body-bg), 0.8%);
-        }
-        &:focus {
-            background-color: darken(theme(body-bg), 0.8%);
-        }
+.dropdown-toggle {
+    height: 100%;
+    padding: 0 1.7rem;
+    &:focus {
+        background-color: darken(theme(body-bg), 0.8%);
     }
 
-    hr {
-        height: 1px;
-        border: none;
-        background-color: theme(gray-300);
+    i {
+        pointer-events: none;
     }
 }
 
@@ -173,6 +230,12 @@ a {
     background-clip: padding-box;
     border-radius: .25rem;
     padding: 0.5rem 0;
+
+    hr {
+        height: 1px;
+        border: none;
+        background-color: theme(gray-300);
+    }
     
     a {
         display: inline-block;
@@ -181,7 +244,7 @@ a {
         height: 100%;
         white-space: nowrap;
         text-decoration: none;
-        padding: 0.7rem 1rem;
+        padding: 0.7rem 1.5rem;
         &:hover {
             background-color: darken(theme(body-bg), 0.8%);
         }

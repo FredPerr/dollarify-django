@@ -3,6 +3,8 @@
 <h1>Authentication Overview</h1>
 <h2>Hello, {{request.user.email}}!</h2>
 
+<a href="{% url 'profile:edit' %}">Edit my account</a>
+
 
 <a href="{% url 'dashboard:overview' %}">Go to my dashboard</a>
 {% endblock %}

@@ -22,3 +22,7 @@ Use the command:
 # DEVELOPMENT NOTES:
 
 ## TODO:
+
+
+## BUGS:
+Button clicking on icon does not work.

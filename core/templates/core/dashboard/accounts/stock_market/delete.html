@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends "form-template.html" %}
 {% block title %}Dollarify - {{object.name}} {% endblock %}
 
-{% block content %}
+{% block form-content %}
 
 <form method="post">
     {% csrf_token %}

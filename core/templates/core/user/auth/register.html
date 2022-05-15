@@ -1,12 +1,15 @@
-{% extends "base.html" %}
+{% extends "form-template.html" %}
 
 {% block title %}Dollarify - Registration{% endblock %}
 
-{% block content %}
-  <h2>Registration</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-  </form>
+{% block form-content %}
+<h2>Registration</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Register</button>
+</form>
+<div class="form-links">
+  <a href="{% url 'home' %}">Back to home page</a>
+</div>
 {% endblock %}

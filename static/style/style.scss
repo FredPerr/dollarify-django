@@ -123,6 +123,10 @@ footer {
     text-align: center;
 }
 
+.underline {
+    text-decoration: underline;
+}
+
 
 .form-container {
     
@@ -190,6 +194,10 @@ form {
         background-color: darken(theme(gray-200), 1%);
     }
 
+}
+
+table {
+    font-size: 1rem;
 }
 
 

@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "form-template.html" %}
 
 {% block title %}Password Recovery{% endblock %}
 
-{% block content %}
-  <h1>Password Recovery</h1>
+{% block form-content %}
+  <h2>Password Recovery</h2>
   <p>Enter your email address below, and we'll email instructions for setting a new one.</p>
 
   <form method="POST">
@@ -11,4 +11,12 @@
     {{ form.as_p }}
     <input type="submit" value="Send Email">
   </form>
+
+  <div class="form-links">
+    {% if request.user.is_authenticated %}
+    <a href="{%  url 'home' %}">Back to home page</a>
+    {% else %}
+    <a href="{%  url 'dashboard:overview' %}">Back to home page</a>
+    {% endif %}
+  </div>
 {% endblock %}

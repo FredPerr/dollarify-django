@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "form-template.html" %}
 
 {% block title %}Enter new password{% endblock %}
 
@@ -6,7 +6,7 @@
 
 {% if validlink %}
 
-<h1>Set a new password!</h1>
+<h2>Set a new password!</h2>
 <form method="POST">
   {% csrf_token %}
   {{ form.as_p }}

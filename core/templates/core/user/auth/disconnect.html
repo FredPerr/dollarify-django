@@ -4,5 +4,5 @@
 
 {% block content %}
   <h2>Disconnected</h2>
-  <p>You are now fully disconnected!</p>
+  <p>You are now fully disconnected! <a  class="underline" href="{% url 'auth:connect' %}">Log back in</a></p>
 {% endblock %}

@@ -1,0 +1,25 @@
+@import 'static/style/style';
+
+
+#profile-overview-container {
+    padding: 5rem;
+    margin: 10rem auto;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: theme(gray-200);
+    > h2 {
+        margin-bottom: 2rem;
+        font-size: 1.8rem;
+    }
+
+    > table {
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+
+        td:first-of-type{
+            color: lighten(theme(body-color), 10%);
+        }
+    }
+}

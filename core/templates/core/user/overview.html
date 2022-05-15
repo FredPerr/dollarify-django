@@ -1,10 +1,21 @@
 {% extends "base.html" %}
+{% load compress %}
+{% load static %}
 {% block content %}
-<h1>Authentication Overview</h1>
-<h2>Hello, {{request.user.email}}!</h2>
-
-<a href="{% url 'profile:edit' %}">Edit my account</a>
-
-
-<a href="{% url 'dashboard:overview' %}">Go to my dashboard</a>
+<div id="profile-overview-container">
+    <h2>Authentication Overview</h2>
+    <table>
+        <tr><td>Name:</td><td>{{request.user.first_name}} {{request.user.last_name}}</td></tr>
+        <tr><td>Email:</td><td>{{request.user.email}}</td></tr>
+        <tr><td>Phone #:</td><td>{{request.user.phone}}</td></tr>
+        <tr><td>Date joined:</td><td>{{request.user.date_joined}}</td></tr>
+    </table>
+    <div class="form-links">
+        <a href="{% url 'profile:edit' %}">Edit my account</a> |
+        <a href="{% url 'dashboard:overview' %}">Go to my dashboard</a>
+    </div>
+</div>
+{% compress css %}
+<link type="text/x-scss" href="{% static 'style/profile.scss' %}" rel="stylesheet" media="screen">
+{% endcompress %}
 {% endblock %}

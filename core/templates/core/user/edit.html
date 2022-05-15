@@ -11,5 +11,7 @@
     {{ form.as_p }}
     <button type="submit">Save</button>
   </form>
-  <a href="{% url 'profile:overview' %}">Back</a>
+  <div class="form-links">
+    <a href="{% url 'profile:overview' %}">Back to my profile</a>
+  </div>
 {% endblock %}

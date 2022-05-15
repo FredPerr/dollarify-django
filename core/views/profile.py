@@ -4,13 +4,13 @@ from django.views.generic import UpdateView
 from django.urls import reverse_lazy
 
 
-from ..models import User
 from ..forms import UserEditForm
 
 
 @login_required
 def profile_overview(request):
     return render(request, 'core/user/overview.html')
+
 
 
 @login_required

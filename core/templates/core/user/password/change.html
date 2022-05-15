@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "form-template.html" %}
 
 {% block title %}Dollarify - Change Password{% endblock %}
 
-{% block content %}
-  <h1>Password Change</h1>
+{% block form-content %}
+  <h2>Password Change</h2>
   <p>Enter your authentication information below to change your password.</p>
 
   <form method="POST">
@@ -11,4 +11,11 @@
     {{ form.as_p }}
     <input type="submit" value="Apply changes">
   </form>
+  <div class="form-links">
+    {% if request.user.is_authenticated %}
+    <a href="{%  url 'home' %}">Back to home page</a>
+    {% else %}
+    <a href="{%  url 'dashboard:overview' %}">Back to home page</a>
+    {% endif %}
+  </div>
 {% endblock %}

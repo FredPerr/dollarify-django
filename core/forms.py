@@ -31,7 +31,7 @@ class UserEditForm(ModelForm):
         help_text=
             "Raw passwords are not stored, so there is no way to see this "
             "user's password, but you can change the password using "
-            '<a href="{}">this form</a>.',
+            '<a class="underline" href="{}">this form</a>.',
     )
 
     def __init__(self, *args, **kwargs):

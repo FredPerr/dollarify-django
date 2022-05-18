@@ -1,11 +1,9 @@
-{% extends "core/dashboard/overview.html" %}
+{% extends "core/dashboard/dashboard.html" %}
 {% load compress %}
 {% load static %}
 {% load currency %}
 {% load format %}
 {% block title %}Dollarify - {{object.name}} {% endblock %}
-
-
 
 
 {% block navbar-extras %}
@@ -75,7 +73,7 @@
             <i class="fa-solid fa-money-bill-wave"></i>
         </div>
         <div class="card-info">
-            <span class="card-value">{{1432.25|thousands_separated}}</span>
+            <span class="card-value">{{1432.25|thousands_separated}}$</span>
             <br>
             <span class="card-name">Year-to-date</span>
             <span class="card-name">Realised Gains</span>

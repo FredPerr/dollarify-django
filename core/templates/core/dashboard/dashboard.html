@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% load compress %}
+{% load static %}
+{% load accounts %}
+{% block title %}Dollarify - Dashboard {% endblock %}
+
+
+{% block content %}
+
+{% compress css %}
+<link type="text/x-scss" href="{% static 'style/dashboard.scss' %}" rel="stylesheet" media="screen">
+{% endcompress %}
+<div id="dashboard">
+    <header>
+        <button class="navbar-item" id="sidebar-toggle" onclick="toggle_sidebar()"><i class="fa-solid fa-bars"></i></button>
+        
+        <div class="navbar-item dropdown">
+            <button class="dropdown-toggle fa-font-solid" onclick="toggle_dropdown_menu('create-new-dropdown');">
+                <i class="fa-solid fa-square-plus"></i> <span>Create new</span> <i class="fa-solid fa-caret-down"></i>
+            </button>
+            <div id="create-new-dropdown" class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'dashboard:stock-market-account-create' %}">
+                    <i class="fa fa-solid fa-money-bill-trend-up"></i> <span>Stock Market Account</span>
+                </a>
+                <a class="dropdown-item" href="{% url 'dashboard:income-account-create' %}">
+                    <i class="fa-solid fa-wallet"></i> <span>Income Source</span>
+                </a>
+            </div>
+        </div>
+
+        {% block navbar-extras %}
+        {% endblock %}
+
+        <div class="user navbar-item dropdown">
+            <button class="dropdown-toggle" onclick="toggle_dropdown_menu('user-dropdown');">
+                <i class="fa-solid fa-user"></i> <span>{{request.user.first_name}} {{request.user.last_name}}</span> <i class="fa-solid fa-caret-down"></i>
+            </button>
+            <div id="user-dropdown" class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'profile:overview' %}"><i class="fa-solid fa-user-gear"></i> <span>Profile</span></a>
+                <hr/>
+                <a class="dropdown-item" href="{% url 'auth:disconnect' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Disconnect</span></a>
+            </div>
+        </div>
+        
+    </header>
+    <aside id="sidebar">
+        <div class="logo-container">
+            <a href="{% url 'dashboard:overview' %}">
+                <img src="{% static 'img/dollarify-written-logo.png' %}" alt="">
+            </a>
+        </div>
+        <div>
+            <ul class="menu-items">
+
+                <li class="menu-title"><i class="fa-solid fa-gauge"></i> <span>Dashboard</span></li>
+                <li class="menu-item"><a href="{% url 'dashboard:overview' %}">
+                    <span>Overview</span></a>
+                </li>
+
+                <li class="menu-item"><a href="{% url 'home' %}">
+                    <span>Back to home</span></a>
+                </li>
+
+                <li class="menu-title"><i class="fa fa-solid fa-money-bill-trend-up"></i> <span>Stock Market</span></li>
+                {% for stock_market_account in request.user|stock_market_accounts %}
+                <li class="menu-item"><a href="{% url 'dashboard:stock-market-account-detail' id=stock_market_account.id %}">
+                    <span>{{stock_market_account.verbose}}</span></a>
+                </li>
+                {% endfor %}
+                
+                <li class="menu-title"><i class="fa-solid fa-wallet"></i>  <span>Income Sources</span></li>
+                {% for income_account in request.user|income_accounts %}
+                <li class="menu-item"><a href="{% url 'dashboard:income-account-detail' id=income_account.id %}">
+                    <span>{{income_account.source.name}}</span></a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </aside>
+    <main>
+        {% block dashboard-content %}
+        {% endblock %}
+    </main>
+    <footer><span>&copy; 2022 - Dollarify</span></footer>
+</div>
+<script src="{% static 'script/dropdowns.js' %}"></script>
+<script src="{% static 'script/sidebar.js' %}"></script>
+{% endblock %}

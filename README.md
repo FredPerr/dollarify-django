@@ -24,6 +24,7 @@ Use the command:
 # DEVELOPMENT NOTES:
 
 ## TODO:
+Normalize all the files for the inheritance (forms < dashboard-forms < dashboards).
 
 
 ## BUGS:

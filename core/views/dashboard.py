@@ -1,22 +1,20 @@
+from audioop import reverse
 import uuid
 
 from django.urls import reverse_lazy
 from django.shortcuts import render, HttpResponseRedirect
-from django.views.generic.edit import CreateView, DeleteView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.decorators import login_required
 
 
-from ..models import  CurrencyRate, Entity, IncomeAccount, IncomeSourceEntity, Paycheck, StockMarketAccount, StockTrade
+from ..models import  CurrencyRate, IncomeAccount, IncomeSourceEntity, Paycheck, StockMarketAccount, StockTrade
 from ..forms import IncomeSourceCreateForm, PaycheckCreateForm, StockMarketAccountCreateForm, StockMarketTradeCreateForm, IncomeAccountCreateForm
 
 
 @login_required
 def dashboard_overview(request):
-    return render(request, 'core/dashboard/overview.html', context={
-        'stock_market_accounts': StockMarketAccount.objects.filter(user=request.user.id),
-        'income_accounts': IncomeAccount.objects.filter(user=request.user.id),
-    })
+    return render(request, 'core/dashboard/overview.html')
 
 
 class StockMarketAccountCreateView(CreateView):
@@ -92,6 +90,15 @@ class StockMarketDelTradeView(DeleteView):
         return reverse_lazy('dashboard:stock-market-account-detail', kwargs={'id':self.kwargs['id']})
     
 
+class StockMarketEditTradeView(UpdateView):
+    model = StockTrade
+    template_name = 'core/dashboard/accounts/stock_market/edit-trade.html'
+    fields = ('ticker', 'currency', 'bought_on_date', 'bought_on_time', 'amount', 'bought_value', 'fees', 'sold_value', 'sold_on_date', 'sold_on_time')
+
+    def get_success_url(self):
+        return reverse_lazy('dashboard:stock-market-account-detail', kwargs={'id': self.kwargs['id']})
+
+
 # Income #
 
 class IncomeAccountCreateView(CreateView):
@@ -162,7 +169,6 @@ class IncomeDelPaycheckView(DeleteView):
     model = Paycheck
     template_name = 'core/dashboard/accounts/income/del-paycheck.html'
 
-
     def get_success_url(self):
         return reverse_lazy('dashboard:income-account-detail', kwargs={'id':self.kwargs['id']})
     
@@ -181,4 +187,6 @@ class IncomeSourceentityDelView(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('dashboard:overview')
+
+
     

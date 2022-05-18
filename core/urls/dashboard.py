@@ -2,7 +2,7 @@ from django.urls import path
 
 
 from ..views.dashboard import (
-    IncomeDelPaycheckView, IncomeNewPaycheckView, IncomeSourceEntityCreateView, IncomeSourceentityDelView, StockMarketDelTradeView, StockMarketNewTradeView, dashboard_overview, StockMarketAccountCreateView, 
+    IncomeDelPaycheckView, IncomeNewPaycheckView, IncomeSourceEntityCreateView, IncomeSourceentityDelView, StockMarketDelTradeView, StockMarketEditTradeView, StockMarketNewTradeView, dashboard_overview, StockMarketAccountCreateView, 
     StockMarketAccountDetailView, StockMarketAccountDeleteView, IncomeAccountCreateView, IncomeAccountDetailView, IncomeAccountDeleteView
 )
 
@@ -18,6 +18,7 @@ urlpatterns = [
     path('account/stock-market/delete/<uuid:id>/', StockMarketAccountDeleteView.as_view(), name='stock-market-account-remove'),
     path('account/stock-market/<uuid:id>/new-trade/', StockMarketNewTradeView.as_view(), name='stock-market-new-trade'),
     path('account/stock-market/<uuid:id>/del-trade/<pk>/', StockMarketDelTradeView.as_view(), name='stock-market-del-trade'),
+    path('account/stock-market/<uuid:id>/edit-trade/<pk>/', StockMarketEditTradeView.as_view(), name='stock-market-edit-trade'),
 
     
     path('account/income/create/', IncomeAccountCreateView.as_view(), name='income-account-create'),

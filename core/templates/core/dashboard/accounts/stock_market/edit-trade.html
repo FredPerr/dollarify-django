@@ -1,0 +1,15 @@
+{% extends "form-template.html" %}
+{% block title %}Dollarify - Edit Trade {% endblock %}
+
+{% block form-content %}
+
+<h1>Edit a trade</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+<div class="form-links">
+</div>
+{% endblock %}

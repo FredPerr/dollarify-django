@@ -2,6 +2,7 @@
 
 {% load compress %}
 {% load static %}
+{% load accounts %}
 {% block title %}Dollarify - Dashboard {% endblock %}
 
 
@@ -28,9 +29,12 @@
             </div>
         </div>
 
+        {% block navbar-extras %}
+        {% endblock %}
+
         <div class="user navbar-item dropdown">
             <button class="dropdown-toggle" onclick="toggle_dropdown_menu('user-dropdown');">
-                <i class="fa-solid fa-user"></i> <span>Frederic Perron</span> <i class="fa-solid fa-caret-down"></i>
+                <i class="fa-solid fa-user"></i> <span>{{request.user.first_name}} {{request.user.last_name}}</span> <i class="fa-solid fa-caret-down"></i>
             </button>
             <div id="user-dropdown" class="dropdown-menu">
                 <a class="dropdown-item" href="{% url 'profile:overview' %}"><i class="fa-solid fa-user-gear"></i> <span>Profile</span></a>
@@ -46,26 +50,39 @@
                 <img src="{% static 'img/dollarify-written-logo.png' %}" alt="">
             </a>
         </div>
+        <div>
             <ul class="menu-items">
-                <li class="menu-title"><i class="fa fa-solid fa-money-bill-trend-up"></i>  <span>Stock Market</span></li>
-                {% for stock_market_account in stock_market_accounts %}
+
+                <li class="menu-title"><i class="fa-solid fa-gauge"></i> <span>Dashboard</span></li>
+                <li class="menu-item"><a href="{% url 'dashboard:overview' %}">
+                    <span>Overview</span></a>
+                </li>
+
+                <li class="menu-item"><a href="{% url 'home' %}">
+                    <span>Back to home</span></a>
+                </li>
+
+                <li class="menu-title"><i class="fa fa-solid fa-money-bill-trend-up"></i> <span>Stock Market</span></li>
+                {% for stock_market_account in request.user|stock_market_accounts %}
                 <li class="menu-item"><a href="{% url 'dashboard:stock-market-account-detail' id=stock_market_account.id %}">
                     <span>{{stock_market_account.verbose}}</span></a>
                 </li>
                 {% endfor %}
                 
                 <li class="menu-title"><i class="fa-solid fa-wallet"></i>  <span>Income Sources</span></li>
-                {% for income_account in income_accounts %}
+                {% for income_account in request.user|income_accounts %}
                 <li class="menu-item"><a href="{% url 'dashboard:income-account-detail' id=income_account.id %}">
                     <span>{{income_account.source.name}}</span></a>
                 </li>
                 {% endfor %}
             </ul>
         </div>
-        
     </aside>
-    <main></main>
-    <footer>&copy; 2022 - Dollarify</footer>
+    <main>
+        {% block dashboard-content %}
+        {% endblock %}
+    </main>
+    <footer><span>&copy; 2022 - Dollarify</span></footer>
 </div>
 <script src="{% static 'script/dropdowns.js' %}"></script>
 <script src="{% static 'script/sidebar.js' %}"></script>

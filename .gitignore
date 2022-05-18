@@ -7,3 +7,4 @@ dist/
 *.pyo
 migrations/
 core/fixtures/debug.json
+fontawesome/

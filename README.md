@@ -9,6 +9,8 @@ A Complete Finance Overview in a single app.
 Install the build package:
 > pip install -r requirements.txt
 
+**Add FontAwesome 6 folder content in project root as 'footawesome/' folder.**
+
 ### Development Cycle
 
 #### Running the project

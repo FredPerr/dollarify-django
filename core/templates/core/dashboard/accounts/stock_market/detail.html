@@ -1,63 +1,140 @@
-{% extends "base.html" %}
+{% extends "core/dashboard/overview.html" %}
+{% load compress %}
+{% load static %}
+{% load currency %}
+{% load format %}
 {% block title %}Dollarify - {{object.name}} {% endblock %}
 
-{% block content %}
 
-<h1>{{ object.name }}</h1>
-<h4>{{ object.id }}</h4>
-<span>USD/CAD: {{USD_to_CAD_rate}}</span>
-<span>CAD/USD: {{CAD_to_USD_rate}}</span>
 
+
+{% block navbar-extras %}
+{% compress css %}
+<link type="text/x-scss" href="{% static 'style/stock-market-account.scss' %}" rel="stylesheet" media="screen">
+{% endcompress %}
+<div class="navbar-item dropdown">
+    <button class="dropdown-toggle fa-font-solid" onclick="toggle_dropdown_menu('stock-market-dropdown');">
+        <i class="fa-solid fa-pen-to-square"></i> <span>Stock</span> <i class="fa-solid fa-caret-down"></i>
+    </button>
+    <div id="stock-market-dropdown" class="dropdown-menu">
+        <a class="dropdown-item" href="{% url 'dashboard:stock-market-new-trade' id=object.id %}">
+            <i class="fa-solid fa-folder-plus"></i> <span>New Trade</span>
+        </a>
+    </div>
+</div>
+<div class="navbar-item conversion-rate-container cursor-default">
+    <i class="fa-solid fa-money-bill-transfer"></i> <span>USD/CAD</span>
+    <br/>
+    <span>{{"USD"|conversion_rate:"CAD"}}</span>
+</div>
+{% endblock %}
+
+
+{% block dashboard-content %}
+
+<h2 class="title">{{ object.name }}</h1>
+
+<div class="cards-container">
+    <div class="card dashboard-card green">
+        <div class="card-img">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+        </div>
+        <div class="card-info">
+            <span class="card-value">{{123456.23|thousands_separated}}$</span>
+            <br>
+            <span class="card-name">Active Investment</span>
+        </div>
+    </div>
+
+    <div class="card dashboard-card purple">
+        <div class="card-img">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+        </div>
+        <div class="card-info">
+            <span class="card-value">{{3456.65|thousands_separated}}$</span>
+            <br>
+            <span class="card-name">+3.25%</span>
+            <span class="card-name">Daily Change</span>
+        </div>
+    </div>
+
+    <div class="card dashboard-card blue">
+        <div class="card-img">
+            <i class="fa-solid fa-sack-dollar"></i>
+        </div>
+        <div class="card-info">
+            <span class="card-value">{{565.65|thousands_separated}}$</span>
+            <br>
+            <span class="card-name">+1.25%</span>
+            <span class="card-name">Active Capital Gain</span>
+        </div>
+    </div>
+
+    <div class="card dashboard-card yellow">
+        <div class="card-img">
+            <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+        <div class="card-info">
+            <span class="card-value">{{1432.25|thousands_separated}}</span>
+            <br>
+            <span class="card-name">Year-to-date</span>
+            <span class="card-name">Realised Gains</span>
+        </div>
+    </div>
+</div>
 
 <div>
-    <h3>Trades</h3>
     <table>
+        <caption><i class="fa-solid fa-table-list"></i> <span>Trade history</span></caption>
         <thead>
             <tr>
-                <td>Ticker</td>
-                <td>Bought On</td>
-                <td>Shares</td>
-                <td>Buy Value (~$)</td>
-                <td>Fees ($)</td>
-                <td>Sold Price (~$)</td>
-                <td>Sold On</td>
-                <td>Last Value (~$)</td>
-                <td>Total Value ($)</td>
+                <th>Ticker</th>
+                <th>Bought On</th>
+                <th>Shares</th>
+                <th>Buy Value (~$)</th>
+                <th>Fees ($)</th>
+                <th>Sold Price (~$)</th>
+                <th>Sold On</th>
+                <th>Last Value (~$)</th>
+                <th>Total Value ($)</th>
 
-                <td>Profit ($)</td>
-                <td>Profit (%)</td>
-                <td>Duration</td>
-                <td>Currency</td>
-                <td>&#x1F5D1;</td>
+                <th>Profit ($)</th>
+                <th>Profit (%)</th>
+                <th>Duration</th>
+                <th>Currency</th>
+                <th><i class="fa-solid fa-gear"></i></th>
+                <th><i class="fa-solid fa-trash-can"></i></i></th>
             </tr>
+           
         </thead>
         <tbody>
             {% for trade in trades %}
             <tr>
                 <td>{{ trade.ticker }}</td>
                 <td>{{ trade.bought_on|date:"Y-m-d" }}</td>
-                <td>{{ trade.amount }}</td>
-                <td>{{ trade.bought_value }}</td>
+                <td>{{ trade.amount|floatformat:0 }}</td>
+                <td>{{ trade.bought_value|significant_digits }}</td>
                 <td>{{ trade.fees }}</td>
-                <td>{{ trade.sold_value }}</td>
+                <td>{{ trade.sold_value|significant_digits }}</td>
                 <td>{{ trade.sold_on|date:"Y-m-d" }}</td>
-                <td>{{ trade.last_value }}</td>
+                <td>{{ trade.last_value|significant_digits }}</td>
                 <td>{{ trade.total_value }}</td>
 
                 <td>{{ trade.profit }}</td>
                 <td>{{ trade.profit_percent }}</td>
                 <td>{{ trade.duration }}</td>
                 <td>{{ trade.currency }}</td>
-                <td><a href="{% url 'dashboard:stock-market-del-trade' id=object.id pk=trade.pk %}">&#9746;</a></td>
+                <td><a href="{% url 'dashboard:stock-market-edit-trade' id=object.id pk=trade.pk %}"><i class="fa-solid fa-pen-nib"></i></a></td>
+                <td><a href="{% url 'dashboard:stock-market-del-trade' id=object.id pk=trade.pk %}"><i class="fa-solid fa-xmark"></i></a></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 
-
-<a href="{% url 'dashboard:stock-market-new-trade' id=object.id %}">Add a trade</a>
-
-<a href="{% url 'dashboard:overview' %}">Go back to my dashboard</a>
-<a href="{% url 'dashboard:stock-market-account-remove' id=object.id %}">Delete this account</a>
+<div class="links-container">
+    <a href="{% url 'dashboard:stock-market-new-trade' id=object.id %}">Add a trade</a>
+    <a href="{% url 'dashboard:overview' %}">Go back to my dashboard</a>
+    <a href="{% url 'dashboard:stock-market-account-remove' id=object.id %}">Delete this account</a>
+</div>
 {% endblock %}

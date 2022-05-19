@@ -24,8 +24,9 @@ Use the command:
 # DEVELOPMENT NOTES:
 
 ## TODO:
-Normalize all the files for the inheritance (forms < dashboard-forms < dashboards).
-
+- Get data on stock.
+- Trade view with more indicators
+- Trade list loading
 
 ## BUGS:
 Button clicking on icon does not work.

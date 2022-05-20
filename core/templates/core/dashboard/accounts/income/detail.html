@@ -1,13 +1,83 @@
 {% extends "core/dashboard/dashboard.html" %}
+{% load format %}
+{% load static %}
+{% load compress %}
 {% block title %}Dollarify - {{object.name}} {% endblock %}
 
-{% block content %}
 
-<h1>{{ object.verbose }}</h1>
+{% block navbar-extras %}
+{% compress css %}
+<link type="text/x-scss" href="{% static 'style/stock-market-account.scss' %}" rel="stylesheet" media="screen">
+{% endcompress %}
+<div class="navbar-item dropdown">
+    <button class="dropdown-toggle fa-font-solid" onclick="toggle_dropdown_menu('income-account-dropdown');">
+        <i class="fa-solid fa-pen-to-square"></i> <span>Paycheck</span> <i class="fa-solid fa-caret-down"></i>
+    </button>
+    <div id="income-account-dropdown" class="dropdown-menu">
+        <a class="dropdown-item" href="{% url 'dashboard:income-new-paycheck' id=object.id %}">
+            <i class="fa-solid fa-folder-plus"></i> <span>New Paycheck</span>
+        </a>
+        <a class="dropdown-item" href="{% url 'dashboard:income-import-paychecks' id=object.id %}">
+            <i class="fa-solid fa-file-import"></i> <span>Import Paycheck List</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block dashboard-content %}
+<div class="cards-container">
+    <div class="card dashboard-card orange">
+        <div class="card-img">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+        </div>
+        <div class="card-info">
+            <span class="card-value">{{43456.23|thousands_separated}}$</span>
+            <br>
+            <span class="card-name">Cumulated Revenue</span>
+            <span class="card-name">All time</span>
+        </div>
+    </div>
+
+    <div class="card dashboard-card teal">
+        <div class="card-img">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+        </div>
+        <div class="card-info">
+            <span class="card-value">{{41.25|thousands_separated}}H</span>
+            <br>
+            <span class="card-name"></span>
+            <span class="card-name">Average hours per week</span>
+            <span class="card-name"></span>
+        </div>
+    </div>
+
+    <div class="card dashboard-card indigo">
+        <div class="card-img">
+            <i class="fa-solid fa-sack-dollar"></i>
+        </div>
+        <div class="card-info">
+            <span class="card-value">{{1565.65|thousands_separated}}$</span>
+            <br>
+            <span class="card-name">Year-to-date Revenue</span>
+        </div>
+    </div>
+
+    <div class="card dashboard-card yellow">
+        <div class="card-img">
+            <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+        <div class="card-info">
+            <span class="card-value">{{27.29|thousands_separated}}$/H</span>
+            <br>
+            <span class="card-name">Average Hourly Rate</span>
+        </div>
+    </div>
+</div>
 
 <div>
-    <h3>Paychecks</h3>
     <table>
+        <caption>Paychecks from {{ object.verbose }}</caption>
         <thead>
             <tr>
                 <td>Earned</td>
@@ -23,10 +93,18 @@
         <tbody>
             {% for paycheck in paychecks %}
             <tr>
-                <td>{{ paycheck.amount }}</td>
+                <td>{{ paycheck.amount|thousands_separated }}$</td>
                 <td>{{ paycheck.hours }}</td>
-                <td>{{ paycheck.period_start }}</td>
-                <td>{{ paycheck.period_end }}</td>
+                <td>
+                    {% if paycheck.period_start %}
+                    {{ paycheck.period_start }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if paycheck.period_start %}
+                    {{ paycheck.period_end }}
+                    {% endif %}
+                </td>                
                 <td>{{ paycheck.over_hours }}</td>
                 <td>{{ paycheck.over_rate }}</td>
                 
@@ -37,9 +115,10 @@
     </table>
 </div>
 
-
-<a href="{% url 'dashboard:income-new-paycheck' id=object.id %}">Add a paycheck</a>
-
-<a href="{% url 'dashboard:overview' %}">Go back to my dashboard</a>
-<a href="{% url 'dashboard:income-account-remove' id=object.id %}">Delete this account</a>
+<div class="links-container">
+    <a href="{% url 'dashboard:income-new-paycheck' id=object.id %}">Add a paycheck</a>
+    
+    <a href="{% url 'dashboard:overview' %}">Go back to my dashboard</a>
+    <a href="{% url 'dashboard:income-account-remove' id=object.id %}">Delete this account</a>
+</div>
 {% endblock %}

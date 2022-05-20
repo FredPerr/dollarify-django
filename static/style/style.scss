@@ -1,15 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&display=swap');
 
 $theme-attributes:(
-    indigo: #675aa9,
+    indigo: #6c62a0,
     blue: #348cd4,
     purple: #8892d6,
     pink: #f06292,
     red: #f7531f,
-    orange: #fd7e14,
+    orange: #dc8946,
     yellow: #a69662,
     green: #78c350,
-    teal: #02a8b5,
+    teal: #4ea9af,
     cyan: #45bbe0,
     white: #fff,
     gray: #cedeef,
@@ -96,6 +96,9 @@ $theme-attributes:(
 .purple { background-color: theme(purple) !important; }
 .blue { background-color: theme(brand-blue) !important; }
 .yellow { background-color: theme(yellow) !important; }
+.orange { background-color: theme(orange) !important; }
+.teal { background-color: theme(teal) !important; }
+.indigo { background-color: theme(indigo) !important; }
 
 
 body {
@@ -104,6 +107,10 @@ body {
 	font-size: theme(body-font-size);
 	font-weight: theme(body-font-weight);
 	line-height: theme(body-line-height);
+}
+
+main {
+    margin: 1.5rem 2rem;
 }
 
 

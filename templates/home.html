@@ -1,6 +1,27 @@
 {% extends "base.html" %}
 
+{% load compress %}
+{% load static %}
+
 {% block content %}
-<h1>This is the home page.</h1>
-<h2><a href="{% url 'dashboard:overview' %}">Go to my dashboard</a></h2>
+<div class="home-container">
+    <img class="logo" src="{% static 'img/dollarify-written-logo.png' %}" alt="">
+    <h1>Analyze Your Finances<br></h1>
+    <h2>All In One Place</h2>
+
+
+    <ul class="cursor-default">
+        <li><i class="fa-solid fa-chart-pie"></i> <span>Stock Market Monitoring & Analytics</span></li>
+        <li><i class="fa-solid fa-receipt"></i> <span>Income Tracking</span></li>
+    </ul>
+
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'dashboard:overview' %}">Go to my dashboard</a>
+    {% else %}
+    <a href="#">Create my account</a>
+    {% endif %}
+</div>
+{% compress css %}
+<link type="text/x-scss" href="{% static 'style/home.scss' %}" rel="stylesheet" media="screen">
+{% endcompress %}
 {% endblock %}

@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from django import template
 
 
@@ -25,6 +26,13 @@ def thousands_separated(value):
         return value
     
     return f'{value:,}'
+
+
+@register.filter
+def days(value):
+    if value is None or not isinstance(value, timedelta):
+        return value
+    return f'{value.days} days'
 
 
 

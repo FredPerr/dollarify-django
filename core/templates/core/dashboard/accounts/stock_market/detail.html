@@ -18,6 +18,9 @@
         <a class="dropdown-item" href="{% url 'dashboard:stock-market-new-trade' id=object.id %}">
             <i class="fa-solid fa-folder-plus"></i> <span>New Trade</span>
         </a>
+        <a class="dropdown-item" href="{% url 'dashboard:stock-market-import-trades' id=object.id %}">
+            <i class="fa-solid fa-file-import"></i> <span>Import Trade List</span>
+        </a>
     </div>
 </div>
 <div class="navbar-item conversion-rate-container cursor-default">
@@ -113,14 +116,18 @@
                 <td>{{ trade.amount|floatformat:0 }}</td>
                 <td>{{ trade.bought_value|significant_digits }}</td>
                 <td>{{ trade.fees }}</td>
-                <td>{{ trade.sold_value|significant_digits }}</td>
+                <td>
+                    {% if trade.sold_value %}
+                    {{ trade.sold_value|significant_digits }}
+                    {% endif %}
+                </td>
                 <td>{{ trade.sold_on|date:"Y-m-d" }}</td>
                 <td>{{ trade.last_value|significant_digits }}</td>
                 <td>{{ trade.total_value }}</td>
 
                 <td>{{ trade.profit }}</td>
                 <td>{{ trade.profit_percent }}</td>
-                <td>{{ trade.duration }}</td>
+                <td>{{ trade.duration|days }}</td>
                 <td>{{ trade.currency }}</td>
                 <td><a href="{% url 'dashboard:stock-market-edit-trade' id=object.id pk=trade.pk %}"><i class="fa-solid fa-pen-nib"></i></a></td>
                 <td><a href="{% url 'dashboard:stock-market-del-trade' id=object.id pk=trade.pk %}"><i class="fa-solid fa-xmark"></i></a></td>

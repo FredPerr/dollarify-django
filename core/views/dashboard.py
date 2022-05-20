@@ -99,6 +99,9 @@ class StockMarketEditTradeView(UpdateView):
         return reverse_lazy('dashboard:stock-market-account-detail', kwargs={'id': self.kwargs['id']})
 
 
+def import_trades_view(request, id):
+    return render(request, 'core/dashboard/accounts/stock_market/import_trade_list.html')
+
 # Income #
 
 class IncomeAccountCreateView(CreateView):
@@ -189,4 +192,5 @@ class IncomeSourceentityDelView(DeleteView):
         return reverse_lazy('dashboard:overview')
 
 
-    
+def import_paychecks_view(request, id):
+    return render(request, 'core/dashboard/accounts/income/import_paycheck_list.html')

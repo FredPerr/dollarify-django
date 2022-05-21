@@ -64,6 +64,10 @@ header {
     }
 }
 
+main {
+    padding: 1.5rem 2rem;
+}
+
 footer {
     grid-area: footer;
     background-color: theme(gray-100);

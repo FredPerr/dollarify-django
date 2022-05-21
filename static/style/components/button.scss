@@ -1,0 +1,10 @@
+@mixin button-default {
+    border: none;
+    cursor: pointer;
+    background-color: theme(body-bg);
+    color: theme(body-color);
+
+    &:not([disabled]):hover, &:not([disabled]):focus {
+        background-color: darken(theme(body-bg), 0.8%);
+    }
+}

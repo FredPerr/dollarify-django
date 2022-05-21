@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&display=swap");
+@import './components/button.scss';
+@import './components/hyperlink.scss';
+
 
 $theme-attributes:(
     indigo: #6c62a0,
@@ -31,20 +34,6 @@ $theme-attributes:(
     danger: #f7531f,
     light: #424e5a,
     dark: #f3f7f9,
-    primary-rgb: (52,140,212),
-    secondary-rgb: (206,222,239),
-    success-rgb: (120,195,80),
-    info-rgb: (69,187,224),
-    warning-rgb: (255,152,0),
-    danger-rgb: (247,83,31),
-    light-rgb: (66,78,90),
-    dark-rgb: (243,247,249),
-    pink-rgb: (240,98,146),
-    purple-rgb: (136,146,214),
-    white-rgb: (255,255,255),
-    black-rgb: (0,0,0),
-    body-color-rgb: (148,160,173),
-    body-bg-rgb: (48,56,65),
     font-sans-serif: ("FontAwesome" ,"Poppins", sans-serif),
     body-font-family: (FontAwesome, Poppins, sans-serif),
     body-font-size: 0.8125rem,
@@ -59,7 +48,6 @@ $theme-attributes:(
 
 
 @function theme($attrib){
-
     @if map-has-key($theme-attributes, $attrib){
         $color: map-get($theme-attributes, $attrib);
 
@@ -77,9 +65,20 @@ $theme-attributes:(
 }
 
 
-:root {
-    font-size: 12px;
-}
+// Colors
+.green { background-color: theme(brand-green) !important;}
+.purple { background-color: theme(purple) !important; }
+.blue { background-color: theme(brand-blue) !important; }
+.yellow { background-color: theme(yellow) !important; }
+.orange { background-color: theme(orange) !important; }
+.teal { background-color: theme(teal) !important; }
+.indigo { background-color: theme(indigo) !important; }
+
+// Attributes
+.underline { text-decoration: underline; }
+
+
+:root { font-size: 12px; }
 
 
 * {
@@ -90,49 +89,29 @@ $theme-attributes:(
     box-sizing: border-box;
 }
 
-.body-bg { background-color: theme(body-bg) !important; }
-.body-color { color: theme(body-color) !important; }
-.green { background-color: theme(brand-green) !important;}
-.purple { background-color: theme(purple) !important; }
-.blue { background-color: theme(brand-blue) !important; }
-.yellow { background-color: theme(yellow) !important; }
-.orange { background-color: theme(orange) !important; }
-.teal { background-color: theme(teal) !important; }
-.indigo { background-color: theme(indigo) !important; }
-
 
 body {
-    font-weight: 200;
     font-family: theme(body-font-family);
 	font-size: theme(body-font-size);
 	font-weight: theme(body-font-weight);
 	line-height: theme(body-line-height);
-}
-
-main {
-    padding: 1.5rem 2rem;
+    
+    background-color: theme(body-bg);
+    color: theme(body-color);
 }
 
 
 button {
-    border: none;
-    cursor: pointer;
+    @include button-default;
     background-color: theme(body-bg);
-
-    &:hover, &:focus {
-        background-color: darken(theme(body-bg), 0.8%);
-    }
 }
 
 
 a {
-    text-decoration: none;
+    @include hyperlink-default;
 }
 
-.underline {
-    text-decoration: underline;
-}
-
+// HERE IN THE REFACTOR
 
 .form-container {
     
@@ -289,9 +268,9 @@ table {
 .dropdown-toggle {
     height: 100%;
     padding: 0 1.7rem;
-    &:focus {
-        background-color: darken(theme(body-bg), 0.8%);
-    }
+    // &:focus {
+    //     background-color: darken(theme(body-bg), 0.8%);
+    // }
 
     i {
         pointer-events: none;

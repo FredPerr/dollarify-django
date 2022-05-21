@@ -2,7 +2,7 @@ from django.urls import path
 
 
 from ..views.dashboard import (
-    IncomeDelPaycheckView, IncomeNewPaycheckView, IncomeSourceEntityCreateView, IncomeSourceEntityDelView, IncomeSourceEntityEditView, IncomeSourceEntityListView, StockMarketDelTradeView, StockMarketEditTradeView, StockMarketNewTradeView, dashboard_overview, StockMarketAccountCreateView, 
+    IncomeDelPaycheckView, IncomeNewPaycheckView, StockMarketDelTradeView, StockMarketEditTradeView, StockMarketNewTradeView, dashboard_overview, StockMarketAccountCreateView, 
     StockMarketAccountDetailView, StockMarketAccountDeleteView, IncomeAccountCreateView, IncomeAccountDetailView, IncomeAccountDeleteView, import_paychecks_view,
     import_trades_view
 )
@@ -29,9 +29,4 @@ urlpatterns = [
     path('account/income/<uuid:id>/new-paycheck/', IncomeNewPaycheckView.as_view(), name='income-new-paycheck'),
     path('account/income/<uuid:id>/new-paycheck/import-paychecks/', import_paychecks_view, name='income-import-paychecks'),
     path('account/income/<uuid:id>/del-paycheck/<pk>/', IncomeDelPaycheckView.as_view(), name='income-del-paycheck'),
-
-    path('account/income/source/add/', IncomeSourceEntityCreateView.as_view(), name='income-source-create'),
-    path('account/income/source/remove/<uuid:id>/', IncomeSourceEntityDelView.as_view(), name='income-source-delete'),
-    path('account/income/source/edit/<uuid:id>/', IncomeSourceEntityEditView.as_view(), name='income-source-edit'),
-    path('account/income/source/list/', IncomeSourceEntityListView.as_view(), name='income-source-list'),
 ]

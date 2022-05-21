@@ -10,7 +10,7 @@ from django.contrib.auth.forms import (
 from core.widget import DatePickerInput, TimePickerInput
 
 
-from .models import IncomeAccount, IncomeSourceEntity, Paycheck, StockTrade, User, StockMarketAccount
+from .models import IncomeAccount, Paycheck, StockTrade, User, StockMarketAccount
 
 
 class UserRegisterForm(UserCreationForm):
@@ -99,8 +99,8 @@ class IncomeAccountCreateForm(ModelForm):
 
     class Meta:
         model = IncomeAccount
-        fields = ('source',)
-        exclude = ('user_id', )
+        fields = ('name', 'over_rate', 'payday', 'week_start', 'week_end', 'overtime_threshold', 'extras')
+        exclude = ('user_id',)
 
 
 
@@ -110,10 +110,3 @@ class PaycheckCreateForm(ModelForm):
         model = Paycheck
         fields = ('amount', 'hours', 'week', 'over_hours')
         exclude = ('target', )
-
-
-class IncomeSourceCreateForm(ModelForm):
-
-    class Meta:
-        model = IncomeSourceEntity
-        fields = ('name', 'verbose', 'over_rate', 'payday', 'week_start', 'week_end', 'overtime_threshold', 'extras')

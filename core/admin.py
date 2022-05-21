@@ -31,7 +31,7 @@ MODELS = (
 
     FundTransfer, StockTrade, 
     Loan, Payment, Paycheck, CurrencyRate,
-    IncomeAccount, IncomeSourceEntity
+    IncomeAccount
 )
 
 

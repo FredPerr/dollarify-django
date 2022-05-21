@@ -2,12 +2,11 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, HttpResponseRedirect
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.detail import DetailView
-from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
 
 
-from ..models import  CurrencyRate, IncomeAccount, IncomeSourceEntity, Paycheck, StockMarketAccount, StockTrade
-from ..forms import IncomeSourceCreateForm, PaycheckCreateForm, StockMarketAccountCreateForm, StockMarketTradeCreateForm, IncomeAccountCreateForm
+from ..models import  CurrencyRate, IncomeAccount, Paycheck, StockMarketAccount, StockTrade
+from ..forms import PaycheckCreateForm, StockMarketAccountCreateForm, StockMarketTradeCreateForm, IncomeAccountCreateForm
 
 
 @login_required
@@ -113,8 +112,6 @@ class IncomeAccountCreateView(CreateView):
         if form.is_valid():
             account = form.save(commit=False)
             account.user = request.user
-            account.name = account.source.name
-            account.verbose = account.source.verbose
             account.save()
             return HttpResponseRedirect(reverse_lazy('dashboard:income-account-detail', kwargs={'id': account.id}))
 
@@ -129,7 +126,7 @@ class IncomeAccountDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['paychecks'] = Paycheck.objects.filter(target__id=self.kwargs['id'], )
+        context['paychecks'] = Paycheck.objects.filter(target__id=self.kwargs['id'])
         return context
 
 
@@ -172,40 +169,7 @@ class IncomeDelPaycheckView(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('dashboard:income-account-detail', kwargs={'id':self.kwargs['id']})
-    
-
-class IncomeSourceEntityCreateView(CreateView):
-    model = IncomeSourceEntity
-    template_name = 'core/dashboard/accounts/income/create-source.html'
-    form_class = IncomeSourceCreateForm
-
-    def get_success_url(self):
-        return reverse_lazy('dashboard:overview')
-
-class IncomeSourceEntityDelView(DeleteView):
-    model = IncomeSourceEntity
-    template_name = 'core/dashboard/accounts/income/delete-source.html'
-    pk_url_kwarg = 'id'
-
-    def get_success_url(self):
-        return reverse_lazy('dashboard:income-source-list')
 
 
 def import_paychecks_view(request, id):
     return render(request, 'core/dashboard/accounts/income/import_paycheck_list.html')
-
-
-class IncomeSourceEntityEditView(UpdateView):
-    model = IncomeSourceEntity
-    pk_url_kwarg = 'id'
-    template_name = 'core/dashboard/accounts/income/edit-source.html'
-    fields = ('name', 'verbose', 'over_rate', 'payday', 'week_start', 'week_end', 'overtime_threshold', 'extras')
-
-    def get_success_url(self):
-        return reverse_lazy('dashboard:income-source-list')
-
-
-class IncomeSourceEntityListView(ListView):
-    template_name = 'core/dashboard/accounts/income/list-sources.html'
-    model = IncomeSourceEntity
-    paginate_by = 50

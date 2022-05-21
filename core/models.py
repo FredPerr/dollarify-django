@@ -86,19 +86,13 @@ WEEKDAYS = (
     (6, 'Sunday'),
 )
 
-
-class IncomeSourceEntity(Entity):
+class IncomeAccount(Account):
     over_rate = DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=1.5)
     payday = IntegerField(choices=WEEKDAYS, default=3)
     week_start = IntegerField(choices=WEEKDAYS, default=6)
     week_end = IntegerField(choices=WEEKDAYS, default=5)
     overtime_threshold = DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=40)
     extras = CharField(max_length=255, default=None, blank=True, null=True)
-
-
-class IncomeAccount(Account):
-
-    source = ForeignKey(IncomeSourceEntity, RESTRICT, 'source_income')
 
     @property
     def paychecks(self):
@@ -111,7 +105,8 @@ class IncomeAccount(Account):
             total += paycheck.amount
         return total
     
-    def total_time(self):
+    @property
+    def cumulated_time(self):
         total = 0
         for paycheck in self.paychecks:
             total += paycheck.hours

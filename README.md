@@ -31,6 +31,8 @@ Use the command:
 - Set Income Source List for each user (or combine to Income Account directly)
 
 @ Add the expenses option.
+@ Add crypto trading option.
 
 ## BUGS:
 Button clicking on icon does not work.
+Hover in income account table too dark.

@@ -222,9 +222,8 @@ class Paycheck(Transaction):
     over_hours = DecimalField(default=0, blank=True, max_digits=6, decimal_places=2)
 
     def save(self, *args, **kwargs):
-        weekday_target = self.target.week_start.weekday()
         provided_weekday = self.week.weekday()
-        self.week -= datetime.date(0, 0, weekday_target - provided_weekday)
+        self.week -= datetime.timedelta(days=self.target.week_start - provided_weekday)
         print(str(provided_weekday) + " backtracked: " + str(self.week))
         super(Paycheck, self).save(*args, **kwargs)
 

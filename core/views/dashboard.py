@@ -59,7 +59,7 @@ class StockMarketAccountDeleteView(DeleteView):
 class StockMarketNewTradeView(CreateView):
     model = StockTrade
     form_class = StockMarketTradeCreateForm
-    template_name = 'core/dashboard/accounts/stock_market/new-trade.html'
+    template_name = 'core/dashboard/accounts/stock_market/trade/create.html'
 
     def get_success_url(self):
         return reverse_lazy('dashboard:stock-market-account-detail', kwargs={'id':self.kwargs['id']})
@@ -80,7 +80,7 @@ class StockMarketNewTradeView(CreateView):
 
 class StockMarketDelTradeView(DeleteView):
     model = StockTrade
-    template_name = 'core/dashboard/accounts/stock_market/del-trade.html'
+    template_name = 'core/dashboard/accounts/stock_market/trade/delete.html'
 
 
     def get_success_url(self):
@@ -89,7 +89,7 @@ class StockMarketDelTradeView(DeleteView):
 
 class StockMarketEditTradeView(UpdateView):
     model = StockTrade
-    template_name = 'core/dashboard/accounts/stock_market/edit-trade.html'
+    template_name = 'core/dashboard/accounts/stock_market/trade/edit.html'
     fields = ('ticker', 'currency', 'bought_on_date', 'bought_on_time', 'amount', 'bought_value', 'fees', 'sold_value', 'sold_on_date', 'sold_on_time')
 
     def get_success_url(self):
@@ -97,10 +97,10 @@ class StockMarketEditTradeView(UpdateView):
 
 
 def import_trades_view(request, id):
-    return render(request, 'core/dashboard/accounts/stock_market/import_trade_list.html')
+    return render(request, 'core/dashboard/accounts/stock_market/trade/import.html')
+
 
 # Income #
-
 class IncomeAccountCreateView(CreateView):
     model = IncomeAccount
     form_class = IncomeAccountCreateForm
@@ -144,7 +144,7 @@ class IncomeAccountDeleteView(DeleteView):
 class IncomeNewPaycheckView(CreateView):
     model = Paycheck
     form_class = PaycheckCreateForm
-    template_name = 'core/dashboard/accounts/income/new-paycheck.html'
+    template_name = 'core/dashboard/accounts/income/paycheck/create.html'
 
     def get_success_url(self):
         return reverse_lazy('dashboard:income-account-detail', kwargs={'id':self.kwargs['id']})
@@ -165,11 +165,11 @@ class IncomeNewPaycheckView(CreateView):
 
 class IncomeDelPaycheckView(DeleteView):
     model = Paycheck
-    template_name = 'core/dashboard/accounts/income/del-paycheck.html'
+    template_name = 'core/dashboard/accounts/income/paycheck/delete.html'
 
     def get_success_url(self):
         return reverse_lazy('dashboard:income-account-detail', kwargs={'id':self.kwargs['id']})
 
 
 def import_paychecks_view(request, id):
-    return render(request, 'core/dashboard/accounts/income/import_paycheck_list.html')
+    return render(request, 'core/dashboard/accounts/income/paycheck/import.html')

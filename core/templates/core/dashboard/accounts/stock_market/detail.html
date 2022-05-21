@@ -139,6 +139,7 @@
 
 <div class="links-container">
     <a href="{% url 'dashboard:stock-market-new-trade' id=object.id %}">Add a trade</a>
+    <a href="{% url 'dashboard:stock-market-import-trades' id=object.id %}">Import trades from spreadsheet</a>
     <a href="{% url 'dashboard:overview' %}">Go back to my dashboard</a>
     <a href="{% url 'dashboard:stock-market-account-remove' id=object.id %}">Delete this account</a>
 </div>

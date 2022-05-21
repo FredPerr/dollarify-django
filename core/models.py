@@ -228,8 +228,7 @@ class Paycheck(Transaction):
         super(Paycheck, self).save(*args, **kwargs)
 
     def __str__(self):
-        period = f" from {self.period_start} to {self.period_end}" if self.period_end and self.period_start else ""
-        return f"Paycheck #{self.id}: {self.hours} hours for ${self.amount}{period}"
+        return f"Paycheck #{str(self.id)}: {self.hours}H/${str(self.amount)} for week {str(self.week)}"
 
 
 

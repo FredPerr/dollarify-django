@@ -24,7 +24,21 @@
                     <i class="fa fa-solid fa-money-bill-trend-up"></i> <span>Stock Market Account</span>
                 </a>
                 <a class="dropdown-item" href="{% url 'dashboard:income-account-create' %}">
-                    <i class="fa-solid fa-wallet"></i> <span>Income Source</span>
+                    <i class="fa-solid fa-wallet"></i> <span>Income Account</span>
+                </a>
+                <a class="dropdown-item" href="{% url 'dashboard:income-source-create' %}">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Income Source</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="navbar-item dropdown">
+            <button class="dropdown-toggle fa-font-solid" onclick="toggle_dropdown_menu('view-dropdown');">
+                <i class="fa-solid fa-eye"></i> <span>View</span> <i class="fa-solid fa-caret-down"></i>
+            </button>
+            <div id="view-dropdown" class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'dashboard:income-source-list' %}">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Income Sources</span>
                 </a>
             </div>
         </div>
@@ -69,7 +83,7 @@
                 </li>
                 {% endfor %}
                 
-                <li class="menu-title"><i class="fa-solid fa-wallet"></i>  <span>Income Sources</span></li>
+                <li class="menu-title"><i class="fa-solid fa-wallet"></i>  <span>Income Accounts</span></li>
                 {% for income_account in request.user|income_accounts %}
                 <li class="menu-item"><a href="{% url 'dashboard:income-account-detail' id=income_account.id %}">
                     <span>{{income_account.source.name}}</span></a>

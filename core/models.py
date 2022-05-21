@@ -1,7 +1,6 @@
 import uuid
 from decimal import Decimal
 import datetime
-import logging
 
 from django.utils import timezone
 from django.core.validators import MinValueValidator
@@ -11,7 +10,7 @@ from django.db.models import (
     BooleanField, DateTimeField, 
     DateField, UUIDField, 
     ForeignKey, DecimalField, 
-    CASCADE, RESTRICT, TimeField
+    CASCADE, RESTRICT, TimeField, IntegerField
 )
 
 
@@ -77,9 +76,24 @@ class StockMarketAccount(Account):
     exchange = ForeignKey(StockExchange, RESTRICT, 'exchange_fk')
     currency = CharField(max_length=4, choices=CURRENCIES)
 
+WEEKDAYS = (
+    (0, 'Monday'),
+    (1, 'Tuesday'),
+    (2, 'Wednesday'),
+    (3, 'Thursday'),
+    (4, 'Friday'),
+    (5, 'Saturday'), 
+    (6, 'Sunday'),
+)
+
 
 class IncomeSourceEntity(Entity):
-    pass
+    over_rate = DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=1.5)
+    payday = IntegerField(choices=WEEKDAYS, default=3)
+    week_start = IntegerField(choices=WEEKDAYS, default=6)
+    week_end = IntegerField(choices=WEEKDAYS, default=5)
+    overtime_threshold = DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=40)
+    extras = CharField(max_length=255, default=None, blank=True, null=True)
 
 
 class IncomeAccount(Account):
@@ -208,11 +222,16 @@ class Paycheck(Transaction):
     target = ForeignKey(IncomeAccount, CASCADE, 'target_paycheck')
     hours = DecimalField(null=True, blank=True, max_digits=7, decimal_places=2)
     
-    period_start = DateField(null=True, blank=True)
-    period_end = DateField(null=True, blank=True)
+    week = DateField(default=timezone.now)
 
-    over_hours = DecimalField(null=True, blank=True, max_digits=6, decimal_places=2)
-    over_rate = DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=1.5)
+    over_hours = DecimalField(default=0, blank=True, max_digits=6, decimal_places=2)
+
+    def save(self, *args, **kwargs):
+        weekday_target = self.target.week_start.weekday()
+        provided_weekday = self.week.weekday()
+        self.week -= datetime.date(0, 0, weekday_target - provided_weekday)
+        print(str(provided_weekday) + " backtracked: " + str(self.week))
+        super(Paycheck, self).save(*args, **kwargs)
 
     def __str__(self):
         period = f" from {self.period_start} to {self.period_end}" if self.period_end and self.period_start else ""

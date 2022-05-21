@@ -26,6 +26,7 @@
 
 
 {% block dashboard-content %}
+<h2 class="title">{{ object.verbose }} <small><a href="{% url 'dashboard:income-source-edit' id=object.id %}"></a>(edit)</small></h2>
 <div class="cards-container">
     <div class="card dashboard-card orange">
         <div class="card-img">
@@ -77,7 +78,7 @@
 
 <div>
     <table>
-        <caption>Paychecks from {{ object.verbose }}</caption>
+        <caption>Paychecks</caption>
         <thead>
             <tr>
                 <td>Earned</td>
@@ -85,7 +86,7 @@
                 <td>Period start</td>
                 <td>Period end</td>
                 <td>Over hours</td>
-                <td>Over rate</td>
+                <td>Hourly rate</td>
 
                 <td>&#x1F5D1;</td>
             </tr>
@@ -105,8 +106,8 @@
                     {{ paycheck.period_end }}
                     {% endif %}
                 </td>                
-                <td>{{ paycheck.over_hours }}</td>
-                <td>{{ paycheck.over_rate }}</td>
+                <td>{{ paycheck.over_hours|significant_digits:0 }}</td>
+                <td></td>
                 
                 <td><a href="{% url 'dashboard:income-del-paycheck' id=object.id pk=paycheck.pk %}">&#9746;</a></td>
             </tr>

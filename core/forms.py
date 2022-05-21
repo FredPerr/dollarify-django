@@ -108,7 +108,7 @@ class PaycheckCreateForm(ModelForm):
 
     class Meta:
         model = Paycheck
-        fields = ('amount', 'hours', 'period_start', 'period_end', 'over_hours', 'over_rate')
+        fields = ('amount', 'hours', 'week', 'over_hours')
         exclude = ('target', )
 
 
@@ -116,4 +116,4 @@ class IncomeSourceCreateForm(ModelForm):
 
     class Meta:
         model = IncomeSourceEntity
-        fields = ('name', 'verbose')
+        fields = ('name', 'verbose', 'over_rate', 'payday', 'week_start', 'week_end', 'overtime_threshold', 'extras')

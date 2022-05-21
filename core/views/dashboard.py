@@ -1,10 +1,8 @@
-from audioop import reverse
-import uuid
-
 from django.urls import reverse_lazy
 from django.shortcuts import render, HttpResponseRedirect
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
 
 
@@ -184,13 +182,30 @@ class IncomeSourceEntityCreateView(CreateView):
     def get_success_url(self):
         return reverse_lazy('dashboard:overview')
 
-class IncomeSourceentityDelView(DeleteView):
+class IncomeSourceEntityDelView(DeleteView):
     model = IncomeSourceEntity
     template_name = 'core/dashboard/accounts/income/delete-source.html'
+    pk_url_kwarg = 'id'
 
     def get_success_url(self):
-        return reverse_lazy('dashboard:overview')
+        return reverse_lazy('dashboard:income-source-list')
 
 
 def import_paychecks_view(request, id):
     return render(request, 'core/dashboard/accounts/income/import_paycheck_list.html')
+
+
+class IncomeSourceEntityEditView(UpdateView):
+    model = IncomeSourceEntity
+    pk_url_kwarg = 'id'
+    template_name = 'core/dashboard/accounts/income/edit-source.html'
+    fields = ('name', 'verbose', 'over_rate', 'payday', 'week_start', 'week_end', 'overtime_threshold', 'extras')
+
+    def get_success_url(self):
+        return reverse_lazy('dashboard:income-source-list')
+
+
+class IncomeSourceEntityListView(ListView):
+    template_name = 'core/dashboard/accounts/income/list-sources.html'
+    model = IncomeSourceEntity
+    paginate_by = 50

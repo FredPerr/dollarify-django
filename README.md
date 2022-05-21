@@ -28,5 +28,9 @@ Use the command:
 - Trade view with more indicators
 - Trade list loading
 
+- Set Income Source List for each user (or combine to Income Account directly)
+
+@ Add the expenses option.
+
 ## BUGS:
 Button clicking on icon does not work.

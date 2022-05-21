@@ -1,5 +1,10 @@
-const SIDEBAR = document.getElementById('sidebar');
-const DASHBOARD = document.getElementById('dashboard');
+var SIDEBAR = null;
+var DASHBOARD = null;
+
+window.addEventListener("DOMContentLoaded", (event)=> function(){
+    SIDEBAR = document.getElementById('sidebar');
+    DASHBOARD = document.getElementById('dashboard');
+})
 
 function toggle_sidebar(){
 

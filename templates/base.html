@@ -17,6 +17,8 @@
     {% endcompress %}
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    {% block head-extras %}
+    {% endblock %}
 </head>
 <body class="body-bg body-color">
     {% block content %}

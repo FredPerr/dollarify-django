@@ -1,6 +1,6 @@
 from django.urls import path
 
-from ...views.dashboard import (
+from ...views.dashboard.stock_market import (
     StockMarketAccountCreateView, StockMarketAccountDetailView,
     StockMarketAccountDeleteView, StockMarketNewTradeView, 
     import_trades_view, StockMarketDelTradeView,

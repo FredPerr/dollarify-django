@@ -1,6 +1,6 @@
 from django.urls import path
 
-from ...views.dashboard import (
+from ...views.dashboard.income import (
     IncomeAccountCreateView, IncomeAccountDetailView, 
     IncomeAccountDeleteView, IncomeNewPaycheckView, 
     import_paychecks_view, IncomeDelPaycheckView

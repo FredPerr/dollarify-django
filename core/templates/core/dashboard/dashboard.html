@@ -3,14 +3,21 @@
 {% load compress %}
 {% load static %}
 {% load accounts %}
-{% block title %}Dollarify - Dashboard {% endblock %}
 
+{% block title %}
+    Dollarify - Dashboard
+{% endblock %}
+
+{% block head-extras %}
+    {% compress css %}
+        <link type="text/x-scss" href="{% static 'style/dashboard.scss' %}"  rel="stylesheet" media="screen">
+    {% endcompress %}
+
+    <script src="{% static 'script/dropdowns.js' %}"></script>
+    <script src="{% static 'script/sidebar.js' %}"></script>
+{% endblock %}
 
 {% block content %}
-
-{% compress css %}
-<link type="text/x-scss" href="{% static 'style/dashboard.scss' %}"  rel="stylesheet" media="screen">
-{% endcompress %}
 <div id="dashboard">
     <header>
         <button class="navbar-item" id="sidebar-toggle" onclick="toggle_sidebar()"><i class="fa-solid fa-bars"></i></button>
@@ -26,15 +33,6 @@
                 <a class="dropdown-item" href="{% url 'dashboard:income-account-create' %}">
                     <i class="fa-solid fa-wallet"></i> <span>Income Account</span>
                 </a>
-            </div>
-        </div>
-
-        <div class="navbar-item dropdown">
-            <button class="dropdown-toggle fa-font-solid" onclick="toggle_dropdown_menu('view-dropdown');">
-                <i class="fa-solid fa-eye"></i> <span>View</span> <i class="fa-solid fa-caret-down"></i>
-            </button>
-            <div id="view-dropdown" class="dropdown-menu">
-                <!-- No items in the dropdown yet -->
             </div>
         </div>
 
@@ -93,6 +91,4 @@
     </main>
     <footer><span>&copy; 2022 - Dollarify</span></footer>
 </div>
-<script src="{% static 'script/dropdowns.js' %}"></script>
-<script src="{% static 'script/sidebar.js' %}"></script>
 {% endblock %}

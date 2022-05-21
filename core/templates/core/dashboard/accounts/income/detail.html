@@ -80,6 +80,7 @@
     <table>
         <caption>Paychecks</caption>
         <thead>
+            {% if paychecks|length %}
             <tr>
                 <td>Earned</td>
                 <td>Hours worked</td>
@@ -90,6 +91,9 @@
 
                 <td>&#x1F5D1;</td>
             </tr>
+            {% else %}
+            <tr><td>No paycheck listed yet ? <a class="underline" href="{% url 'dashboard:income-new-paycheck' id=object.id %}">Add one here</a> or <a class="underline" href="{% url 'dashboard:income-import-paychecks' id=object.id %}">load them from a spreadsheet</a>.</td></tr>
+            {% endif %}
         </thead>
         <tbody>
             {% for paycheck in paychecks %}
@@ -107,7 +111,6 @@
                     {% endif %}
                 </td>                
                 <td>{{ paycheck.over_hours|significant_digits:0 }}</td>
-                <td></td>
                 
                 <td><a href="{% url 'dashboard:income-del-paycheck' id=object.id pk=paycheck.pk %}">&#9746;</a></td>
             </tr>

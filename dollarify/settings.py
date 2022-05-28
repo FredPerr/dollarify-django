@@ -163,5 +163,5 @@ STATICFILES_FINDERS = [
 COMPRESS_ROOT = '/static/'
 
 COMPRESS_PRECOMPILERS = [
-    ('text/x-scss', 'django_libsass.SassCompiler'),
+    ('text/x-sass', 'sass {infile} {outfile}'),
 ]

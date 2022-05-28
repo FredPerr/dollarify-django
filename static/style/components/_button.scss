@@ -1,0 +1,12 @@
+
+
+@mixin button-default($bg-color, $fg-color) {
+    border: none;
+    cursor: pointer;
+    background-color: $bg-color;
+    color: $fg-color;
+
+    &:not([disabled]):hover, &:not([disabled]):focus {
+        background-color: darken($bg-color, 0.8%);
+    }
+}

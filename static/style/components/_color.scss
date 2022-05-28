@@ -1,0 +1,76 @@
+@use 'sass:meta' as meta;
+
+$base: (
+    indigo: #56489f,
+    blue: #1689e7,
+    pink: #f06292,
+    red: #f71f1f,
+    purple: #707ccd,
+    orange: #f37b1a,
+    gold: #a69662,
+    green: #78c350,
+    teal: #4ea9af,
+    cyan: #45bbe0,
+    white: #fff,
+    gray: #cedeef,
+    primary: #348cd4,
+    secondary: #cedeef,
+    success: #78c350,
+    info: #45bbe0,
+    warning: #ff9800,
+    danger: #f7531f,
+    light: #424e5a,
+    dark: #f3f7f9,
+);
+
+$gray: (
+    dark: #232323,
+    100: #323a46,
+    200: #36404a,
+    300: #424e5a,
+    400: #5d7186,
+    500: #8c98a5,
+    600: #cedeef,
+    700: #dee2e6,
+    800: #f7f7f7,
+    900: #f3f7f9,
+);
+
+$pastel: (
+    indigo: #6c62a0,
+    purple: #8892d6,
+    orange: #dc8946,
+    pink: #da82a0,
+    red: #b85050,
+    blue: #0095BB,
+    green: #56b68e,
+);
+
+$lucid: (
+
+);
+
+$theme: (
+    body-color: #94a0ad,
+    body-bg: #303841,
+);
+
+
+@function get($color, $palette: $theme){
+    @if map-has-key($palette, $color){
+        @return map-get($palette, $color);
+    }
+
+    @warn "unknown color `#{$color}` in palette";
+    @return null;
+}
+
+
+@mixin color-each($children, $colors, $attrib: 'background-color'){
+    @debug $colors;
+    @for $i from 1 to length($colors){
+        > #{$children}:nth-of-type(#{$i}) {
+            #{$attrib}: nth($colors, $i);
+        }
+    }
+}

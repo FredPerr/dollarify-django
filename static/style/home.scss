@@ -1,4 +1,5 @@
-@import 'static/style/style';
+@use 'sass:color';
+@use './theme.scss' as theme;
 
 
 .home-container {
@@ -6,7 +7,7 @@
     width: fit-content;
     margin: 5rem auto 0 auto;
     padding: 4rem;
-    background-color: lighten(theme(body-bg), 3.9%);
+    background-color: color.scale(theme.color(body-bg), $lightness:80%);
 
     h1, h2 {
         font-weight: 300;

@@ -1,0 +1,5 @@
+@use '../components/color' as color;
+
+.cards-container {
+    @include color.color-each($children: 'dashboard-card', $colors: 'green-pastel' 'purple-pastel' 'blue-pastel' 'gold');
+}

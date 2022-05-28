@@ -8,7 +8,7 @@
 
 {% block navbar-extras %}
 {% compress css %}
-<link type="text/x-scss" href="{% static 'style/account/stock-market.scss' %}" rel="stylesheet" media="screen">
+<link type="text/x-sass" href="{% static 'style/account/stock-market.scss' %}" rel="stylesheet" media="screen">
 {% endcompress %}
 <div class="navbar-item dropdown">
     <button class="dropdown-toggle fa-font-solid" onclick="toggle_dropdown_menu('stock-market-dropdown');">
@@ -36,7 +36,7 @@
 <h2 class="title">{{ object.name }}</h1>
 
 <div class="cards-container">
-    <div class="card dashboard-card green">
+    <div class="card dashboard-card">
         <div class="card-img">
             <i class="fa-solid fa-hand-holding-dollar"></i>
         </div>
@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <div class="card dashboard-card purple">
+    <div class="card dashboard-card">
         <div class="card-img">
             <i class="fa-solid fa-arrow-trend-up"></i>
         </div>
@@ -59,7 +59,7 @@
         </div>
     </div>
 
-    <div class="card dashboard-card blue">
+    <div class="card dashboard-card">
         <div class="card-img">
             <i class="fa-solid fa-sack-dollar"></i>
         </div>
@@ -71,7 +71,7 @@
         </div>
     </div>
 
-    <div class="card dashboard-card yellow">
+    <div class="card dashboard-card">
         <div class="card-img">
             <i class="fa-solid fa-money-bill-wave"></i>
         </div>

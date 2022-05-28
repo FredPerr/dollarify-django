@@ -36,3 +36,4 @@ Use the command:
 ## BUGS:
 Button clicking on icon does not work.
 Hover in income account table too dark.
+Sidebar button in dashboard not working.

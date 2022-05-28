@@ -7,7 +7,7 @@ window.addEventListener("DOMContentLoaded", (event)=> function(){
 })
 
 function toggle_sidebar(){
-
+    
     if (SIDEBAR == null)
         return;
 

@@ -1,0 +1,10 @@
+@mixin hyperlink-default($fg-color, $underline: true) {
+    color: $fg-color;
+    @if not $underline {
+        text-decoration: none;
+    }
+
+    &:hover, &:focus {
+        color: lighten($fg-color, 10%);
+    }
+}

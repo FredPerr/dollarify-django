@@ -1,3 +1,5 @@
+@use './color' as color;
+
 @mixin hyperlink-default($fg-color, $underline: true) {
     color: $fg-color;
     @if not $underline {
@@ -7,4 +9,12 @@
     &:hover, &:focus {
         color: lighten($fg-color, 10%);
     }
+}
+
+a {
+    @include hyperlink-default(color.get(body-color));
+}
+
+.hyperlink-button {
+    @include hyperlink-default(color.get(body-color), false);
 }

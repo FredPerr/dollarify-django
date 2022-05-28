@@ -1,18 +1,17 @@
-@use './components/cursor';
 @use './components/color' as color;
 @use './components/font' as font;
-@use './components/button' as button;
-@use './components/hyperlink' as hyperlink;
-@use './components/dropdown' as dropdown;
+@use './components/cursor';
+@use './components/form';
+@use './components/table';
+@use './components/container';
+@use './components/button';
+@use './components/dropdown';
+@use './components/hyperlink';
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&display=swap");
 
 
-// Attributes
-.underline { text-decoration: underline; }
-
-
 :root { font-size: 12px; }
-
 
 * {
     color: color.get(white, color.$base);
@@ -28,156 +27,13 @@ body {
 	font-size: font.$body-font-size;
 	font-weight: font.$body-font-weight;
 	line-height: font.$body-line-height;
-    
     background-color: color.get(body-bg);
     color: color.get(body-color);
 }
 
 
-button {
-    @include button.button-default(color.get(body-bg), color.get(body-color));
-    background-color: color.get(body-bg);
-}
-
-a {
-    @include hyperlink.hyperlink-default(color.get(body-color));
-}
-
-.hyperlink-button {
-    @include hyperlink.hyperlink-default(color.get(body-color), false);
-}
-
-
-.height-100 { height: 100%; }
-.width-100 { width: 100%; }
-
-// HERE IN THE REFACTOR
-
-.form-container {
-    
-    width: fit-content;
-    display: flex;
-    flex-direction: column;
-    margin: 10vh auto;
-    background-color: color.get(200, color.$gray);
-    padding: 4rem 6rem;
-    h2 {
-        font-size: 1.5rem;
-        text-align: center;
-    }
-    > span {
-        margin: 1rem auto 0 auto;
-        font-size: 1.2rem;
-    }
-
-    > hr {
-        border: none;
-        height: 0.3px;
-        background-color: darken(color.get(200, color.$gray), 0.8%);
-        margin: 1rem 0;
-    }
-    .form-links {
-        margin-top: .6rem;
-        display: flex;
-        justify-content: space-between;
-    }
-}
-
-
-form {
-
-    p {
-        margin-bottom: 1rem;
-    }
-
-    label {
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-        color: lighten(color.get(body-color), 10%);
-    }
-
-    select, input, button {
-        background-color: darken(color.get(200, color.$gray), 0.8%);
-        border: none;
-        box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.1);
-        padding: 0.6rem 1rem;
-    }
-    
-    input, button {
-        width: 100%;
-    }
-
-    button[type=submit]{
-        margin-top: 1rem;
-    }
-    
-    input:hover, select:hover {
-        background-color: darken(color.get(200, color.$gray), 1%);
-    }
-
-}
-
-table {
-    font-size: 1.1rem;
-    border-collapse: collapse;
-    width: 100%;
-    text-align: center;
-
-    caption {
-        width: 100%;
-        background-color: lighten(color.get(300, color.$gray), 3%);
-        font-weight: bold;
-        font-size: 1.2rem;
-        font-weight: 400;
-        padding: 0.2rem;
-    }
-
-    thead {
-
-        background-color: color.get(300, color.$gray);
-        th {
-            font-weight: 300;
-        }
-    }
-    tbody tr {
-        border: 0.5px solid lighten(color.get(body-bg), 10%);
-        &:hover {
-            background-color: lighten(color.get(body-bg), 0.8%);
-        }
-        cursor: default;
-    }
-
-    td {
-        overflow: auto;
-        padding: 0.3rem 0;
-        &:hover {
-            background-color: lighten(color.get(body-bg), 1.3%);
-        }
-    }
-
-    tr td {
-        border-right: 0.5px solid lighten(color.get(body-bg), 5%); ;
-    }
-    border: 0.5px solid lighten(color.get(body-bg), 10%);
-}
-
-.links-container {
-    margin: 2rem 0;
-    width: fit-content;
-    display: flex;
-    flex-direction: column;
-    a {
-        margin: .4rem 0;
-        font-size: 1rem;
-        text-decoration: underline;
-        color: rgba(white, 0.8);
-
-        &:hover {
-            color: color.get(white, color.$base);
-        }
-    }
-}
-
+.no-style-list { list-style-type: none !important;  }
+.height-100 { height: 100% !important; }
+.width-100 { width: 100% !important; }
 .show { display: block !important; }
-
-.dropdown {@include dropdown.dropdown-default(color.get(body-bg), color.get(300, color.$gray));}
+.underline { text-decoration: underline !important; }

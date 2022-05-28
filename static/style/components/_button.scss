@@ -1,4 +1,4 @@
-
+@use './color' as color;
 
 @mixin button-default($bg-color, $fg-color) {
     border: none;
@@ -9,4 +9,9 @@
     &:not([disabled]):hover, &:not([disabled]):focus {
         background-color: darken($bg-color, 0.8%);
     }
+}
+
+button {
+    @include button-default(color.get(body-bg), color.get(body-color));
+    background-color: color.get(body-bg);
 }

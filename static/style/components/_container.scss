@@ -1,0 +1,18 @@
+@use './color' as color;
+
+.links-container {
+    margin: 2rem 0;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    a {
+        margin: .4rem 0;
+        font-size: 1rem;
+        text-decoration: underline;
+        color: rgba(white, 0.8);
+
+        &:hover {
+            color: color.get(white, color.$base);
+        }
+    }
+}

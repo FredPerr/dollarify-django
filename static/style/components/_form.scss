@@ -1,0 +1,65 @@
+@use './color' as color;
+
+
+.form-container {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin: 10vh auto;
+    background-color: color.get(200, color.$gray);
+    padding: 4rem 6rem;
+    h2 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    > span {
+        margin: 1rem auto 0 auto;
+        font-size: 1.2rem;
+    }
+
+    > hr {
+        border: none;
+        height: 0.3px;
+        background-color: darken(color.get(200, color.$gray), 0.8%);
+        margin: 1rem 0;
+    }
+    .form-links {
+        margin-top: .6rem;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+
+form {
+
+    p {
+        margin-bottom: 1rem;
+    }
+
+    label {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        color: lighten(color.get(body-color), 10%);
+    }
+
+    select, input, button {
+        background-color: darken(color.get(200, color.$gray), 0.8%);
+        border: none;
+        box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.1);
+        padding: 0.6rem 1rem;
+    }
+    
+    input, button {
+        width: 100%;
+    }
+
+    button[type=submit]{
+        margin-top: 1rem;
+    }
+    
+    input:hover, select:hover {
+        background-color: darken(color.get(200, color.$gray), 1%);
+    }
+
+}

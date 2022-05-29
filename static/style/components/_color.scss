@@ -67,9 +67,8 @@ $theme: (
 
 
 @mixin color-each($children, $colors, $attrib: 'background-color'){
-    @debug $colors;
-    @for $i from 1 to length($colors){
-        > #{$children}:nth-of-type(#{$i}) {
+    @for $i from 1 through length($colors){
+        #{$children}:nth-of-type(#{$i}) {
             #{$attrib}: nth($colors, $i);
         }
     }

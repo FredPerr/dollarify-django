@@ -2,7 +2,12 @@
 
 
 .cards-container {
-    @include color.color-each($children: 'dashboard-card', $colors: 'green-pastel' 'purple-pastel' 'blue-pastel' 'gold');
+    @include color.color-each($children: '.dashboard-card', $colors: 
+        color.get(indigo, color.$pastel) 
+        color.get(pink, color.$pastel) 
+        color.get(green, color.$pastel) 
+        color.get(red, color.$pastel)
+    );
 }
 
 .conversion-rate-container {

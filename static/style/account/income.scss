@@ -10,3 +10,24 @@
     );
     
 }
+
+#charts-container {
+    display: grid;
+    margin-bottom: 2rem;
+    column-gap: 1rem;
+    grid-template: 24rem / 1fr 1fr;
+
+    > div {
+        background-color: lighten(color.get(body-bg), 5%);
+        border-radius: .5rem;
+        padding: .7rem;
+    }
+
+    > :nth-child(1) {
+        grid-area: 1 / 1;
+    }
+
+    > :nth-child(2) {
+        grid-area: 1 / 2;
+    }
+}

@@ -9,6 +9,7 @@
 {% block navbar-extras %}
 {% compress css %}
 <link type="text/x-sass" href="{% static 'style/account/stock-market.scss' %}" rel="stylesheet" media="screen">
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 {% endcompress %}
 <div class="navbar-item dropdown">
     <button class="dropdown-toggle fa-font-solid" onclick="toggle_dropdown_menu('stock-market-dropdown');">
@@ -85,7 +86,7 @@
 </div>
 
 <div>
-    <table>
+    <table id="data-table">
         <caption><i class="fa-solid fa-table-list"></i> <span>Trade history</span></caption>
         <thead>
             <tr>

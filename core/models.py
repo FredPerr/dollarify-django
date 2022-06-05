@@ -96,7 +96,9 @@ class IncomeAccount(Account):
 
     @property
     def paychecks(self):
-        return Paycheck.objects.filter(target=self)
+        paychecks = Paycheck.objects.filter(target=self)
+        print(paychecks)
+        return paychecks
 
     @property
     def total_earned(self):
@@ -193,7 +195,13 @@ class StockTrade(Transaction):
         return offset - self.bought_on
 
     def __str__(self):
-        return f"{self.source.id} ({self.source.name}) {self.ticker} {self.amount}"
+        return
+        
+        f"{self.source.id} ({self.source.name}) {self.ticker} {self.amount}"
+    
+    class Meta:
+        ordering = ('bought_on_date', 'bought_on_time')
+
 
 
 class Loan(Transaction):
@@ -221,14 +229,19 @@ class Paycheck(Transaction):
 
     over_hours = DecimalField(default=0, blank=True, max_digits=6, decimal_places=2)
 
+    def hourly_rate(self):
+        return round(self.amount / self.hours, 2)
+
     def save(self, *args, **kwargs):
         provided_weekday = self.week.weekday()
         self.week -= datetime.timedelta(days=self.target.week_start - provided_weekday)
-        print(str(provided_weekday) + " backtracked: " + str(self.week))
         super(Paycheck, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"Paycheck #{str(self.id)}: {self.hours}H/${str(self.amount)} for week {str(self.week)}"
+    
+    class Meta:
+        ordering = ('week',)
 
 
 

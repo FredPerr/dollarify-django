@@ -16,6 +16,7 @@
     }
     
     >.dropdown-menu {
+        z-index: 100;
         background-color: sass-color.adjust($bg-color, $lightness: 0.4%);
         font-size: 1rem;
         display: none;

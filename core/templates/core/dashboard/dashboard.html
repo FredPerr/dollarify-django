@@ -13,8 +13,10 @@
         <link type="text/x-sass" href="{% static 'style/dashboard.scss' %}"  rel="stylesheet" media="screen">
     {% endcompress %}
 
-    <script src="{% static 'script/dropdowns.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js" integrity="sha512-yhdujT21BI/kqk9gcupTh4jMwqLhb+gc6Ytgs4cL0BJjXW+Jo9QyllqLbuluI0cBHqV4XsR7US3lemEGjogQ0w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{% static 'script/sidebar.js' %}"></script>
+    <script src="{% static 'script/dropdowns.js' %}"></script>
+    <script src="{% static 'script/apexchart.js' %}"></script>
 {% endblock %}
 
 {% block content %}

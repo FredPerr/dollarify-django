@@ -5,6 +5,14 @@
 {% block title %}Dollarify - {{object.name}} {% endblock %}
 
 
+{% block head-extras %}
+    {{block.super}}
+    <script src="{% static 'script/income/data.js' %}" defer></script>
+    <script src="{% static 'script/income/charts.js' %}" defer></script>
+    <script src="{% static 'script/income/income.js' %}" defer></script>
+{% endblock %}
+
+
 {% block navbar-extras %}
 {% compress css %}
 <link type="text/x-sass" href="{% static 'style/account/income.scss' %}" rel="stylesheet" media="screen">
@@ -33,7 +41,7 @@
             <i class="fa-solid fa-coins"></i>
         </div>
         <div class="card-info">
-            <span class="card-value">{{43456.23|thousands_separated}}$</span>
+            <span class="card-value" id="total-revenu">Loading...</span>
             <br>
             <span class="card-name">Cumulated Revenue</span>
             <span class="card-name">All time</span>
@@ -45,7 +53,7 @@
             <i class="fa-solid fa-business-time"></i>
         </div>
         <div class="card-info">
-            <span class="card-value">{{41.25|thousands_separated}}H</span>
+            <span class="card-value" id="average-hours">Loading...</span>
             <br>
             <span class="card-name"></span>
             <span class="card-name">Average hours per week</span>
@@ -58,7 +66,7 @@
             <i class="fa-solid fa-money-bill-wave"></i>
         </div>
         <div class="card-info">
-            <span class="card-value">{{1565.65|thousands_separated}}$</span>
+            <span class="card-value" id="ytd-revenu">Loading...</span>
             <br>
             <span class="card-name">Year-to-date Revenue</span>
         </div>
@@ -69,27 +77,31 @@
             <i class="fa-solid fa-money-bill-1-wave"></i>
         </div>
         <div class="card-info">
-            <span class="card-value">{{27.29|thousands_separated}}$/H</span>
+            <span class="card-value" id="average_rate_card">Loading...</span>
             <br>
             <span class="card-name">Average Hourly Rate</span>
         </div>
     </div>
 </div>
 
+<div id="charts-container">
+    <div id="income-chart" class="chart"></div>
+    <div id="hourly-rate-chart" class="chart"></div>
+</div>
+
 <div>
-    <table>
+    <table id="data-table">
         <caption>Paychecks</caption>
         <thead>
             {% if paychecks|length %}
             <tr>
-                <td>Earned</td>
-                <td>Hours worked</td>
-                <td>Period start</td>
-                <td>Period end</td>
-                <td>Over hours</td>
-                <td>Hourly rate</td>
-
-                <td>&#x1F5D1;</td>
+                <th>Earned <i>$</i></td>
+                <th>Hours worked</th>
+                <th>Week</th>
+                <th>Over hours</th>
+                <th>Hourly rate <i>$/H</i></th>
+                <th><i class="fa-solid fa-gear"></i></th>
+                <th><i class="fa-solid fa-trash-can"></i></i></th>
             </tr>
             {% else %}
             <tr><td>No paycheck listed yet ? <a class="underline" href="{% url 'dashboard:income-new-paycheck' id=object.id %}">Add one here</a> or <a class="underline" href="{% url 'dashboard:income-import-paychecks' id=object.id %}">load them from a spreadsheet</a>.</td></tr>
@@ -98,21 +110,14 @@
         <tbody>
             {% for paycheck in paychecks %}
             <tr>
-                <td>{{ paycheck.amount|thousands_separated }}$</td>
+                <td>{{ paycheck.amount|thousands_separated }}</td>
                 <td>{{ paycheck.hours }}</td>
-                <td>
-                    {% if paycheck.period_start %}
-                    {{ paycheck.period_start }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if paycheck.period_start %}
-                    {{ paycheck.period_end }}
-                    {% endif %}
-                </td>                
+                <td>{{ paycheck.week }} </td>              
                 <td>{{ paycheck.over_hours|significant_digits:0 }}</td>
-                
-                <td><a href="{% url 'dashboard:income-del-paycheck' id=object.id pk=paycheck.pk %}">&#9746;</a></td>
+                <td>{{ paycheck.hourly_rate|significant_digits}}</td>
+                <td><a href="{% url 'dashboard:income-edit-paycheck' id=object.id pk=paycheck.pk %}"><i class="fa-solid fa-pen-nib"></i></a></td>
+                <td><a href="{% url 'dashboard:income-del-paycheck' id=object.id pk=paycheck.pk %}"><i class="fa-solid fa-xmark"></i></a></td>
+
             </tr>
             {% endfor %}
         </tbody>

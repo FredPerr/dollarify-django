@@ -6,10 +6,11 @@ from django.views.generic.detail import DetailView
 
 from ...models import  CurrencyRate, StockMarketAccount, StockTrade
 from ...forms import StockMarketAccountCreateForm, StockMarketTradeCreateForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
-class StockMarketAccountCreateView(CreateView):
+class StockMarketAccountCreateView(CreateView, LoginRequiredMixin):
     model = StockMarketAccount
     form_class = StockMarketAccountCreateForm
     template_name = 'core/dashboard/accounts/stock_market/create.html'
@@ -24,7 +25,7 @@ class StockMarketAccountCreateView(CreateView):
             return HttpResponseRedirect(reverse_lazy('dashboard:stock-market-account-detail', kwargs={'id': account.id}))
 
 
-class StockMarketAccountDetailView(DetailView):
+class StockMarketAccountDetailView(DetailView, LoginRequiredMixin):
     model = StockMarketAccount
     template_name = 'core/dashboard/accounts/stock_market/detail.html'
     pk_url_kwarg = 'id'
@@ -41,7 +42,7 @@ class StockMarketAccountDetailView(DetailView):
         return context
 
 
-class StockMarketAccountDeleteView(DeleteView):
+class StockMarketAccountDeleteView(DeleteView, LoginRequiredMixin):
     model = StockMarketAccount
     template_name = 'core/dashboard/accounts/stock_market/delete.html'
     success_url = reverse_lazy('dashboard:overview')
@@ -51,7 +52,7 @@ class StockMarketAccountDeleteView(DeleteView):
     def get_queryset(self):
         return super().get_queryset().filter(id=self.kwargs['id'])
 
-class StockMarketNewTradeView(CreateView):
+class StockMarketNewTradeView(CreateView, LoginRequiredMixin):
     model = StockTrade
     form_class = StockMarketTradeCreateForm
     template_name = 'core/dashboard/accounts/stock_market/trade/create.html'
@@ -73,7 +74,7 @@ class StockMarketNewTradeView(CreateView):
         return context
 
 
-class StockMarketDelTradeView(DeleteView):
+class StockMarketDelTradeView(DeleteView, LoginRequiredMixin):
     model = StockTrade
     template_name = 'core/dashboard/accounts/stock_market/trade/delete.html'
 
@@ -82,7 +83,7 @@ class StockMarketDelTradeView(DeleteView):
         return reverse_lazy('dashboard:stock-market-account-detail', kwargs={'id':self.kwargs['id']})
     
 
-class StockMarketEditTradeView(UpdateView):
+class StockMarketEditTradeView(UpdateView, LoginRequiredMixin):
     model = StockTrade
     template_name = 'core/dashboard/accounts/stock_market/trade/edit.html'
     fields = ('ticker', 'currency', 'bought_on_date', 'bought_on_time', 'amount', 'bought_value', 'fees', 'sold_value', 'sold_on_date', 'sold_on_time')

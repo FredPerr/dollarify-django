@@ -37,3 +37,4 @@ Use the command:
 Button clicking on icon does not work.
 Hover in income account table too dark.
 Sidebar button in dashboard not working.
+Dashboard card's image always on top of dropdown menu.

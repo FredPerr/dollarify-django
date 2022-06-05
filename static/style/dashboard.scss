@@ -64,9 +64,6 @@ header {
     }
 }
 
-main {
-    padding: 1.5rem 2rem;
-}
 
 footer {
     grid-area: footer;
@@ -89,8 +86,18 @@ header, footer {
 
 
 main {
+    padding: 1.5rem 2rem;
     grid-area: main;
     overflow-y: auto;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: .3fr 1fr auto;
+    gap: 2em 0;
+    grid-template-areas:    "cards"
+                            "charts"
+                            "table";
+
 
     .title {
         font-size: 1.6rem;
@@ -167,10 +174,12 @@ aside {
 }
 
 .cards-container {
+    grid-area: cards;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    column-gap: 3rem;
-    margin: 2rem 0 3rem;
+    grid-template-rows: 1fr;
+    gap: 0 2em;
+    grid-template-areas: ". . . .";
 }
 
 .dashboard-card {
@@ -205,4 +214,19 @@ aside {
         height: 3.4rem;
         width: 3.4rem;
     }
+}
+
+.charts-container {
+    grid-area: charts;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1em 1em;
+    grid-template-areas:    ". ."
+                            ". .";
+}
+
+.table-container {
+    grid-area: table;
+
 }

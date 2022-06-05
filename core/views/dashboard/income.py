@@ -2,7 +2,8 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, HttpResponseRedirect
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.detail import DetailView
-
+from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from ...models import  IncomeAccount, Paycheck
 from ...forms import PaycheckCreateForm, IncomeAccountCreateForm
@@ -10,7 +11,7 @@ from ...forms import PaycheckCreateForm, IncomeAccountCreateForm
 
 
 
-class IncomeAccountCreateView(CreateView):
+class IncomeAccountCreateView(CreateView, LoginRequiredMixin):
     model = IncomeAccount
     form_class = IncomeAccountCreateForm
     template_name = 'core/dashboard/accounts/income/create.html'
@@ -25,7 +26,7 @@ class IncomeAccountCreateView(CreateView):
             return HttpResponseRedirect(reverse_lazy('dashboard:income-account-detail', kwargs={'id': account.id}))
 
 
-class IncomeAccountDetailView(DetailView):
+class IncomeAccountDetailView(DetailView, LoginRequiredMixin):
     model = IncomeAccount
     template_name = 'core/dashboard/accounts/income/detail.html'
     pk_url_kwarg = 'id'
@@ -39,7 +40,7 @@ class IncomeAccountDetailView(DetailView):
         return context
 
 
-class IncomeAccountDeleteView(DeleteView):
+class IncomeAccountDeleteView(DeleteView, LoginRequiredMixin):
     model = IncomeAccount
     template_name = 'core/dashboard/accounts/income/delete.html'
     success_url = reverse_lazy('dashboard:overview')
@@ -50,7 +51,7 @@ class IncomeAccountDeleteView(DeleteView):
         return super().get_queryset().filter(id=self.kwargs['id'])
 
 
-class IncomeNewPaycheckView(CreateView):
+class IncomeNewPaycheckView(CreateView, LoginRequiredMixin):
     model = Paycheck
     form_class = PaycheckCreateForm
     template_name = 'core/dashboard/accounts/income/paycheck/create.html'
@@ -72,13 +73,21 @@ class IncomeNewPaycheckView(CreateView):
         return context
 
 
-class IncomeDelPaycheckView(DeleteView):
+class IncomeDelPaycheckView(DeleteView, LoginRequiredMixin):
     model = Paycheck
     template_name = 'core/dashboard/accounts/income/paycheck/delete.html'
 
     def get_success_url(self):
         return reverse_lazy('dashboard:income-account-detail', kwargs={'id':self.kwargs['id']})
 
+
+class IncomeEditPaycheckView(UpdateView, LoginRequiredMixin):
+    model = Paycheck
+    template_name = 'core/dashboard/accounts/income/paycheck/edit.html'
+    fields = ('amount', 'hours', 'week', 'over_hours')
+
+    def get_success_url(self):
+        return reverse_lazy('dashboard:stock-market-account-detail', kwargs={'id': self.kwargs['id']})
 
 def import_paychecks_view(request, id):
     return render(request, 'core/dashboard/accounts/income/paycheck/import.html')

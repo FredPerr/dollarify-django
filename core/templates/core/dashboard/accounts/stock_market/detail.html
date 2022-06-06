@@ -9,8 +9,11 @@
 {% block navbar-extras %}
 {% compress css %}
 <link type="text/x-sass" href="{% static 'style/account/stock-market.scss' %}" rel="stylesheet" media="screen">
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 {% endcompress %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="{% static 'script/stock/data.js' %}" defer></script>
+<script src="{% static 'script/stock/charts.js' %}" defer></script>
+<script src="{% static 'script/stock/stock.js' %}" defer></script>
 <div class="navbar-item dropdown">
     <button class="dropdown-toggle fa-font-solid" onclick="toggle_dropdown_menu('stock-market-dropdown');">
         <i class="fa-solid fa-pen-to-square"></i> <span>Stock</span> <i class="fa-solid fa-caret-down"></i>
@@ -83,6 +86,11 @@
             <span class="card-name">Realised Gains</span>
         </div>
     </div>
+</div>
+
+<div id="charts-container">
+    <div id="diversification-chart" class="chart"></div>
+    <div id="hourly-rate-chart" class="chart"></div>
 </div>
 
 <div>

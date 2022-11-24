@@ -11,6 +11,21 @@ Install the build package:
 
 **Add FontAwesome 6 folder content in project root as 'footawesome/' folder.**
 
+Setup secret key with env variable:
+ALPHA_VANTAGE_API_KEY
+
+Setup a postgresql db for development with env variables:
+DB_NAME & DB_PASSWORD
+
+Setup an Alpha Vantage API Key to retrieve stock data:
+ALPHA_VANTAGE_API_KEY
+
+
+for STMP server, setup env variables:
+EMAIL_HOST_USER & EMAIL_HOST_PASSWORD
+
+
+
 #### Running the project
 
 Use the command:
